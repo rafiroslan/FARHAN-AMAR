@@ -1,0 +1,1264 @@
+<!doctype html>
+<html lang="ms">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+</head>
+<body>
+<title>Bright Minds Tahun 6</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Great+Vibes&family=Lexend:wght@300;400;600&display=swap">
+<style>
+/* Layout: pink welcome card → sticky subject tabs → per-subject Nota / Latihan, single reading column */
+:root{
+  --bg:#fcf6f7;--surface:#ffffff;--surface2:#f8eef1;--ink:#2b1b20;--muted:#6e5960;--line:#eddde2;
+  --accent:#9b1c31;--hero:#f8c8d1;--heroink:#8c1228;--herosub:#9b2a3c;
+  --ok:#1d7a4b;--okbg:#e2f4ea;--bad:#b3261e;--badbg:#fbe5e3;--tip:#fff3d1;--tipink:#6b4b00;
+  --mt:#b0186b;--sn:#0d7a84;--sj:#b0600c;--bm:#2457a6;--rbt:#4d7a1c;
+  --display:"Baloo 2","Trebuchet MS",system-ui,sans-serif;--body:"Lexend",system-ui,-apple-system,"Segoe UI",sans-serif;--script:"Great Vibes","Brush Script MT",cursive;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#181013;--surface:#22171b;--surface2:#2c1e23;--ink:#f4e8eb;--muted:#bba4ab;--line:#3b2a30;
+  --accent:#f2869a;--hero:#4a2330;--heroink:#ffd4dc;--herosub:#f7b3c0;
+  --ok:#6fd49c;--okbg:#173527;--bad:#ff8a80;--badbg:#3d1c1a;--tip:#3a2f12;--tipink:#f6dc8f;
+  --mt:#f27bbd;--sn:#5fd0d9;--sj:#f0a65a;--bm:#8fb4f2;--rbt:#a7d468;color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#181013;--surface:#22171b;--surface2:#2c1e23;--ink:#f4e8eb;--muted:#bba4ab;--line:#3b2a30;
+  --accent:#f2869a;--hero:#4a2330;--heroink:#ffd4dc;--herosub:#f7b3c0;
+  --ok:#6fd49c;--okbg:#173527;--bad:#ff8a80;--badbg:#3d1c1a;--tip:#3a2f12;--tipink:#f6dc8f;
+  --mt:#f27bbd;--sn:#5fd0d9;--sj:#f0a65a;--bm:#8fb4f2;--rbt:#a7d468;color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.65;font-weight:300}
+.wrap{max-width:860px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3,h4{font-family:var(--display);line-height:1.15;text-wrap:balance;margin:0}
+b,strong{font-weight:600}
+button{font:inherit;cursor:pointer}
+button:focus-visible,summary:focus-visible,textarea:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+
+/* hero */
+.hero{background:var(--hero);position:relative;overflow:hidden;border-radius:0 0 28px 28px}
+.hero .wrap{padding-block:34px 150px;text-align:center;position:relative;z-index:1}
+.hero .hi{font-family:var(--display);font-weight:800;color:var(--heroink);font-size:clamp(1.5rem,5vw,2.3rem)}
+.hero .welcome{font-family:var(--script);color:var(--heroink);font-size:clamp(4rem,16vw,7.5rem);line-height:1;margin:6px 0 4px}
+.hero .name{font-family:var(--display);font-weight:700;color:var(--heroink);font-size:clamp(1.25rem,4vw,1.7rem)}
+.hero .journey{font-family:var(--display);font-weight:800;color:var(--heroink);font-size:clamp(1.3rem,4.5vw,2rem);margin-top:6px}
+.hero .note{max-width:560px;margin:14px auto 0;color:var(--herosub);font-size:.95rem}
+.hero svg.desk{position:absolute;left:0;right:0;bottom:0;width:100%;height:150px}
+
+/* tabs */
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
+.tabs .wrap{display:flex;gap:8px;overflow-x:auto;padding-block:12px;scrollbar-width:none}
+.tab{flex:0 0 auto;border:2px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:6px 16px;font-family:var(--display);font-weight:700;font-size:1rem}
+.tab[aria-selected="true"]{background:var(--c);border-color:var(--c);color:var(--bg)}
+
+/* subject */
+.subj{padding-block:26px 60px}
+.shead{display:flex;flex-wrap:wrap;gap:12px;align-items:end;justify-content:space-between}
+.shead h2{font-size:clamp(1.9rem,6vw,2.6rem);color:var(--c)}
+.shead p{margin:2px 0 0;color:var(--muted)}
+.seg{display:inline-flex;background:var(--surface2);border-radius:999px;padding:4px;gap:4px}
+.seg button{border:0;background:transparent;color:var(--muted);padding:6px 16px;border-radius:999px;font-family:var(--display);font-weight:700}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--c);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.fmt{margin-top:18px;border-left:4px solid var(--c);background:var(--surface);padding:12px 16px;border-radius:0 12px 12px 0;font-size:.92rem}
+.fmt h4{font-size:1.05rem;color:var(--c);margin-bottom:4px}
+.fmt ul{margin:4px 0 0;padding-left:20px}
+
+/* notes */
+.units{display:grid;gap:12px;margin-top:22px}
+details.unit{background:var(--surface);border:1px solid var(--line);border-radius:16px}
+details.unit>summary{list-style:none;display:flex;gap:12px;align-items:center;padding:14px 18px;cursor:pointer}
+details.unit>summary::-webkit-details-marker{display:none}
+.unum{flex:0 0 auto;width:38px;height:38px;border-radius:50%;background:var(--c);color:var(--bg);display:grid;place-items:center;font-family:var(--display);font-weight:800}
+.utitle{font-family:var(--display);font-weight:700;font-size:1.15rem;flex:1;min-width:0}
+.chev{transition:transform .2s;color:var(--muted)}
+details[open] .chev{transform:rotate(90deg)}
+.ubody{padding:0 18px 18px;min-width:0}
+.ubody h4{font-size:1.1rem;margin:16px 0 4px;color:var(--c)}
+.ubody ul,.ubody ol{padding-left:22px;margin:6px 0}
+.ubody li{margin:3px 0}
+.ubody p{margin:8px 0}
+.tbl{overflow-x:auto;margin:10px 0}
+.tbl table{border-collapse:collapse;width:100%;font-size:.92rem;font-variant-numeric:tabular-nums}
+.tbl th,.tbl td{border:1px solid var(--line);padding:6px 10px;text-align:left;vertical-align:top}
+.tbl th{background:var(--surface2);font-weight:600}
+.tip{background:var(--tip);color:var(--tipink);border-radius:12px;padding:10px 14px;margin:12px 0;font-size:.95rem}
+.tip b{font-family:var(--display);font-size:1.02rem}
+.fr{display:inline-flex;flex-direction:column;vertical-align:middle;text-align:center;font-size:.85em;line-height:1.15;margin:0 2px}
+.fr i{font-style:normal}.fr i:first-child{border-bottom:1.5px solid currentColor;padding:0 2px}
+.formula{font-family:var(--display);font-weight:700;font-size:1.15rem;background:var(--surface2);border-radius:10px;padding:8px 14px;display:inline-block;margin:6px 0;color:var(--c)}
+
+/* worked example */
+.ex{border:2px dashed var(--c);border-radius:14px;padding:12px 16px;margin:14px 0}
+.exq{font-weight:600}
+.exq span{font-family:var(--display);color:var(--c);font-weight:800;margin-right:6px}
+.steps{list-style:none;padding:0!important;margin:10px 0!important;display:grid;gap:6px;counter-reset:st}
+.steps li{counter-increment:st;display:flex;gap:10px;align-items:baseline;background:var(--surface2);border-radius:10px;padding:6px 12px;font-variant-numeric:tabular-nums;animation:pop .25s ease}
+.steps li::before{content:"Langkah " counter(st);font-family:var(--display);font-weight:700;color:var(--c);flex:0 0 auto;font-size:.88rem}
+.exans{font-family:var(--display);font-weight:800;color:var(--ok);background:var(--okbg);border-radius:10px;padding:6px 12px;display:inline-block}
+.btns{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.btn{border:2px solid var(--c);background:transparent;color:var(--c);border-radius:999px;padding:4px 14px;font-family:var(--display);font-weight:700;font-size:.95rem}
+.btn.solid{background:var(--c);color:var(--bg)}
+@keyframes pop{from{opacity:.2;transform:translateY(4px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* quiz */
+.qhead{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin:24px 0 10px}
+.qhead h3{font-size:1.5rem}
+.score{font-family:var(--display);font-weight:700;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:4px 14px;font-variant-numeric:tabular-nums}
+.bar{height:8px;background:var(--surface2);border-radius:99px;overflow:hidden;margin-bottom:14px}
+.bar i{display:block;height:100%;background:var(--c);width:0;transition:width .3s}
+.q{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px 16px;margin-bottom:12px}
+.qtop{display:flex;gap:10px}
+.qn{flex:0 0 auto;font-family:var(--display);font-weight:800;color:var(--c);font-size:1.1rem;min-width:26px}
+.qtext{min-width:0;flex:1}
+.qtext p{margin:0 0 6px}
+.opts{display:grid;gap:8px;margin:10px 0 0 36px}
+.opt{text-align:left;border:2px solid var(--line);background:var(--bg);color:var(--ink);border-radius:12px;padding:8px 12px;display:flex;gap:10px;align-items:baseline;font-weight:300}
+.opt:hover:not(:disabled){border-color:var(--c)}
+.opt .l{font-family:var(--display);font-weight:800;color:var(--c)}
+.opt.right{border-color:var(--ok);background:var(--okbg)}
+.opt.wrong{border-color:var(--bad);background:var(--badbg)}
+.opt:disabled{cursor:default}
+.qtools{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 0 36px}
+.small{border:1px solid var(--line);background:var(--surface2);color:var(--ink);border-radius:999px;padding:3px 12px;font-size:.85rem}
+.hint,.fb,.skema{margin:10px 0 0 36px;border-radius:12px;padding:10px 14px;font-size:.93rem}
+.hint{background:var(--tip);color:var(--tipink)}
+.fb.ok{background:var(--okbg)}
+.fb.no{background:var(--badbg)}
+.fb b.v{font-family:var(--display);font-size:1.05rem}
+.skema{background:var(--okbg)}
+.skema .steps li{background:var(--surface)}
+textarea{width:100%;min-height:80px;border:2px solid var(--line);border-radius:12px;background:var(--bg);color:var(--ink);padding:8px 12px;font:inherit;font-size:.95rem;margin-top:8px}
+.answrap{margin-left:36px}
+.reset{margin-top:6px}
+
+/* sims */
+.sim{border:2px solid var(--c);border-radius:16px;padding:14px;margin:14px 0;background:var(--surface2)}
+.sim h4{margin-top:0!important}
+.track{position:relative;height:120px;border-radius:12px;overflow:hidden;background:var(--surface);margin:10px 0}
+.ground{position:absolute;left:0;right:0;bottom:0;height:26px}
+.box{position:absolute;bottom:26px;width:56px;height:46px;border-radius:6px;background:var(--c);color:var(--bg);display:grid;place-items:center;font-family:var(--display);font-weight:800;font-size:.85rem}
+.arrow{position:absolute;height:8px;border-radius:4px;bottom:45px}
+.arrow::after{content:"";position:absolute;top:-6px;border:10px solid transparent}
+.arrow.push{background:var(--accent)}
+.arrow.push::after{right:-16px;border-left-color:var(--accent)}
+.arrow.fric{background:var(--muted)}
+.arrow.fric::after{left:-16px;border-right-color:var(--muted)}
+.ctrl{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px 18px;font-size:.9rem}
+.ctrl label{display:grid;gap:2px}
+.ctrl input[type=range]{width:100%;accent-color:var(--c)}
+.ctrl select{font:inherit;padding:4px 8px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink)}
+.read{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;font-variant-numeric:tabular-nums}
+.read span{background:var(--surface);border-radius:999px;padding:3px 12px;font-size:.88rem}
+.read b{font-family:var(--display)}
+.status{font-family:var(--display);font-weight:800}
+.alt{display:flex;gap:16px;align-items:stretch;flex-wrap:wrap}
+.mount{flex:1 1 220px;min-width:0}
+.gauge{flex:1 1 200px;min-width:0;display:grid;gap:6px;align-content:center}
+.gbar{height:22px;border-radius:99px;background:var(--surface);overflow:hidden}
+.gbar i{display:block;height:100%;background:var(--c)}
+.ecl svg{width:100%;max-width:560px;height:auto;display:block}
+/* ===== cheerful layer ===== */
+:root{--r1:#f03e3e;--r2:#f76707;--r3:#0ca678;--r4:#1c7ed6;--r5:#7048e8;--r6:#d6336c;
+  --q1:#ffe3e3;--q2:#ffe8cc;--q3:#c3fae8;--q4:#d0ebff;--q5:#e5dbff;--q6:#ffdeeb;--illbg:#fffaf0;--dot:#f6d6dd}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--q1:#3b1f22;--q2:#3b2814;--q3:#12352c;--q4:#152c44;--q5:#2a2147;--q6:#3b1a28;--dot:#2c1d22}}
+:root[data-theme="dark"]{--q1:#3b1f22;--q2:#3b2814;--q3:#12352c;--q4:#152c44;--q5:#2a2147;--q6:#3b1a28;--dot:#2c1d22}
+body{background-color:var(--bg);background-image:radial-gradient(var(--dot) 1.6px,transparent 1.7px);background-size:26px 26px}
+.tab{border-color:var(--c);color:var(--c)}
+.shead{background:color-mix(in srgb,var(--c) 13%,var(--surface));border-radius:22px;padding:18px 20px;border:3px solid var(--c)}
+.fmt{background:var(--surface)}
+details.unit{border:3px solid var(--u);overflow:hidden}
+details.unit>summary{background:var(--uq)}
+details.unit .unum{background:var(--u);color:#fff;width:42px;height:42px;font-size:1.15rem;box-shadow:0 3px 0 rgba(0,0,0,.15)}
+details.unit .utitle{color:var(--ink)}
+.ubody h4{color:var(--u)}
+.ill{background:var(--illbg);border:3px dashed var(--u);border-radius:18px;padding:8px;max-width:340px;margin:16px auto 6px}
+.ill svg{display:block;width:100%;height:auto}
+.mnhead{display:flex;align-items:center;gap:8px;font-family:var(--display);font-weight:800;font-size:1.15rem;color:var(--u);margin:18px 0 8px}
+.mnhead svg{width:26px;height:26px;flex:0 0 auto}
+.mnem{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.mn{background:var(--uq);border:2px solid var(--u);border-radius:16px;padding:10px 14px;font-size:.93rem;min-width:0}
+.mn-k{display:inline-block;background:var(--u);color:#fff;font-family:var(--display);font-weight:800;font-size:1.05rem;letter-spacing:.06em;padding:1px 12px;border-radius:999px;margin-bottom:4px;transform:rotate(-2deg)}
+.ex{border:3px dashed var(--u,var(--c));background:var(--surface);border-radius:18px}
+.exq span{color:var(--u,var(--c));background:var(--uq,var(--surface2));padding:1px 10px;border-radius:999px}
+.ex .btn{border-color:var(--u,var(--c));color:var(--u,var(--c))}
+.ex .btn.solid{background:var(--u,var(--c));color:#fff}
+.steps li{display:grid;grid-template-columns:30px 1fr;gap:10px;align-items:start;background:var(--surface2)}
+.steps li::before{content:counter(st);width:30px;height:30px;border-radius:50%;display:grid;place-items:center;color:#fff;font-size:.95rem;background:var(--r4)}
+.steps li:nth-child(6n+1)::before{background:var(--r1)}.steps li:nth-child(6n+2)::before{background:var(--r2)}.steps li:nth-child(6n+3)::before{background:var(--r3)}
+.steps li:nth-child(6n+4)::before{background:var(--r4)}.steps li:nth-child(6n+5)::before{background:var(--r5)}.steps li:nth-child(6n)::before{background:var(--r6)}
+.steps .why{display:block;font-size:.84rem;color:var(--muted);font-style:italic;margin-top:2px}
+.steps .why::before{content:"Kenapa? ";font-style:normal;font-weight:600;color:var(--r5)}
+.exans{font-size:1.05rem}
+.q{border-left:6px solid var(--c)}
+.q:nth-child(3n+2){border-left-color:var(--r2)}.q:nth-child(3n){border-left-color:var(--r4)}
+.badge{display:inline-flex;align-items:center;gap:6px;font-family:var(--display);font-weight:800;color:#fff;background:var(--r2);border-radius:999px;padding:2px 12px;margin-left:6px}
+.fb{position:relative}
+.burst{position:absolute;left:24px;top:12px;pointer-events:none}
+.burst i{position:absolute;width:8px;height:8px;border-radius:2px;animation:fly .9s ease-out forwards}
+@keyframes fly{from{transform:translate(0,0) rotate(0);opacity:1}to{transform:translate(var(--x),var(--y)) rotate(360deg);opacity:0}}
+footer{color:var(--muted);font-size:.85rem;padding-block:20px 40px;border-top:1px solid var(--line)}
+@media (max-width:520px){.opts,.qtools,.hint,.fb,.skema,.answrap{margin-left:0}}
+</style>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="hi">Hello, Bright Minds!</div>
+    <div class="welcome">Welcome!</div>
+    <div class="name">Hi Farhan Amar,</div>
+    <div class="journey">Your success journey starts now.</div>
+    <p class="note">Nota ringkas, contoh jalan kerja langkah demi langkah, simulasi sains dan 200 soalan latihan untuk Tahun 6. Pilih subjek di bawah, baca nota dulu, kemudian cuba latihan. Sedikit-sedikit, lama-lama jadi bukit!</p>
+  </div>
+  <svg class="desk" viewBox="0 0 900 150" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+    <g transform="translate(-10,40) rotate(-18 120 60)">
+      <rect x="0" y="40" width="230" height="16" rx="3" fill="#f2c230"/><polygon points="230,40 262,48 230,56" fill="#f6dcae"/><polygon points="252,45 262,48 252,51" fill="#333"/>
+      <rect x="0" y="60" width="210" height="16" rx="3" fill="#2f7fd1"/><polygon points="210,60 242,68 210,76" fill="#f6dcae"/><polygon points="232,65 242,68 232,71" fill="#2f7fd1"/>
+      <rect x="0" y="80" width="240" height="16" rx="3" fill="#e2453b"/><polygon points="240,80 272,88 240,96" fill="#f6dcae"/><polygon points="262,85 272,88 262,91" fill="#e2453b"/>
+      <rect x="0" y="100" width="200" height="16" rx="3" fill="#3aa65a"/><polygon points="200,100 232,108 200,116" fill="#f6dcae"/>
+    </g>
+    <g transform="translate(300,62)">
+      <ellipse cx="40" cy="52" rx="44" ry="40" fill="#9ccc3c"/><ellipse cx="26" cy="38" rx="10" ry="14" fill="#c7e57a" opacity=".7"/>
+      <path d="M40 14 q-2 -16 6 -26" stroke="#6b4a2a" stroke-width="5" fill="none" stroke-linecap="round"/>
+    </g>
+    <g fill="none" stroke-width="5" stroke-linecap="round">
+      <path d="M430 70 h40 a10 10 0 0 1 0 20 h-46 a7 7 0 0 1 0 -14 h36" stroke="#3aa65a"/>
+      <path d="M450 100 h40 a10 10 0 0 1 0 20 h-46 a7 7 0 0 1 0 -14 h36" stroke="#e2453b"/>
+      <path d="M500 60 h40 a10 10 0 0 1 0 20 h-46 a7 7 0 0 1 0 -14 h36" stroke="#2f7fd1" transform="rotate(-25 520 70)"/>
+    </g>
+    <g transform="translate(560,40)">
+      <path d="M0 110 a110 110 0 0 1 220 0" stroke="#e2453b" stroke-width="22" fill="none"/>
+      <path d="M22 110 a88 88 0 0 1 176 0" stroke="#f39a2b" stroke-width="22" fill="none"/>
+      <path d="M44 110 a66 66 0 0 1 132 0" stroke="#f2c230" stroke-width="22" fill="none"/>
+      <path d="M66 110 a44 44 0 0 1 88 0" stroke="#3aa65a" stroke-width="22" fill="none"/>
+      <path d="M88 110 a22 22 0 0 1 44 0" stroke="#2f7fd1" stroke-width="22" fill="none"/>
+    </g>
+    <g transform="translate(790,50) rotate(20)">
+      <rect x="0" y="0" width="34" height="150" rx="3" fill="#e9c47a"/>
+      <g stroke="#7a5a1d" stroke-width="2"><path d="M0 15h12M0 30h8M0 45h12M0 60h8M0 75h12M0 90h8M0 105h12M0 120h8"/></g>
+    </g>
+  </svg>
+</header>
+
+<nav class="tabs" aria-label="Subjek"><div class="wrap" id="tabs" role="tablist"></div></nav>
+<main class="wrap"><section class="subj" id="subj"></section></main>
+<footer><div class="wrap">Farhan Amar budak bijak, budak pandai!</div></footer>
+
+<script>
+(function(){
+const T='#3a2a30',FF='font-family="Baloo 2,Trebuchet MS,sans-serif" font-weight="800"';
+const sv=(b)=>`<svg viewBox="0 0 220 150" xmlns="http://www.w3.org/2000/svg" role="img">${b}</svg>`;
+const tx=(x,y,s,t,c=T,a='middle')=>`<text x="${x}" y="${y}" font-size="${s}" fill="${c}" text-anchor="${a}" ${FF}>${t}</text>`;
+function star(cx,cy,R,r,n,c){let p=[];for(let i=0;i<n*2;i++){const a=Math.PI*i/n-Math.PI/2,rr=i%2?r:R;p.push((cx+rr*Math.cos(a)).toFixed(1)+','+(cy+rr*Math.sin(a)).toFixed(1))}return `<polygon points="${p.join(' ')}" fill="${c}"/>`}
+function gear(cx,cy,r,n,c){let p=[];for(let i=0;i<n*4;i++){const a=2*Math.PI*i/(n*4),rr=(i%4<2)?r:r*0.8;p.push((cx+rr*Math.cos(a)).toFixed(1)+','+(cy+rr*Math.sin(a)).toFixed(1))}return `<polygon points="${p.join(' ')}" fill="${c}"/><circle cx="${cx}" cy="${cy}" r="${r*0.25}" fill="#fffaf0"/>`}
+function pie(cx,cy,r,parts){let a0=-90,s='';parts.forEach(([deg,c])=>{const a1=a0+deg,x0=cx+r*Math.cos(a0*Math.PI/180),y0=cy+r*Math.sin(a0*Math.PI/180),x1=cx+r*Math.cos(a1*Math.PI/180),y1=cy+r*Math.sin(a1*Math.PI/180);s+=`<path d="M${cx} ${cy} L${x0.toFixed(1)} ${y0.toFixed(1)} A${r} ${r} 0 ${deg>180?1:0} 1 ${x1.toFixed(1)} ${y1.toFixed(1)}Z" fill="${c}" stroke="#fffaf0" stroke-width="2"/>`;a0=a1});return s}
+const C=['#ff6b6b','#ffa94d','#ffd43b','#51cf66','#339af0','#845ef7','#f06595'];
+const cols=[...'3405216'].map((d,i)=>`<rect x="${6+i*30}" y="50" width="27" height="56" rx="6" fill="${C[i]}"/>${tx(19.5+i*30,88,26,d,'#fff')}${tx(19.5+i*30,44,8,['Juta','R.ribu','P.ribu','Ribu','Ratus','Puluh','Sa'][i])}`).join('');
+window.ILL={
+mt1:sv(cols+tx(110,135,18,'3 405 216')+tx(110,22,14,'Nilai Tempat','#845ef7')),
+mt2:sv(pie(62,75,50,[[90,'#ff6b6b'],[90,'#ffa94d'],[90,'#ffd43b'],[90,'#ffe9c7']])+tx(160,58,30,'¾','#ff6b6b')+tx(160,92,20,'= 0.75','#339af0')+tx(160,122,20,'= 75%','#51cf66')),
+mt3:sv(`<rect x="12" y="40" width="120" height="62" rx="8" fill="#51cf66"/><rect x="20" y="48" width="104" height="46" rx="5" fill="none" stroke="#fff" stroke-width="2"/><circle cx="72" cy="71" r="15" fill="#d3f9d8"/>${tx(72,77,16,'RM','#2b8a3e')}<circle cx="40" cy="120" r="14" fill="#fcc419"/><circle cx="66" cy="124" r="11" fill="#ffd43b"/><polygon points="150,30 205,30 205,80 178,104 150,80" fill="#f06595"/><circle cx="177" cy="44" r="5" fill="#fff"/>${tx(178,76,20,'-20%','#fff')}${tx(165,132,14,'Diskaun!','#f06595')}`),
+mt4:sv(`<circle cx="110" cy="75" r="40" fill="#74c0fc"/><path d="M80 60 q15 -12 30 0 q-6 14 -24 10z M112 85 q14 -6 24 8 q-10 12 -22 4z" fill="#69db7c"/><ellipse cx="110" cy="75" rx="40" ry="14" fill="none" stroke="#fff" stroke-width="1.5"/><ellipse cx="110" cy="75" rx="14" ry="40" fill="none" stroke="#fff" stroke-width="1.5"/>
+<circle cx="32" cy="60" r="24" fill="#fff" stroke="#ff6b6b" stroke-width="4"/><path d="M32 60 V44 M32 60 H44" stroke="${T}" stroke-width="3" stroke-linecap="round"/>${tx(34,104,11,'KL 10:00','#ff6b6b')}
+<circle cx="188" cy="60" r="24" fill="#fff" stroke="#845ef7" stroke-width="4"/><path d="M188 60 V44 M188 60 L178 54" stroke="${T}" stroke-width="3" stroke-linecap="round"/>${tx(186,104,11,'London 2:00','#845ef7')}${tx(110,138,14,'GMT+8 → GMT+0 = −8 jam')}`),
+mt5:sv(`<rect x="10" y="20" width="200" height="30" rx="4" fill="#ffd43b"/>${Array.from({length:20},(_,i)=>`<path d="M${18+i*10} 20 v${i%5?8:14}" stroke="${T}" stroke-width="1.5"/>`).join('')}${tx(110,46,11,'1 m = 100 cm')}
+<path d="M30 130 h60 l-8 -40 h-44z" fill="#ff8787"/><rect x="48" y="78" width="24" height="12" rx="3" fill="#ff8787"/>${tx(60,118,14,'1 kg','#fff')}${tx(60,145,10,'= 1 000 g')}
+<path d="M150 70 h20 v10 q12 6 12 20 v34 h-44 v-34 q0 -14 12 -20z" fill="#74c0fc"/><rect x="148" y="62" width="24" height="9" rx="2" fill="#339af0"/>${tx(160,118,14,'1 ℓ','#fff')}${tx(160,145,10,'= 1 000 mℓ')}`),
+mt6:sv(`<polygon points="120,75 95,118 45,118 20,75 45,32 95,32" fill="#b197fc" stroke="#7048e8" stroke-width="3"/><path d="M106 75 A14 14 0 0 1 113 87" stroke="#fff" stroke-width="3" fill="none"/>${tx(70,82,20,'120°','#fff')}
+<circle cx="172" cy="75" r="38" fill="#ffe066" stroke="#f08c00" stroke-width="3"/><circle cx="172" cy="75" r="3" fill="${T}"/><path d="M172 75 H210" stroke="#e8590c" stroke-width="3"/><path d="M134 75 H172" stroke="#e8590c" stroke-width="3" stroke-dasharray="4 3"/>${tx(191,70,12,'j','#e8590c')}${tx(172,135,12,'d = 2 × j')}`),
+mt7:sv(Array.from({length:9},(_,i)=>`<path d="M${20+i*20} 15 V125 M20 ${15+i*13.75} H180" stroke="#dee2e6" stroke-width="1"/>`).join('')+`<path d="M20 125 H180 M20 125 V15" stroke="${T}" stroke-width="2"/><circle cx="60" cy="83.75" r="6" fill="#ff6b6b"/><circle cx="160" cy="83.75" r="6" fill="#339af0"/><path d="M68 83.75 H150" stroke="#51cf66" stroke-width="3" marker-end="url(#ah)"/><defs><marker id="ah" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8z" fill="#51cf66"/></marker></defs>${tx(60,73,12,'A(2,3)','#ff6b6b')}${tx(160,73,12,'B(7,3)','#339af0')}${tx(110,104,13,'5 unit','#2b8a3e')}<rect x="186" y="30" width="14" height="20" fill="#339af0"/><rect x="186" y="52" width="14" height="20" fill="#339af0"/><rect x="202" y="30" width="14" height="20" fill="#f06595"/><rect x="202" y="52" width="14" height="20" fill="#f06595"/><rect x="202" y="74" width="14" height="20" fill="#f06595"/>${tx(201,112,12,'2 : 3')}`),
+mt8:sv(pie(70,75,55,[[120,'#ff6b6b'],[90,'#339af0'],[60,'#ffd43b'],[90,'#51cf66']])+`<rect x="150" y="45" width="56" height="56" rx="10" fill="#fff" stroke="#845ef7" stroke-width="3"/>${[[163,58],[193,58],[178,73],[163,88],[193,88]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="5" fill="#845ef7"/>`).join('')}${tx(178,125,13,'Kebolehjadian')}`),
+
+sn1:sv(`<circle cx="70" cy="65" r="38" fill="#d0ebff" stroke="#339af0" stroke-width="8"/><path d="M98 93 L130 125" stroke="#845ef7" stroke-width="14" stroke-linecap="round"/><path d="M56 52 q10 -10 22 -4" stroke="#fff" stroke-width="5" fill="none" stroke-linecap="round"/>
+<path d="M150 30 h40 v10 h-4 v30 l20 50 q3 10 -8 10 h-56 q-11 0 -8 -10 l20 -50 v-30 h-4z" fill="#fff" stroke="${T}" stroke-width="2"/><path d="M146 100 l8 -20 h32 l8 20 q2 10 -6 10 h-36 q-8 0 -6 -10z" fill="#51cf66"/><circle cx="162" cy="96" r="4" fill="#d3f9d8"/><circle cx="176" cy="88" r="3" fill="#d3f9d8"/>${tx(110,146,13,'Perhati · Ukur · Uji')}`),
+sn2:sv(`<circle cx="110" cy="32" r="24" fill="#ffd8a8"/><path d="M96 26 q4 -14 14 -12 q12 -4 16 8 q6 8 -2 14 q-12 6 -24 2 q-8 -4 -4 -12z" fill="#f783ac"/><rect x="104" y="56" width="12" height="70" rx="6" fill="#ffd43b"/><path d="M110 70 L70 95 M110 70 L150 95 M110 120 L85 146 M110 120 L135 146 M110 90 L80 110 M110 90 L140 110" stroke="#ffa94d" stroke-width="3" stroke-linecap="round"/>${tx(40,40,12,'Otak','#d6336c','start')}${tx(130,68,11,'Saraf tunjang','#e67700','start')}${tx(160,112,11,'Saraf','#e8590c','start')}`),
+sn3:sv(`<rect x="22" y="40" width="54" height="22" rx="11" fill="#69db7c"/><path d="M76 51 q10 -8 18 0 q8 8 16 0" stroke="#2b8a3e" stroke-width="2" fill="none"/>${tx(49,82,11,'Bakteria','#2b8a3e')}<circle cx="138" cy="50" r="16" fill="#b197fc"/><circle cx="160" cy="40" r="9" fill="#d0bfff"/>${tx(148,82,11,'Yis (kulat)','#7048e8')}<path d="M30 104 q20 -18 40 0 q10 10 0 20 q-20 14 -40 0 q-10 -10 0 -20z" fill="#74c0fc"/><circle cx="48" cy="112" r="5" fill="#1971c2"/>${tx(50,145,11,'Protozoa','#1971c2')}<path d="M120 120 h70 v-24 q-35 -20 -70 0z" fill="#e8b46a"/><circle cx="150" cy="104" r="6" fill="#51cf66"/><circle cx="168" cy="110" r="5" fill="#40c057"/>${tx(155,140,11,'Roti berkulat','#a0522d')}`),
+sn4:sv(`<path d="M70 140 V80" stroke="#40c057" stroke-width="6"/><path d="M70 110 q-24 -6 -26 -24 q20 2 26 24z" fill="#69db7c"/>${[0,72,144,216,288].map(a=>`<ellipse cx="${70+22*Math.cos(a*Math.PI/180)}" cy="${62+22*Math.sin(a*Math.PI/180)}" rx="16" ry="11" transform="rotate(${a} ${70+22*Math.cos(a*Math.PI/180)} ${62+22*Math.sin(a*Math.PI/180)})" fill="#f783ac"/>`).join('')}<circle cx="70" cy="62" r="11" fill="#ffd43b"/>
+<ellipse cx="160" cy="70" rx="24" ry="16" fill="#ffd43b"/><path d="M146 58 v24 M158 55 v30 M170 56 v28" stroke="${T}" stroke-width="5"/><ellipse cx="150" cy="50" rx="12" ry="8" fill="#d0ebff" opacity=".9"/><ellipse cx="166" cy="48" rx="12" ry="8" fill="#d0ebff" opacity=".9"/><circle cx="184" cy="68" r="4" fill="${T}"/>${tx(160,110,13,'Mutualisme','#e67700')}${tx(160,128,10,'dua-dua untung')}`),
+sn5:sv(`<ellipse cx="90" cy="95" rx="54" ry="34" fill="#40c057"/>${[[70,85],[100,82],[85,105],[115,104],[60,106]].map(([x,y])=>`<polygon points="${x},${y-10} ${x+10},${y-4} ${x+10},${y+6} ${x},${y+12} ${x-10},${y+6} ${x-10},${y-4}" fill="#8ce99a"/>`).join('')}<ellipse cx="152" cy="88" rx="16" ry="12" fill="#8ce99a"/><circle cx="158" cy="85" r="2.5" fill="${T}"/><ellipse cx="50" cy="122" rx="14" ry="6" fill="#8ce99a"/><ellipse cx="128" cy="124" rx="14" ry="6" fill="#8ce99a"/>${tx(110,30,15,'Lindungi hidupan liar','#2b8a3e')}<path d="M180 120 V60" stroke="#a0522d" stroke-width="7"/><circle cx="180" cy="55" r="22" fill="#69db7c"/>`),
+sn6:sv(`<rect x="0" y="112" width="220" height="38" fill="#e9c46a"/>${Array.from({length:22},(_,i)=>`<path d="M${i*10} 112 l6 8" stroke="#b08900" stroke-width="1.5"/>`).join('')}<rect x="88" y="62" width="60" height="50" rx="6" fill="#ff922b"/>${tx(118,93,13,'KOTAK','#fff')}<path d="M20 87 H78" stroke="#e03131" stroke-width="7"/><polygon points="78,77 92,87 78,97" fill="#e03131"/>${tx(46,74,13,'Tolakan','#e03131')}<path d="M210 104 H164" stroke="#495057" stroke-width="5"/><polygon points="164,97 152,104 164,111" fill="#495057"/>${tx(190,94,12,'Geseran','#495057')}${tx(110,30,15,'Daya = tolakan / tarikan','#7048e8')}`),
+sn7:sv(`<path d="M50 100 v-18 q0 -8 8 -8 h22 l14 -16 h50 l18 16 h16 q8 0 8 8 v18z" fill="#339af0"/><rect x="98" y="62" width="22" height="13" fill="#d0ebff"/><rect x="124" y="62" width="22" height="13" fill="#d0ebff"/><circle cx="78" cy="102" r="13" fill="${T}"/><circle cx="78" cy="102" r="5" fill="#fff"/><circle cx="154" cy="102" r="13" fill="${T}"/><circle cx="154" cy="102" r="5" fill="#fff"/><path d="M10 70 h30 M4 84 h34 M14 98 h24" stroke="#ffa94d" stroke-width="4" stroke-linecap="round"/>${tx(110,140,16,'Laju = Jarak ÷ Masa','#1971c2')}${tx(110,32,15,'60 km/j','#e8590c')}`),
+sn8:sv(`<rect x="18" y="52" width="52" height="66" rx="10" fill="#e03131"/><rect x="14" y="42" width="60" height="14" rx="4" fill="#ffd43b"/><rect x="26" y="72" width="36" height="24" rx="4" fill="#fff"/>${tx(44,89,12,'JEM','#e03131')}<rect x="88" y="60" width="50" height="58" rx="4" fill="#adb5bd"/><ellipse cx="113" cy="60" rx="25" ry="7" fill="#dee2e6"/><rect x="88" y="76" width="50" height="22" fill="#4dabf7"/>${tx(113,92,11,'SARDIN','#fff')}<path d="M152 90 q24 -24 52 0 q-28 24 -52 0z" fill="#ced4da"/><polygon points="204,90 216,80 216,100" fill="#ced4da"/><circle cx="164" cy="87" r="3" fill="${T}"/>${tx(180,124,10,'ikan masin')}${tx(110,22,14,'Halang mikroorganisma!','#c2255c')}`),
+sn9:sv([['#339af0','Kertas',30],['#ff922b','Plastik & tin',110],['#a0522d','Kaca',190]].map(([c,l,x])=>`<path d="M${x-26} 50 h52 l-6 76 h-40z" fill="${c}"/><rect x="${x-30}" y="40" width="60" height="12" rx="4" fill="${c}"/><path d="M${x-8} 80 l8 -10 l8 10 M${x+8} 92 l-4 10 h-10 M${x-12} 98 l-2 -12" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round"/>${tx(x,142,11,l,c)}`).join('')+tx(110,24,15,'Asingkan & kitar semula','#2b8a3e')),
+sn10:sv(`<circle cx="36" cy="75" r="30" fill="#ffd43b"/>${Array.from({length:12},(_,i)=>{const a=i*30*Math.PI/180;return `<path d="M${36+36*Math.cos(a)} ${75+36*Math.sin(a)} L${36+44*Math.cos(a)} ${75+44*Math.sin(a)}" stroke="#fab005" stroke-width="3"/>`}).join('')}<path d="M66 75 H112" stroke="#fab005" stroke-width="2" stroke-dasharray="5 4"/><polygon points="130,62 210,70 210,80 130,88" fill="#868e96" opacity=".35"/><circle cx="128" cy="75" r="18" fill="#339af0"/><path d="M118 68 q8 -6 14 2 q-4 8 -12 6z" fill="#51cf66"/><circle cx="194" cy="75" r="8" fill="#a61e4d"/>${tx(36,126,12,'Matahari')}${tx(128,112,12,'Bumi')}${tx(194,100,12,'Bulan')}${tx(110,24,14,'Gerhana Bulan','#5f3dc4')}`),
+sn11:sv(`<rect width="220" height="150" rx="12" fill="#1b1340"/>${Array.from({length:40},(_,i)=>`<circle cx="${(i*53)%220}" cy="${(i*37)%150}" r="${i%3?1:1.8}" fill="#fff" opacity=".8"/>`).join('')}<g transform="translate(110 75)"><path d="M0 0 C30 -10 50 10 40 35 C30 55 -10 50 -20 30" stroke="#b197fc" stroke-width="8" fill="none" opacity=".8"/><path d="M0 0 C-30 10 -50 -10 -40 -35 C-30 -55 10 -50 20 -30" stroke="#74c0fc" stroke-width="8" fill="none" opacity=".8"/><circle r="12" fill="#ffe066"/></g>${tx(110,142,13,'Galaksi Bima Sakti','#ffe066')}`),
+sn12:sv(`<path d="M10 120 H210" stroke="${T}" stroke-width="4"/><path d="M20 120 L60 60 L100 120 L140 60 L180 120 M60 60 H180 M20 120 L20 120" stroke="#e8590c" stroke-width="6" fill="none" stroke-linejoin="round"/><path d="M60 60 L20 120 M180 120 L200 120" stroke="#e8590c" stroke-width="6"/>${tx(110,35,15,'Segi tiga = paling kukuh','#e8590c')}<polygon points="190,100 205,70 220,100" fill="#51cf66"/>${tx(110,145,11,'Tapak luas + rendah = stabil')}`),
+sn13:sv(`<rect x="40" y="18" width="62" height="116" rx="12" fill="${T}"/><rect x="46" y="30" width="50" height="88" rx="4" fill="#74c0fc"/><circle cx="71" cy="126" r="4" fill="#fff"/><path d="M56 60 q15 -14 30 0 M62 68 q9 -8 18 0" stroke="#fff" stroke-width="3" fill="none"/><circle cx="71" cy="76" r="3" fill="#fff"/>${gear(160,58,30,10,'#ffa94d')}${gear(186,108,20,8,'#51cf66')}${tx(160,145,12,'Teknologi bantu kita')}`),
+
+sj1:sv(`<rect x="20" y="20" width="180" height="104" fill="#fff"/>${Array.from({length:14},(_,i)=>i%2?'':`<rect x="20" y="${20+i*104/14}" width="180" height="${104/14}" fill="#cc0001"/>`).join('')}<rect x="20" y="20" width="90" height="59.4" fill="#010066"/><circle cx="52" cy="50" r="20" fill="#ffcc00"/><circle cx="58" cy="50" r="17" fill="#010066"/>${star(88,50,16,7,14,'#ffcc00')}${tx(110,144,13,'Hari Malaysia · 16 September 1963')}`),
+sj2:sv(`<path d="M60 70 l10 -30 l20 18 l20 -28 l20 28 l20 -18 l10 30z" fill="#fcc419"/><rect x="58" y="70" width="104" height="16" rx="3" fill="#f08c00"/>${[70,90,110,130,150].map(x=>`<circle cx="${x}" cy="78" r="4" fill="#e03131"/>`).join('')}${tx(110,112,20,'13 negeri + 3 WP','#5f3dc4')}${tx(110,136,12,'9 negeri beraja · 4 Yang di-Pertua Negeri')}`),
+sj3:sv(`<rect x="40" y="20" width="140" height="112" rx="6" fill="#fff4e6" stroke="#f08c00" stroke-width="3"/><rect x="30" y="14" width="160" height="12" rx="6" fill="#f08c00"/><rect x="30" y="126" width="160" height="12" rx="6" fill="#f08c00"/>${tx(110,44,14,'RUKUN NEGARA','#d9480f')}${[1,2,3,4,5].map(i=>`<circle cx="58" cy="${50+i*14}" r="5.5" fill="${C[i]}"/>${tx(58,54+i*14,8,i,'#fff')}<rect x="70" y="${46+i*14}" width="${70+(i*13)%40}" height="7" rx="3" fill="#ffd8a8"/>`).join('')}`),
+sj4:sv([0,1,2,3,4].map(i=>{const x=30+i*40;return `<circle cx="${x}" cy="55" r="14" fill="${['#ffd8a8','#e8b48a','#c68642','#f1c27d','#a0674b'][i]}"/><path d="M${x-14} 120 v-36 q0 -12 14 -12 q14 0 14 12 v36z" fill="${C[i+1]}"/>`}).join('')+`<path d="M44 90 h12 M84 90 h12 M124 90 h12 M164 90 h12" stroke="#e03131" stroke-width="5" stroke-linecap="round"/>${tx(110,142,14,'Pelbagai kaum, satu Malaysia','#c2255c')}${tx(110,24,11,'Melayu · Cina · India · Bumiputera')}`),
+sj5:sv(`<rect x="10" y="80" width="40" height="40" fill="#51cf66"/><path d="M10 80 q20 -40 40 0z" fill="#2f9e44"/><rect x="28" y="38" width="4" height="8" fill="#fcc419"/>
+<rect x="66" y="92" width="34" height="28" fill="#ff8787"/><path d="M60 92 h46 l-8 -10 h-30z M64 82 h38 l-7 -10 h-24z M68 72 h30 l-6 -10 h-18z" fill="#e03131"/>
+<polygon points="120,120 124,60 148,60 152,120" fill="#ffa94d"/><path d="M122 80 h28 M122 100 h28 M124 70 h24" stroke="#e8590c" stroke-width="2"/><rect x="132" y="50" width="8" height="10" fill="#e8590c"/>
+<rect x="166" y="78" width="36" height="42" fill="#74c0fc"/><polygon points="166,78 184,48 202,78" fill="#1971c2"/><path d="M184 30 v16 M178 36 h12" stroke="#1971c2" stroke-width="3"/>${tx(110,142,12,'Hormati semua agama & rumah ibadat')}`),
+sj6:sv(`<polygon points="40,40 70,70 40,100 10,70" fill="#51cf66"/><path d="M25 55 l30 30 M55 55 l-30 30 M40 40 v60" stroke="#2b8a3e" stroke-width="2"/><path d="M40 40 q-6 -14 4 -22" stroke="#2b8a3e" stroke-width="2" fill="none"/>
+<path d="M100 20 v12" stroke="${T}" stroke-width="2"/><ellipse cx="100" cy="62" rx="24" ry="30" fill="#e03131"/><rect x="90" y="30" width="20" height="6" fill="#fcc419"/><rect x="90" y="88" width="20" height="6" fill="#fcc419"/><path d="M100 94 v16" stroke="#fcc419" stroke-width="3"/>
+<path d="M140 100 q20 12 40 0 l-6 -12 h-28z" fill="#f08c00"/><path d="M160 88 q-6 -12 0 -22 q6 10 0 22z" fill="#ffd43b"/>
+<polygon points="200,30 182,74 218,74" fill="#2f9e44"/><polygon points="200,52 178,100 222,100" fill="#2f9e44"/><rect x="196" y="100" width="8" height="12" fill="#a0522d"/>${star(200,28,7,3,5,'#fcc419')}${tx(110,138,10,'Ketupat · Tanglung · Pelita · Krismas')}`),
+sj7:sv(`<rect x="40" y="70" width="140" height="56" fill="#e9ecef"/><path d="M110 30 q-30 0 -30 30 h60 q0 -30 -30 -30z" fill="#fcc419"/><rect x="76" y="58" width="68" height="12" fill="#dee2e6"/>${[52,72,92,112,132,152].map(x=>`<rect x="${x}" y="78" width="10" height="42" fill="#adb5bd"/>`).join('')}<rect x="30" y="122" width="160" height="8" fill="#868e96"/><path d="M110 30 v-16" stroke="${T}" stroke-width="2"/><rect x="110" y="14" width="16" height="9" fill="#e03131"/>${tx(110,146,12,'Pemimpin membina negara')}`),
+sj8:sv(`<path d="M50 135 q4 -40 0 -70" stroke="#8d6e63" stroke-width="8" fill="none"/>${[-60,-20,20,60,120,160].map(a=>`<path d="M50 65 q${30*Math.cos(a*Math.PI/180)} ${30*Math.sin(a*Math.PI/180)-10} ${50*Math.cos(a*Math.PI/180)} ${50*Math.sin(a*Math.PI/180)+10}" stroke="#2f9e44" stroke-width="6" fill="none" stroke-linecap="round"/>`).join('')}<circle cx="46" cy="74" r="5" fill="#e8590c"/><circle cx="55" cy="76" r="5" fill="#e8590c"/>
+<path d="M120 130 v-40 l20 12 v-12 l20 12 v-12 l20 12 v28z" fill="#748ffc"/><rect x="186" y="60" width="12" height="70" fill="#5c7cfa"/><circle cx="196" cy="48" r="6" fill="#dee2e6"/><circle cx="204" cy="38" r="8" fill="#e9ecef"/>${tx(110,24,14,'Sektor ekonomi Malaysia','#2b8a3e')}`),
+sj9:sv(`<ellipse cx="60" cy="60" rx="30" ry="38" fill="none" stroke="#339af0" stroke-width="5"/>${[-15,0,15].map(d=>`<path d="M${60+d} 24 V96" stroke="#a5d8ff" stroke-width="1.5"/><path d="M32 ${60+d*1.6} H88" stroke="#a5d8ff" stroke-width="1.5"/>`).join('')}<rect x="56" y="96" width="8" height="40" rx="3" fill="#1971c2"/>
+<path d="M120 50 l20 40 l20 -40z" fill="#fff" stroke="${T}" stroke-width="2"/><circle cx="140" cy="94" r="8" fill="#e03131"/>
+<path d="M175 20 l10 30 M205 20 l-10 30" stroke="#e03131" stroke-width="7"/><circle cx="190" cy="70" r="22" fill="#fcc419"/>${star(190,70,13,6,5,'#f08c00')}${tx(110,145,13,'Atlet mengharumkan nama negara','#1971c2')}`),
+sj10:sv(`<circle cx="110" cy="72" r="50" fill="#74c0fc"/><path d="M76 50 q20 -18 40 -2 q-6 20 -32 14z M116 90 q20 -10 32 6 q-14 18 -30 8z M74 90 q8 -6 16 2 q-6 10 -14 4z" fill="#69db7c"/><ellipse cx="110" cy="72" rx="50" ry="18" fill="none" stroke="#fff" stroke-width="1.5"/>${[0,72,144,216,288].map((a,i)=>`<circle cx="${110+66*Math.cos((a-90)*Math.PI/180)}" cy="${72+58*Math.sin((a-90)*Math.PI/180)}" r="8" fill="${C[i]}"/>`).join('')}${tx(110,146,12,'ASEAN · PBB · Komanwel · OIC')}`),
+
+bm0:sv(`<path d="M110 40 q-40 -16 -90 -4 v90 q50 -12 90 4z" fill="#fff" stroke="#339af0" stroke-width="3"/><path d="M110 40 q40 -16 90 -4 v90 q-50 -12 -90 4z" fill="#fff" stroke="#339af0" stroke-width="3"/>${[56,70,84,98].map(y=>`<path d="M34 ${y} q36 -8 64 2 M122 ${y+2} q30 -10 64 -2" stroke="#a5d8ff" stroke-width="3" fill="none"/>`).join('')}<rect x="120" y="4" width="96" height="30" rx="14" fill="#f06595"/>${tx(168,25,13,'Peribahasa!','#fff')}${tx(110,146,12,'Satu karangan, satu peribahasa')}`),
+bm1:sv([['Kata Nama','#ff6b6b',10,30],['Kata Kerja','#339af0',115,30],['Kata Adjektif','#51cf66',10,72],['Kata Sendi','#845ef7',115,72],['Kata Hubung','#ffa94d',10,114],['Kata Tanya','#f06595',115,114]].map(([t,c,x,y])=>`<rect x="${x}" y="${y}" width="95" height="32" rx="10" fill="${c}"/>${tx(x+47.5,y+21,13,t,'#fff')}`).join('')),
+bm2:sv(`<rect x="10" y="50" width="60" height="44" rx="8" fill="#ff922b"/>${tx(40,78,16,'meN-','#fff')}${tx(84,80,22,'+','#495057')}<rect x="98" y="50" width="54" height="44" rx="8" fill="#339af0"/>${tx(125,78,16,'baca','#fff')}${tx(164,80,22,'=','#495057')}${tx(110,128,22,'membaca','#e8590c')}${tx(110,30,13,'Imbuhan + kata dasar','#7048e8')}`),
+bm3:sv(`<rect x="20" y="16" width="110" height="122" rx="6" fill="#fff" stroke="#ced4da" stroke-width="2"/>${[40,56,72,88,104,120].map(y=>`<path d="M32 ${y} H118" stroke="#a5d8ff" stroke-width="2"/>`).join('')}<path d="M28 16 V138" stroke="#ff8787" stroke-width="2"/><path d="M100 120 L170 40 l12 10 l-70 80 l-16 6z" fill="#ffd43b"/><path d="M170 40 l12 10 l6 -7 q2 -4 -2 -7 l-6 -5 q-4 -2 -6 1z" fill="#f783ac"/><rect x="150" y="96" width="62" height="42" rx="4" fill="#ffe3e3" stroke="#f06595" stroke-width="2"/><path d="M150 96 l31 22 l31 -22" stroke="#f06595" stroke-width="2" fill="none"/>${tx(75,30,11,'Pendahuluan · Isi · Penutup','#1971c2')}`),
+
+rbt1:sv(gear(70,70,40,12,'#ffa94d')+gear(136,70,24,8,'#51cf66')+`<rect x="168" y="96" width="40" height="22" rx="4" fill="#495057"/><rect x="208" y="102" width="5" height="10" fill="#495057"/><rect x="170" y="98" width="14" height="18" fill="#fcc419"/>${tx(188,112,10,'+  −','#fff')}${tx(110,142,12,'Gear besar → gear kecil = lebih laju!','#e8590c')}`),
+rbt2:sv(`<rect x="70" y="20" width="80" height="58" rx="14" fill="#74c0fc"/><circle cx="94" cy="48" r="12" fill="#fff"/><circle cx="126" cy="48" r="12" fill="#fff"/><circle cx="94" cy="48" r="6" fill="${T}"/><circle cx="126" cy="48" r="6" fill="${T}"/><path d="M110 20 v-10" stroke="${T}" stroke-width="3"/><circle cx="110" cy="8" r="5" fill="#ff6b6b"/><rect x="80" y="82" width="60" height="44" rx="8" fill="#339af0"/><circle cx="96" cy="100" r="5" fill="#51cf66"/><circle cx="110" cy="100" r="5" fill="#ffd43b"/><circle cx="124" cy="100" r="5" fill="#ff6b6b"/><circle cx="90" cy="132" r="10" fill="${T}"/><circle cx="130" cy="132" r="10" fill="${T}"/><path d="M80 92 h-24 M140 92 h24" stroke="#339af0" stroke-width="7" stroke-linecap="round"/>${tx(28,60,10,'Penderia','#1971c2')}${tx(195,60,10,'Pengawal','#1971c2')}${tx(195,122,10,'Motor','#1971c2')}`),
+rbt3:sv(`<circle cx="36" cy="58" r="22" fill="#ffd43b"/><rect x="28" y="80" width="16" height="12" fill="#adb5bd"/><path d="M30 58 l6 8 l6 -8" stroke="#f08c00" stroke-width="2" fill="none"/>${tx(36,112,11,'Idea')}<path d="M64 60 h18" stroke="${T}" stroke-width="3"/><polygon points="82,54 92,60 82,66" fill="${T}"/><rect x="96" y="34" width="44" height="52" rx="3" fill="#fff" stroke="#ced4da" stroke-width="2"/><path d="M104 70 l10 -20 l10 20z M104 50 h10" stroke="#339af0" stroke-width="2" fill="none"/>${tx(118,112,11,'Lakaran')}<path d="M146 60 h18" stroke="${T}" stroke-width="3"/><polygon points="164,54 174,60 164,66" fill="${T}"/><rect x="178" y="40" width="36" height="36" rx="4" fill="#ff922b"/><rect x="178" y="40" width="36" height="10" fill="#e8590c"/>${tx(196,112,11,'Produk')}${tx(110,140,12,'Masalah → Idea → Lakar → Bina → Uji','#7048e8')}`)
+};
+})();
+
+window.SUBJECTS=[];
+const F=(a,b)=>`<span class="fr"><i>${a}</i><i>${b}</i></span>`;
+window.SUBJECTS.push({
+id:'mt',name:'Matematik',sub:'8 bab · contoh jalan kerja langkah demi langkah',
+fmt:`<ul><li>Ujian bertulis, jumlah 50 markah. Item <b>Subjektif Respons Terhad (SRT)</b> dan <b>Subjektif Respons Terbuka (SRTb)</b>.</li>
+<li><b>Bahagian A:</b> 13 soalan (26 markah) · <b>Bahagian B:</b> 2 soalan (24 markah).</li>
+<li>UASA Matematik tiada soalan aneka pilihan. 30 soalan objektif di sini untuk latih tubi pantas; 10 soalan subjektif ikut gaya SRT/SRTb. <b>Sentiasa tunjukkan jalan kerja</b> kerana markah diberi untuk langkah.</li></ul>`,
+units:[
+{n:1,t:'Nombor Bulat dan Operasi',b:`
+<h4>Nilai tempat hingga juta</h4>
+<div class="tbl"><table><tr><th>Juta</th><th>Ratus ribu</th><th>Puluh ribu</th><th>Ribu</th><th>Ratus</th><th>Puluh</th><th>Sa</th></tr><tr><td>3</td><td>4</td><td>0</td><td>5</td><td>2</td><td>1</td><td>6</td></tr></table></div>
+<p>3 405 216 dibaca <i>tiga juta empat ratus lima ribu dua ratus enam belas</i>.</p>
+<h4>Pecahan juta & perpuluhan juta</h4>
+<div class="formula">nombor juta × 1 000 000 = nombor bulat</div>
+<ul><li>${F(1,2)} juta = 500 000 · ${F(1,4)} juta = 250 000 · ${F(3,4)} juta = 750 000</li><li>0.1 juta = 100 000 · 0.01 juta = 10 000</li><li>Nombor bulat → juta: <b>bahagi dengan 1 000 000</b>.</li></ul>
+<h4>Turutan operasi bergabung</h4>
+<div class="tip"><b>Ingat: K-D-B-T-T</b><br>1. <b>K</b>urungan dulu → 2. <b>D</b>arab & <b>B</b>ahagi (dari kiri ke kanan) → 3. <b>T</b>ambah & <b>T</b>olak (dari kiri ke kanan).</div>
+<h4>Nombor perdana</h4>
+<p>Nombor yang hanya boleh dibahagi tepat dengan <b>1 dan dirinya sendiri</b>. Nombor perdana bawah 100: 2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97. Nombor <b>gubahan</b> ada lebih daripada dua faktor (cth. 9 = 1, 3, 9). Nombor 1 bukan perdana dan bukan gubahan; 2 ialah satu-satunya nombor perdana genap.</p>`,
+ex:[
+{q:`Tukar ${F(3,4)} juta kepada nombor bulat.`,s:[`Tulis sebagai darab: ${F(3,4)} × 1 000 000`,`1 000 000 ÷ 4 = 250 000`,`250 000 × 3 = 750 000`],a:'750 000'},
+{q:'Tukar 4.25 juta kepada nombor bulat.',s:['4.25 × 1 000 000','Darab 1 000 000 = gerakkan titik perpuluhan 6 tempat ke kanan','4.250000 → 4 250 000'],a:'4 250 000'},
+{q:'Tukar 2 600 000 kepada perpuluhan juta.',s:['2 600 000 ÷ 1 000 000','Gerakkan titik perpuluhan 6 tempat ke kiri','= 2.6'],a:'2.6 juta'},
+{q:'Hitung 45 000 + 125 × 8 − 6 000 ÷ 4',s:['Tiada kurungan. Buat darab dan bahagi dulu.','125 × 8 = 1 000','6 000 ÷ 4 = 1 500','Sekarang: 45 000 + 1 000 − 1 500','45 000 + 1 000 = 46 000','46 000 − 1 500 = 44 500'],a:'44 500'},
+{q:'Hitung (18 000 − 3 600) ÷ 12',s:['Kurungan dulu: 18 000 − 3 600 = 14 400','14 400 ÷ 12 = 1 200'],a:'1 200'},
+{q:'Cari nilai anu: <i>x</i> + 2 450 = 9 000',s:['Untuk asingkan <i>x</i>, buat operasi songsang: tolak 2 450','<i>x</i> = 9 000 − 2 450','<i>x</i> = 6 550','Semak: 6 550 + 2 450 = 9 000 ✓'],a:'<i>x</i> = 6 550'}
+]},
+{n:2,t:'Pecahan, Perpuluhan dan Peratus',b:`
+<h4>Bahagi pecahan</h4>
+<div class="tip"><b>Rumus "Kekal – Tukar – Terbalik"</b><br><b>Kekal</b> pecahan pertama, <b>tukar</b> ÷ jadi ×, <b>terbalikkan</b> pecahan kedua. Nombor bercampur ditukar ke pecahan tak wajar dahulu.</div>
+<h4>Perpuluhan</h4><ul><li>Darab: darab seperti nombor bulat, kemudian kira jumlah tempat perpuluhan.</li><li>Bahagi dengan perpuluhan: jadikan pembahagi nombor bulat (darab kedua-dua nombor dengan 10, 100…).</li></ul>
+<h4>Peratus</h4><ul><li>Perpuluhan → peratus: × 100% (0.375 = 37.5%)</li><li>Nilai peratus: ${F('peratus',100)} × kuantiti</li><li>Peratus daripada kuantiti: ${F('bahagian','jumlah')} × 100%</li></ul>`,
+ex:[
+{q:`${F(3,4)} ÷ 3`,s:[`Tulis 3 sebagai ${F(3,1)}`,`Kekal-Tukar-Terbalik: ${F(3,4)} × ${F(1,3)}`,`= ${F(3,12)}`,`Permudah (bahagi 3): ${F(1,4)}`],a:F(1,4)},
+{q:`2${F(1,2)} ÷ 5`,s:[`Tukar ke pecahan tak wajar: 2${F(1,2)} = ${F(5,2)}`,`${F(5,2)} × ${F(1,5)}`,`= ${F(5,10)} = ${F(1,2)}`],a:F(1,2)},
+{q:`${F(2,3)} ÷ ${F(4,9)}`,s:[`${F(2,3)} × ${F(9,4)}`,`= ${F(18,12)}`,`Permudah: ${F(3,2)}`,`Tukar ke nombor bercampur: 1${F(1,2)}`],a:`1${F(1,2)}`},
+{q:'2.4 × 0.3',s:['Abaikan titik: 24 × 3 = 72','Jumlah tempat perpuluhan: 2.4 (1) + 0.3 (1) = 2 tempat','72 → 0.72'],a:'0.72'},
+{q:'4.5 ÷ 0.9',s:['Jadikan pembahagi nombor bulat: darab kedua-dua dengan 10','45 ÷ 9','= 5'],a:'5'},
+{q:'Cari 35% daripada 240.',s:[`${F(35,100)} × 240`,'240 ÷ 100 = 2.4','2.4 × 35 = 84'],a:'84'},
+{q:'18 daripada 120 orang murid memakai cermin mata. Berapa peratus?',s:[`${F(18,120)} × 100%`,`Permudah ${F(18,120)} = ${F(3,20)}`,`${F(3,20)} × 100% = 15%`],a:'15%'},
+{q:`${F(3,4)} + ${F(1,2)} × ${F(2,5)}`,s:[`Darab dulu: ${F(1,2)} × ${F(2,5)} = ${F(2,10)} = ${F(1,5)}`,`${F(3,4)} + ${F(1,5)}: samakan penyebut (20)`,`${F(15,20)} + ${F(4,20)} = ${F(19,20)}`],a:F(19,20)}
+]},
+{n:3,t:'Wang',b:`
+<div class="tbl"><table><tr><th>Istilah</th><th>Maksud / rumus</th></tr>
+<tr><td>Harga kos</td><td>Harga barang dibeli oleh peniaga</td></tr><tr><td>Harga jual</td><td>Harga barang dijual kepada pelanggan</td></tr>
+<tr><td>Untung</td><td>Harga jual − harga kos (bila HJ > HK)</td></tr><tr><td>Rugi</td><td>Harga kos − harga jual (bila HK > HJ)</td></tr>
+<tr><td>Diskaun</td><td>Potongan harga, biasanya dalam peratus</td></tr><tr><td>Rebat</td><td>Wang dipulangkan <b>selepas</b> membeli</td></tr>
+<tr><td>Baucar</td><td>Kupon bernilai wang untuk potongan harga</td></tr>
+<tr><td>Invois</td><td>Senarai barang & jumlah bayaran yang <b>perlu</b> dibayar</td></tr><tr><td>Bil</td><td>Penyata bayaran untuk perkhidmatan (elektrik, air, restoran)</td></tr><tr><td>Resit</td><td>Bukti bayaran <b>telah</b> dibuat</td></tr>
+<tr><td>Cukai perkhidmatan</td><td>Cukai dikenakan atas perkhidmatan; contoh buku teks menggunakan 6%</td></tr>
+<tr><td>Faedah mudah</td><td>Pokok × kadar faedah × bilangan tahun</td></tr><tr><td>Dividen</td><td>Keuntungan dibayar kepada pelabur (pelaburan × kadar dividen)</td></tr>
+<tr><td>Aset</td><td>Harta yang dimiliki: rumah, kereta, simpanan, tanah</td></tr><tr><td>Liabiliti</td><td>Hutang yang perlu dibayar: pinjaman, baki kad kredit</td></tr>
+<tr><td>Insurans / Takaful</td><td>Perlindungan risiko. Takaful berasaskan prinsip syariah dan saling membantu</td></tr></table></div>`,
+ex:[
+{q:'Harga kos sebuah beg RM40. Beg itu dijual dengan harga RM50. Hitung untung dan peratus untung.',s:['Untung = HJ − HK = RM50 − RM40 = RM10',`Peratus untung = ${F('untung','harga kos')} × 100%`,`${F(10,40)} × 100% = 25%`],a:'Untung RM10 (25%)'},
+{q:'Harga asal kasut RM150. Diskaun 20%. Berapakah harga yang perlu dibayar?',s:[`Diskaun = ${F(20,100)} × RM150 = RM30`,'Harga bayar = RM150 − RM30','= RM120'],a:'RM120'},
+{q:'Bil makan RM80 dikenakan cukai perkhidmatan 6%. Berapakah jumlah bayaran?',s:[`Cukai = ${F(6,100)} × RM80 = RM4.80`,'Jumlah = RM80 + RM4.80 = RM84.80'],a:'RM84.80'},
+{q:'Aminah menyimpan RM2 000 dengan kadar faedah 4% setahun. Berapakah jumlah wangnya selepas 3 tahun?',s:[`Faedah 1 tahun = ${F(4,100)} × RM2 000 = RM80`,'Faedah 3 tahun = RM80 × 3 = RM240','Jumlah = RM2 000 + RM240 = RM2 240'],a:'RM2 240'},
+{q:'Encik Lim melabur RM5 000. Kadar dividen 5%. Berapakah dividen yang diterima?',s:[`${F(5,100)} × RM5 000`,'= RM250'],a:'RM250'}
+]},
+{n:4,t:'Masa dan Waktu',b:`
+<h4>Zon masa</h4><p>Dunia dibahagi kepada zon masa berdasarkan <b>GMT</b> (Waktu Min Greenwich). Malaysia berada pada <b>GMT+8</b>. Negara di <b>timur</b> lebih awal (waktunya lebih lewat), negara di <b>barat</b> lebih lambat.</p>
+<div class="tbl"><table><tr><th>Bandar</th><th>Zon</th><th>Beza dengan Malaysia</th></tr><tr><td>London</td><td>GMT+0</td><td>8 jam lambat</td></tr><tr><td>Dubai</td><td>GMT+4</td><td>4 jam lambat</td></tr><tr><td>Bangkok / Jakarta</td><td>GMT+7</td><td>1 jam lambat</td></tr><tr><td>Tokyo / Seoul</td><td>GMT+9</td><td>1 jam cepat</td></tr><tr><td>Sydney</td><td>GMT+10</td><td>2 jam cepat</td></tr></table></div>
+<div class="tip"><b>Petua:</b> Beza zon = beza nombor GMT. Lebih besar nombor GMT → tambah jam. Lebih kecil → tolak jam. Bila melepasi 12:00 tengah malam, hari juga berubah! (Contoh buku teks mengabaikan waktu musim panas.)</div>`,
+ex:[
+{q:'Di Kuala Lumpur (GMT+8) jam 10:00 a.m. Pukul berapakah di London (GMT+0)?',s:['Beza = 8 − 0 = 8 jam','London di barat → tolak 8 jam','10:00 a.m. − 8 jam = 2:00 a.m.'],a:'2:00 a.m. pada hari yang sama'},
+{q:'Pesawat bertolak dari KL (GMT+8) pukul 9:00 p.m. hari Isnin. Penerbangan ke London (GMT+0) mengambil 13 jam. Pukul berapakah waktu tempatan London ketika tiba?',s:['Kira waktu tiba mengikut jam KL: 9:00 p.m. Isnin + 13 jam','9:00 p.m. + 3 jam = 12:00 tengah malam (Selasa); tambah 10 jam lagi = 10:00 a.m. Selasa','Tukar ke waktu London: tolak 8 jam','10:00 a.m. − 8 jam = 2:00 a.m. Selasa'],a:'2:00 a.m. hari Selasa (waktu London)'}
+]},
+{n:5,t:'Ukuran dan Sukatan',b:`
+<div class="tbl"><table><tr><th>Panjang</th><th>Jisim</th><th>Isi padu cecair</th></tr><tr><td>1 km = 1 000 m<br>1 m = 100 cm<br>1 cm = 10 mm</td><td>1 kg = 1 000 g</td><td>1 ℓ = 1 000 mℓ</td></tr></table></div>
+<div class="tip"><b>Tangga penukaran:</b> unit besar → unit kecil: <b>darab</b>. Unit kecil → unit besar: <b>bahagi</b>. Sentiasa samakan unit sebelum tambah/tolak.</div>`,
+ex:[
+{q:'3.25 km + 750 m = ____ km',s:['Samakan unit ke meter: 3.25 km = 3.25 × 1 000 = 3 250 m','3 250 m + 750 m = 4 000 m','Tukar ke km: 4 000 ÷ 1 000 = 4'],a:'4 km'},
+{q:'2.4 kg gula dibahagi sama rata kepada 6 bungkus. Berapakah jisim setiap bungkus dalam gram?',s:['2.4 kg = 2.4 × 1 000 = 2 400 g','2 400 g ÷ 6 = 400 g'],a:'400 g'},
+{q:'Ibu membeli 4 botol jus, setiap satu 1.5 ℓ. Dia menuang 2 750 mℓ ke dalam gelas. Berapakah baki jus dalam mℓ?',s:['Jumlah: 4 × 1.5 ℓ = 6 ℓ','6 ℓ = 6 000 mℓ','Baki = 6 000 − 2 750 = 3 250 mℓ'],a:'3 250 mℓ'}
+]},
+{n:6,t:'Ruang',b:`
+<h4>Sudut pedalaman poligon sekata</h4><p>Poligon sekata mempunyai semua sisi dan sudut yang sama.</p>
+<div class="formula">Sudut pedalaman = (n − 2) × 180° ÷ n</div><p style="font-size:.9rem">n = bilangan sisi</p>
+<div class="tbl"><table><tr><th>Poligon</th><th>Sisi</th><th>Jumlah sudut</th><th>Setiap sudut</th></tr>
+<tr><td>Segi tiga sama sisi</td><td>3</td><td>180°</td><td>60°</td></tr><tr><td>Segi empat sama</td><td>4</td><td>360°</td><td>90°</td></tr><tr><td>Pentagon sekata</td><td>5</td><td>540°</td><td>108°</td></tr><tr><td>Heksagon sekata</td><td>6</td><td>720°</td><td>120°</td></tr><tr><td>Heptagon sekata</td><td>7</td><td>900°</td><td>≈128.6°</td></tr><tr><td>Oktagon sekata</td><td>8</td><td>1 080°</td><td>135°</td></tr></table></div>
+<h4>Bulatan</h4><ul><li><b>Pusat</b>: titik tengah bulatan.</li><li><b>Jejari</b>: garis dari pusat ke lilitan.</li><li><b>Diameter</b>: garis lurus melalui pusat dari lilitan ke lilitan. <b>Diameter = 2 × jejari</b>.</li></ul>`,
+ex:[
+{q:'Hitung saiz setiap sudut pedalaman pentagon sekata.',s:['n = 5','Jumlah sudut = (5 − 2) × 180° = 540°','Setiap sudut = 540° ÷ 5 = 108°'],a:'108°'},
+{q:'Diameter sebuah bulatan ialah 14 cm. Berapakah jejarinya?',s:['Jejari = diameter ÷ 2','14 ÷ 2 = 7'],a:'7 cm'}
+]},
+{n:7,t:'Koordinat, Nisbah dan Kadaran',b:`
+<h4>Jarak antara dua koordinat</h4><p>Koordinat ditulis (x, y): x = mengufuk, y = mencancang. Jika y sama → jarak = beza x. Jika x sama → jarak = beza y.</p>
+<h4>Nisbah</h4><p>Perbandingan dua kuantiti, ditulis a : b. Permudahkan dengan membahagi kedua-dua nombor dengan faktor sepunya terbesar.</p>
+<h4>Kadaran</h4><p>Cari nilai <b>satu unit</b> dahulu, kemudian darab dengan bilangan yang diperlukan (kaedah unitari).</p>`,
+ex:[
+{q:'Titik A(2, 3) dan B(7, 3). Jika 1 unit mewakili 2 km, cari jarak sebenar AB.',s:['Nilai y sama (3), jadi jarak = beza x','7 − 2 = 5 unit','5 × 2 km = 10 km'],a:'10 km'},
+{q:'Dalam kelas ada 12 murid lelaki dan 18 murid perempuan. Nyatakan nisbah lelaki kepada perempuan dalam bentuk termudah.',s:['12 : 18','Faktor sepunya terbesar = 6','12 ÷ 6 : 18 ÷ 6 = 2 : 3'],a:'2 : 3'},
+{q:'3 batang pen berharga RM4.50. Berapakah harga 8 batang pen?',s:['Harga 1 pen = RM4.50 ÷ 3 = RM1.50','Harga 8 pen = 8 × RM1.50 = RM12'],a:'RM12'},
+{q:'Nisbah murid lelaki kepada perempuan ialah 2 : 3. Jumlah murid 40. Berapakah murid lelaki?',s:['Jumlah bahagian = 2 + 3 = 5','1 bahagian = 40 ÷ 5 = 8','Lelaki = 2 × 8 = 16'],a:'16 orang'}
+]},
+{n:8,t:'Pengurusan Data dan Kebolehjadian',b:`
+<h4>Carta pai</h4><p>Bulatan penuh = 360° = 100% = jumlah semua data.</p>
+<div class="formula">Bilangan = ${F('sudut sektor','360°')} × jumlah</div>
+<h4>Kebolehjadian</h4><ul><li><b>Pasti</b>: pasti berlaku (matahari terbit dari timur).</li><li><b>Mustahil</b>: tidak mungkin berlaku (mendapat nombor 7 pada dadu biasa).</li><li><b>Sama kemungkinan</b>: peluang sama (kepala atau bunga pada syiling).</li><li><b>Besar / kecil kemungkinan</b>: bandingkan bilangan setiap jenis.</li></ul>`,
+ex:[
+{q:'Carta pai menunjukkan sukan kegemaran 120 murid. Sektor badminton bersudut 90°. Berapakah murid yang memilih badminton?',s:[`${F('90°','360°')} = ${F(1,4)}`,`${F(1,4)} × 120 = 30`],a:'30 murid'},
+{q:'Sebuah kotak berisi 3 biji bola merah dan 7 biji bola biru. Sebiji bola diambil secara rawak. Nyatakan kebolehjadian mendapat bola biru.',s:['Bandingkan: biru 7, merah 3','7 lebih banyak daripada 3','Maka bola biru lebih mudah terambil'],a:'Besar kemungkinan'}
+]}
+],
+obj:[
+{q:`<p>${F(3,5)} juta = ?</p>`,o:['350 000','500 000','600 000','650 000'],a:2,h:'Bahagi 1 000 000 dengan 5, kemudian darab 3.',n:'1 000 000 ÷ 5 = 200 000; × 3 = 600 000.'},
+{q:'<p>2.08 juta ditulis sebagai nombor bulat ialah</p>',o:['2 080 000','2 800 000','20 800 000','208 000'],a:0,h:'Gerakkan titik perpuluhan 6 tempat ke kanan.',n:'2.08 × 1 000 000 = 2 080 000. Perhatikan sifar selepas titik: 0.08 juta = 80 000.'},
+{q:'<p>4 500 000 dalam juta ialah</p>',o:['0.45 juta','4.5 juta','45 juta','450 juta'],a:1,h:'Bahagi dengan 1 000 000.',n:'4 500 000 ÷ 1 000 000 = 4.5 juta.'},
+{q:'<p>Antara berikut, yang manakah nombor perdana?</p>',o:['21','27','29','33'],a:2,h:'Cuba bahagi setiap nombor dengan 3.',n:'21 = 3×7, 27 = 3×9, 33 = 3×11. Hanya 29 ada dua faktor sahaja (1 dan 29).'},
+{q:'<p>6 000 + 24 × 50 = </p>',o:['301 200','7 200','6 074','12 000'],a:1,h:'Darab dahulu sebelum tambah.',n:'24 × 50 = 1 200; 6 000 + 1 200 = 7 200. Jika tambah dulu, jawapan salah (301 200).'},
+{q:'<p>(9 600 − 1 200) ÷ 7 = </p>',o:['1 200','1 371','9 428','1 100'],a:0,h:'Selesaikan kurungan dahulu.',n:'9 600 − 1 200 = 8 400; 8 400 ÷ 7 = 1 200.'},
+{q:'<p>Cari nilai <i>y</i>: <i>y</i> − 3 250 = 4 800</p>',o:['1 550','8 050','7 050','8 150'],a:1,h:'Songsangkan tolak menjadi tambah.',n:'y = 4 800 + 3 250 = 8 050.'},
+{q:`<p>${F(4,5)} ÷ 2 = </p>`,o:[F(8,5),F(2,5),F(1,5),F(3,5)],a:1,h:`Darab dengan ${F(1,2)}.`,n:`${F(4,5)} × ${F(1,2)} = ${F(4,10)} = ${F(2,5)}.`},
+{q:`<p>${F(3,4)} ÷ ${F(3,8)} = </p>`,o:['2',F(9,32),F(1,2),'6'],a:0,h:'Kekal – Tukar – Terbalik.',n:`${F(3,4)} × ${F(8,3)} = ${F(24,12)} = 2.`},
+{q:`<p>1${F(2,3)} ÷ 5 = </p>`,o:[F(1,3),`8${F(1,3)}`,'3',F(5,3)],a:0,h:'Tukar nombor bercampur kepada pecahan tak wajar dulu.',n:`1${F(2,3)} = ${F(5,3)}; ${F(5,3)} × ${F(1,5)} = ${F(5,15)} = ${F(1,3)}.`},
+{q:'<p>0.6 × 0.4 = </p>',o:['2.4','0.24','0.024','24'],a:1,h:'6 × 4 = 24. Berapa tempat perpuluhan semuanya?',n:'Dua tempat perpuluhan → 0.24.'},
+{q:'<p>7.2 ÷ 0.8 = </p>',o:['0.9','90','9','8'],a:2,h:'Darab kedua-dua nombor dengan 10.',n:'72 ÷ 8 = 9.'},
+{q:'<p>0.45 dalam peratus ialah</p>',o:['4.5%','45%','0.45%','450%'],a:1,h:'Darab dengan 100%.',n:'0.45 × 100% = 45%.'},
+{q:'<p>15% daripada 300 ialah</p>',o:['30','45','15','60'],a:1,h:'Cari 1% dulu: 300 ÷ 100.',n:'1% = 3; 15% = 15 × 3 = 45.'},
+{q:`<p>${F(2,3)} × ${F(3,4)} + ${F(1,4)} = </p>`,o:[F(3,4),'1',F(5,12),F(1,2)],a:0,h:'Darab dulu, kemudian tambah.',n:`${F(2,3)} × ${F(3,4)} = ${F(6,12)} = ${F(1,2)}; ${F(1,2)} + ${F(1,4)} = ${F(3,4)}.`},
+{q:'<p>Harga kos sebuah kipas RM80. Kipas itu dijual RM68. Pernyataan yang betul ialah</p>',o:['Untung RM12','Rugi RM12','Rugi RM148','Untung RM148'],a:1,h:'Bandingkan harga jual dengan harga kos.',n:'Harga jual lebih rendah → rugi. RM80 − RM68 = RM12.'},
+{q:'<p>Harga baju RM120. Diskaun 25%. Harga yang dibayar ialah</p>',o:['RM30','RM95','RM90','RM145'],a:2,h:'25% = suku daripada harga.',n:'Diskaun = RM30; RM120 − RM30 = RM90.'},
+{q:'<p>RM3 000 disimpan dengan kadar faedah 5% setahun. Faedah selepas 2 tahun ialah</p>',o:['RM150','RM300','RM3 300','RM600'],a:1,h:'Faedah = pokok × kadar × tahun.',n:'5% × RM3 000 = RM150 setahun; × 2 = RM300.'},
+{q:'<p>Antara berikut, yang manakah <b>liabiliti</b>?</p>',o:['Rumah','Kereta','Pinjaman bank','Wang simpanan'],a:2,h:'Liabiliti = sesuatu yang perlu dibayar balik.',n:'Pinjaman bank ialah hutang (liabiliti). Rumah, kereta dan simpanan ialah aset.'},
+{q:'<p>Takaful berbeza daripada insurans konvensional kerana takaful</p>',o:['berlandaskan prinsip syariah dan saling membantu','tidak memerlukan bayaran','hanya untuk kenderaan','dikendalikan oleh sekolah'],a:0,h:'Fikirkan konsep tolong-menolong.',n:'Takaful berasaskan syariah; peserta menyumbang untuk saling membantu jika ditimpa musibah.'},
+{q:'<p>Waktu di Kuala Lumpur (GMT+8) ialah 12:00 tengah hari. Pukul berapakah di Tokyo (GMT+9)?</p>',o:['11:00 a.m.','1:00 p.m.','3:00 p.m.','12:00 tengah hari'],a:1,h:'Tokyo 1 jam lebih awal (nombor GMT lebih besar).',n:'12:00 + 1 jam = 1:00 p.m.'},
+{q:'<p>Pukul 4:00 p.m. di Malaysia (GMT+8). Pukul berapakah di London (GMT+0)?</p>',o:['8:00 a.m.','12:00 tengah malam','8:00 p.m.','4:00 a.m.'],a:0,h:'Tolak 8 jam.',n:'4:00 p.m. − 8 jam = 8:00 a.m.'},
+{q:'<p>2.5 km − 800 m = </p>',o:['1 700 m','1 750 m','2 420 m','170 m'],a:0,h:'Tukar km kepada m dahulu.',n:'2 500 m − 800 m = 1 700 m.'},
+{q:'<p>3 kg 200 g dibahagi sama rata kepada 4 bahagian. Jisim setiap bahagian ialah</p>',o:['80 g','800 g','750 g','8 kg'],a:1,h:'3 kg 200 g = 3 200 g.',n:'3 200 ÷ 4 = 800 g.'},
+{q:'<p>Saiz sudut pedalaman heksagon sekata ialah</p>',o:['108°','120°','135°','90°'],a:1,h:'(6 − 2) × 180° ÷ 6',n:'720° ÷ 6 = 120°.'},
+{q:'<p>Jejari sebuah bulatan ialah 9 cm. Diameternya ialah</p>',o:['4.5 cm','9 cm','18 cm','27 cm'],a:2,h:'Diameter = 2 × jejari.',n:'2 × 9 = 18 cm.'},
+{q:'<p>Jarak antara titik P(1, 4) dan Q(1, 9) ialah</p>',o:['4 unit','5 unit','9 unit','10 unit'],a:1,h:'Nilai x sama, jadi lihat beza y.',n:'9 − 4 = 5 unit.'},
+{q:'<p>Nisbah 15 : 25 dalam bentuk termudah ialah</p>',o:['3 : 5','5 : 3','1 : 5','15 : 5'],a:0,h:'Bahagi kedua-dua nombor dengan 5.',n:'15 ÷ 5 = 3, 25 ÷ 5 = 5 → 3 : 5. Susunan nisbah mesti ikut susunan soalan.'},
+{q:'<p>4 buah buku berharga RM10. Berapakah harga 6 buah buku yang sama?</p>',o:['RM12','RM15','RM16','RM60'],a:1,h:'Cari harga sebuah buku dahulu.',n:'RM10 ÷ 4 = RM2.50; 6 × RM2.50 = RM15.'},
+{q:'<p>Sebuah bekas mengandungi 2 guli merah dan 8 guli hijau. Kebolehjadian mengambil guli hijau ialah</p>',o:['Mustahil','Besar kemungkinan','Kecil kemungkinan','Sama kemungkinan'],a:1,h:'Warna mana yang lebih banyak?',n:'8 hijau > 2 merah, maka besar kemungkinan.'}
+],
+subj:[
+{q:'<p>Sebuah kilang menghasilkan 2.75 juta tin minuman setahun. Sebanyak 1.5 juta tin dijual dalam negara dan selebihnya dieksport. Berapakah bilangan tin yang dieksport? Tulis jawapan dalam nombor bulat.</p>',h:'Tolak dalam juta dahulu, kemudian tukar ke nombor bulat.',a:['2.75 juta − 1.5 juta = 1.25 juta','1.25 × 1 000 000 = 1 250 000','<b>Jawapan: 1 250 000 tin</b>'],n:'Menolak dalam unit juta lebih ringkas dan kurang silap.'},
+{q:'<p>Hitung: 36 000 − 1 250 × 12 + 8 400 ÷ 6</p>',h:'Darab dan bahagi dulu, kemudian tolak dan tambah dari kiri ke kanan.',a:['1 250 × 12 = 15 000','8 400 ÷ 6 = 1 400','36 000 − 15 000 = 21 000','21 000 + 1 400 = 22 400','<b>Jawapan: 22 400</b>'],n:'K-D-B-T-T.'},
+{q:`<p>Encik Ali ada 3${F(1,2)} kg gula. Gula itu dibahagi sama rata ke dalam 7 bungkus. Berapakah jisim gula dalam setiap bungkus, dalam g?</p>`,h:'Tukar nombor bercampur ke pecahan tak wajar.',a:[`3${F(1,2)} = ${F(7,2)}`,`${F(7,2)} ÷ 7 = ${F(7,2)} × ${F(1,7)} = ${F(1,2)} kg`,`${F(1,2)} kg = 500 g`,'<b>Jawapan: 500 g</b>'],n:'1 kg = 1 000 g.'},
+{q:'<p>Puan Siti membeli sebuah peti sejuk berharga RM2 400. Dia mendapat diskaun 15% dan menggunakan baucar RM100. Berapakah jumlah yang dibayar?</p>',h:'Tolak diskaun dahulu, kemudian tolak nilai baucar.',a:[`Diskaun = ${F(15,100)} × RM2 400 = RM360`,'Harga selepas diskaun = RM2 400 − RM360 = RM2 040','Selepas baucar = RM2 040 − RM100 = RM1 940','<b>Jawapan: RM1 940</b>'],n:'Baucar bernilai tetap (RM), diskaun dalam peratus.'},
+{q:'<p>Encik Rahman menyimpan RM8 000 di bank dengan kadar faedah 3% setahun. Berapakah jumlah wangnya selepas 2 tahun?</p>',h:'Kira faedah untuk 2 tahun, kemudian tambah kepada simpanan asal.',a:[`Faedah setahun = ${F(3,100)} × RM8 000 = RM240`,'Faedah 2 tahun = RM240 × 2 = RM480','Jumlah = RM8 000 + RM480 = RM8 480','<b>Jawapan: RM8 480</b>'],n:'Soalan "jumlah wang" bermaksud pokok + faedah.'},
+{q:'<p>Sebuah pesawat bertolak dari Kuala Lumpur (GMT+8) pada pukul 11:00 p.m. hari Ahad. Penerbangan ke London (GMT+0) mengambil masa 14 jam. Nyatakan waktu dan hari tempatan ketika pesawat tiba di London.</p>',h:'Kira waktu tiba ikut jam KL dulu, kemudian tolak 8 jam.',a:['Waktu KL tiba: 11:00 p.m. Ahad + 14 jam','11:00 p.m. + 1 jam = 12:00 tengah malam (Isnin); + 13 jam lagi = 1:00 p.m. Isnin','Waktu London = 1:00 p.m. − 8 jam = 5:00 a.m.','<b>Jawapan: 5:00 a.m. hari Isnin</b>'],n:'Semak hari setiap kali melepasi tengah malam.'},
+{q:'<p>Sebuah tangki berisi 12 ℓ air. Ali menggunakan 3 botol air, setiap satu 750 mℓ, dan 2.4 ℓ air untuk memasak. Berapakah baki air dalam tangki, dalam mℓ?</p>',h:'Tukar semua kepada mℓ.',a:['3 × 750 mℓ = 2 250 mℓ','2.4 ℓ = 2 400 mℓ','Jumlah digunakan = 2 250 + 2 400 = 4 650 mℓ','12 ℓ = 12 000 mℓ; baki = 12 000 − 4 650 = 7 350 mℓ','<b>Jawapan: 7 350 mℓ</b>'],n:'Samakan unit sebelum menolak.'},
+{q:'<p>(a) Hitung jumlah sudut pedalaman sebuah oktagon sekata.<br>(b) Hitung saiz setiap sudut pedalamannya.</p>',h:'Oktagon ada 8 sisi. Guna (n − 2) × 180°.',a:['(a) (8 − 2) × 180° = 6 × 180° = 1 080°','(b) 1 080° ÷ 8 = 135°','<b>Jawapan: (a) 1 080° (b) 135°</b>'],n:'Semakin banyak sisi, semakin besar sudut pedalaman.'},
+{q:'<p>Nisbah bilangan guli Amin kepada Badrul ialah 3 : 5. Jumlah guli mereka ialah 64 biji. Berapakah bilangan guli Badrul?</p>',h:'Cari jumlah bahagian dan nilai 1 bahagian.',a:['Jumlah bahagian = 3 + 5 = 8','1 bahagian = 64 ÷ 8 = 8 biji','Badrul = 5 × 8 = 40 biji','<b>Jawapan: 40 biji</b>'],n:'Semak: Amin 24 + Badrul 40 = 64 ✓'},
+{q:'<p>Carta pai menunjukkan sukan kegemaran 240 orang murid: Bola sepak 120°, Badminton 90°, Bola jaring 60°, selebihnya Hoki.<br>(a) Berapakah murid yang memilih bola sepak?<br>(b) Berapakah sudut sektor Hoki?</p>',h:'Bulatan penuh = 360°.',a:[`(a) ${F('120°','360°')} × 240 = ${F(1,3)} × 240 = 80 murid`,'(b) 360° − (120° + 90° + 60°) = 360° − 270° = 90°','<b>Jawapan: (a) 80 murid (b) 90°</b>'],n:'Semua sektor dalam carta pai mesti berjumlah 360°.'}
+]
+});
+
+window.SUBJECTS.push({
+id:'sn',name:'Sains',sub:'13 unit · dengan simulasi Daya, Tekanan Udara dan Gerhana',
+fmt:`<ul><li>Ujian bertulis, 50 markah, 1 jam 15 minit.</li><li><b>Bahagian A:</b> 10 soalan Objektif Aneka Pilihan (10 markah) · <b>Bahagian B:</b> 2 soalan Objektif Pelbagai Bentuk (8 markah) · <b>Bahagian C:</b> 4 soalan Subjektif Respons Terhad (32 markah).</li><li>Bahagian C banyak menguji kemahiran proses sains: pemboleh ubah, hipotesis, inferens, ramalan dan mentafsir data.</li></ul>`,
+units:[
+{n:1,t:'Kemahiran Saintifik',b:`
+<h4>Kemahiran Proses Sains (KPS)</h4>
+<div class="tbl"><table><tr><th>Kemahiran</th><th>Maksud ringkas</th></tr>
+<tr><td>Memerhati</td><td>Guna deria (lihat, dengar, sentuh, hidu, rasa) untuk kumpul maklumat</td></tr>
+<tr><td>Mengelas</td><td>Asingkan objek mengikut ciri sama</td></tr>
+<tr><td>Mengukur & menggunakan nombor</td><td>Guna alat dan unit piawai (cm, g, °C, s)</td></tr>
+<tr><td>Membuat inferens</td><td>Kesimpulan awal / <b>sebab</b> bagi sesuatu pemerhatian</td></tr>
+<tr><td>Meramal</td><td>Jangkaan apa yang <b>akan</b> berlaku berdasarkan data/pola</td></tr>
+<tr><td>Berkomunikasi</td><td>Persembahkan maklumat: jadual, graf, carta</td></tr>
+<tr><td>Menggunakan perhubungan ruang & masa</td><td>Perubahan sesuatu mengikut masa</td></tr>
+<tr><td>Mentafsir data</td><td>Beri penerangan tentang data/pola</td></tr>
+<tr><td>Mendefinisi secara operasi</td><td>Huraian konsep berdasarkan apa yang dilakukan dan diperhatikan dalam aktiviti</td></tr>
+<tr><td>Mengawal pemboleh ubah</td><td>Kenal pasti PU dimanipulasi, bergerak balas, dimalarkan</td></tr>
+<tr><td>Membuat hipotesis</td><td>Pernyataan hubungan antara PU dimanipulasi dan PU bergerak balas</td></tr>
+<tr><td>Mengeksperimen</td><td>Rancang & jalankan penyiasatan untuk menguji hipotesis</td></tr></table></div>
+<h4>Pemboleh ubah (PU)</h4>
+<ul><li><b>Dimanipulasi</b>: perkara yang <b>diubah</b> (apa yang kita ubah?).</li><li><b>Bergerak balas</b>: perkara yang <b>diperhatikan/diukur</b> (apa yang berubah akibatnya?).</li><li><b>Dimalarkan</b>: perkara yang dikekalkan sama supaya ujian adil.</li></ul>
+<div class="tip"><b>Templat hipotesis:</b> "Semakin <i>[PU dimanipulasi]</i> bertambah, semakin <i>[PU bergerak balas]</i> bertambah / berkurang."</div>`},
+{n:2,t:'Manusia',b:`
+<h4>Organ pembiakan</h4>
+<div class="tbl"><table><tr><th>Lelaki</th><th>Perempuan</th></tr><tr><td><b>Testis</b>: hasilkan sperma<br><b>Zakar</b>: salurkan sperma</td><td><b>Ovari</b>: hasilkan ovum (telur)<br><b>Tiub falopio</b>: tempat persenyawaan<br><b>Uterus</b>: tempat fetus membesar<br><b>Faraj</b>: laluan bayi dilahirkan</td></tr></table></div>
+<h4>Proses persenyawaan hingga bayi dilahirkan</h4>
+<p>Sperma + ovum bercantum di tiub falopio → <b>zigot</b> → bergerak ke uterus dan melekat pada dinding uterus → <b>embrio</b> → <b>fetus</b>. Fetus mendapat makanan dan oksigen melalui <b>uri</b> dan <b>tali pusat</b>. Bayi dilahirkan selepas kira-kira <b>9 bulan</b> (≈ 40 minggu). Pembiakan penting supaya manusia tidak pupus.</p>
+<h4>Sistem saraf</h4>
+<ul><li><b>Sistem saraf pusat</b> = otak + saraf tunjang. Otak mengawal semua aktiviti badan.</li><li><b>Sistem saraf periferi</b> = saraf yang menghubungkan organ deria dan otot dengan sistem saraf pusat.</li><li>Laluan: rangsangan → organ deria → saraf → saraf tunjang/otak → saraf → otot (gerak balas).</li></ul>
+<p><b>Kegagalan fungsi</b>: kemalangan (kecederaan saraf tunjang boleh menyebabkan lumpuh), strok, penyakit. <b>Menjaga</b>: pakai topi keledar & tali pinggang keledar, tidur cukup, makan seimbang, elak dadah, alkohol dan rokok.</p>`},
+{n:3,t:'Mikroorganisma',b:`
+<p>Mikroorganisma ialah hidupan yang sangat kecil dan perlu dilihat dengan <b>mikroskop</b>.</p>
+<div class="tbl"><table><tr><th>Kumpulan</th><th>Contoh</th></tr><tr><td>Bakteria</td><td>Lactobacillus (yogurt), bakteria penyebab kolera</td></tr><tr><td>Kulat</td><td>Yis, kulapuk (mucor), cendawan</td></tr><tr><td>Protozoa</td><td>Amoeba, Paramecium</td></tr><tr><td>Virus</td><td>Virus selesema, denggi, campak (bukan sel hidup sempurna; perlu sel perumah untuk membiak)</td></tr><tr><td>Alga</td><td>Spirogyra, Chlorella</td></tr></table></div>
+<h4>Proses hidup</h4><p>Mikroorganisma <b>bernafas, membiak, bergerak dan membesar</b>.</p>
+<h4>Faktor pertumbuhan</h4><ul><li>Nutrien, air (kelembapan), suhu sesuai (hangat), udara, keasidan (pH) sesuai.</li><li>Suhu terlalu panas atau terlalu sejuk melambatkan atau membunuh mikroorganisma.</li></ul>
+<h4>Kegunaan</h4><ul><li>Yis → membuat roti (hasilkan gas karbon dioksida, doh mengembang) dan tapai.</li><li>Bakteria → yogurt, keju, tempe (kulat), kicap.</li><li>Kulat <i>Penicillium</i> → antibiotik penisilin.</li><li>Pengurai → uraikan sisa jadi baja kompos.</li></ul>
+<h4>Keburukan</h4><ul><li>Menyebabkan penyakit (selesema, kurap, denggi, kolera) dan merosakkan makanan.</li><li>Penyakit merebak melalui udara (bersin), air, sentuhan, makanan dan <b>vektor</b> (nyamuk Aedes → denggi; lalat; tikus).</li></ul>`},
+{n:4,t:'Interaksi antara Hidupan',b:`
+<h4>Interaksi haiwan</h4><ul><li><b>Bekerjasama</b>: semut, lebah, anai-anai — mencari makanan dan mempertahankan koloni.</li><li><b>Bersaing</b>: untuk makanan, air, pasangan, kawasan (wilayah).</li></ul>
+<h4>Interaksi tumbuhan</h4><p>Tumbuhan bersaing untuk <b>cahaya matahari, air, nutrien dan ruang</b>. Tumbuhan yang ditanam terlalu rapat tumbuh kurus dan tidak subur.</p>
+<h4>Simbiosis</h4>
+<div class="tbl"><table><tr><th>Jenis</th><th>Maksud</th><th>Contoh</th></tr>
+<tr><td>Mutualisme</td><td>Kedua-dua mendapat faedah</td><td>Burung tiong & kerbau; lebah & bunga</td></tr>
+<tr><td>Komensalisme</td><td>Satu dapat faedah, satu lagi tidak rugi</td><td>Ikan remora & jerung; paku pakis langsuyar pada pokok</td></tr>
+<tr><td>Parasitisme</td><td>Satu dapat faedah, satu lagi rugi</td><td>Kutu & anjing; tali tali pada pokok; lintah & manusia</td></tr></table></div>
+<p><b>Pemangsa-mangsa</b> (helang–ayam) mengawal bilangan populasi. Interaksi ini menjaga <b>keseimbangan ekosistem</b>.</p>`},
+{n:5,t:'Pemeliharaan dan Pemuliharaan',b:`
+<ul><li><b>Pupus</b>: tiada lagi hidup di dunia — cth. dinosaur, burung dodo. Badak sumbu Sumatera tidak lagi ditemui hidup di Malaysia.</li><li><b>Diancam kepupusan</b>: harimau Malaya, orang utan, penyu belimbing, gajah, bunga Rafflesia, pokok periuk kera.</li></ul>
+<h4>Faktor ancaman</h4><p>Pembalakan haram, pemburuan haram, pembukaan tanah tidak terancang, pencemaran, perubahan iklim, kebakaran hutan dan penyakit.</p>
+<h4>Beza dua istilah</h4>
+<div class="tbl"><table><tr><th>Pemeliharaan</th><th>Pemuliharaan</th></tr><tr><td>Menjaga supaya hidupan <b>tidak terancam</b> (cegah): taman negara, hutan simpan, undang-undang</td><td>Memulihkan semula yang <b>sudah terancam</b> (baiki): penanaman semula hutan, pusat penetasan penyu, pembiakan dalam kurungan</td></tr></table></div>
+<p>Kepentingan: mengekalkan kepelbagaian hidupan, sumber ubat & makanan, keseimbangan alam, warisan untuk generasi akan datang.</p>`},
+{n:6,t:'Daya',b:`
+<p><b>Daya</b> ialah <b>tolakan atau tarikan</b>. Unit daya ialah <b>newton (N)</b> dan diukur dengan <b>neraca spring</b>.</p>
+<h4>Kesan daya</h4><ul><li>Menggerakkan objek pegun · menghentikan objek bergerak</li><li>Mengubah laju (lebih laju / perlahan) · mengubah arah gerakan</li><li>Mengubah bentuk objek (cth. memicit plastisin)</li></ul>
+<h4>Daya geseran</h4><p>Daya yang <b>menentang gerakan</b> apabila dua permukaan bersentuhan. Kesannya: menghasilkan haba, menyebabkan haus (tapak kasut), memperlahankan gerakan, tetapi juga membolehkan kita berjalan tanpa tergelincir.</p>
+<div class="tip"><b>Faktor geseran:</b> (1) <b>Jenis permukaan</b>: permukaan kasar → geseran tinggi. (2) <b>Jisim objek</b>: lebih berat → geseran tinggi.<br><b>Kurangkan geseran:</b> minyak pelincir, galas bebola, roda, permukaan licin, bentuk larus.<br><b>Tambah geseran:</b> bunga tayar, tapak kasut berbunga, sarung tangan penjaga gol.</div>`,
+sim:['daya','udara'],
+b2:`<h4>Tekanan udara</h4><ul><li>Udara mempunyai jisim dan mengenakan <b>tekanan ke semua arah</b>.</li><li><b>Semakin tinggi altitud, semakin rendah tekanan udara</b> kerana udara semakin nipis. Pendaki gunung tinggi membawa tangki oksigen.</li><li>Aplikasi: penyedut minuman, cangkuk penyedut getah, picagari, penitis, pam tayar basikal, pembersih hampagas.</li></ul>`},
+{n:7,t:'Kelajuan',b:`
+<p><b>Kelajuan</b> ialah jarak yang dilalui dalam satu unit masa. Unit: <b>km/j</b>, <b>m/s</b>.</p>
+<div class="formula">Kelajuan = Jarak ÷ Masa</div><br><div class="formula">Jarak = Kelajuan × Masa</div><br><div class="formula">Masa = Jarak ÷ Kelajuan</div>
+<div class="tip"><b>Segi tiga J-L-M:</b> tulis J di atas, L dan M di bawah. Tutup apa yang dicari: J = L × M, L = J ÷ M, M = J ÷ L.</div>
+<p>Objek yang <b>lebih laju</b> mengambil <b>masa lebih singkat</b> untuk jarak yang sama.</p>`,
+ex:[
+{q:'Sebuah kereta bergerak sejauh 120 km dalam masa 2 jam. Hitung kelajuannya.',s:['Kelajuan = jarak ÷ masa','= 120 km ÷ 2 j','= 60 km/j'],a:'60 km/j'},
+{q:'Ali berbasikal dengan kelajuan 5 m/s selama 40 saat. Berapakah jarak yang dilalui?',s:['Jarak = kelajuan × masa','= 5 m/s × 40 s','= 200 m'],a:'200 m'},
+{q:'Sebuah bas bergerak 180 km dengan kelajuan 90 km/j. Berapakah masa yang diambil?',s:['Masa = jarak ÷ kelajuan','= 180 ÷ 90','= 2 jam'],a:'2 jam'}
+]},
+{n:8,t:'Teknologi Pengawetan Makanan',b:`
+<p>Makanan rosak kerana tindakan <b>mikroorganisma</b> (bakteria, kulat). Tanda: berbau busuk, berlendir, berkulat, berubah warna, rasa dan tekstur.</p>
+<div class="tbl"><table><tr><th>Kaedah</th><th>Prinsip</th><th>Contoh</th></tr>
+<tr><td>Pengeringan</td><td>Buang air</td><td>Ikan kering, kismis</td></tr><tr><td>Pengasinan</td><td>Garam menyerap air</td><td>Telur masin, ikan masin</td></tr>
+<tr><td>Penjerukan</td><td>Cuka berasid</td><td>Jeruk mangga</td></tr><tr><td>Pemanisan</td><td>Gula pekat</td><td>Jem, manisan buah</td></tr>
+<tr><td>Penyejukan & pembekuan</td><td>Suhu rendah melambatkan mikroorganisma</td><td>Ayam beku, sayur dalam peti sejuk</td></tr>
+<tr><td>Pengetinan</td><td>Dipanaskan & ditutup kedap udara</td><td>Sardin, kacang dalam tin</td></tr>
+<tr><td>Pempasteuran</td><td>Dipanaskan pada suhu tertentu, kemudian disejukkan dengan cepat</td><td>Susu, jus</td></tr>
+<tr><td>Pembungkusan vakum</td><td>Buang udara</td><td>Kacang, kopi</td></tr><tr><td>Pengasapan</td><td>Asap & haba keringkan makanan</td><td>Daging salai</td></tr></table></div>
+<p>Kepentingan teknologi pengawetan: makanan tahan lama, mudah disimpan & dibawa, ada bekalan di luar musim, kurang pembaziran.</p>`},
+{n:9,t:'Bahan Buangan',b:`
+<div class="tbl"><table><tr><th>Terbiodegradasi</th><th>Tidak terbiodegradasi</th></tr><tr><td>Boleh <b>diuraikan oleh mikroorganisma</b>: sisa makanan, daun, kertas, kayu</td><td>Tidak dapat diuraikan: plastik, kaca, logam, getah sintetik, polistirena</td></tr></table></div>
+<p>Bahan terbiodegradasi boleh dijadikan <b>baja kompos</b>. Bahan tidak terbiodegradasi boleh dikitar semula atau diguna semula.</p>
+<h4>Pengurusan bahan buangan</h4><ul><li>Amalkan <b>Kurangkan, Guna Semula, Kitar Semula</b>.</li><li>Asingkan sampah: tong biru (kertas), oren (plastik & tin), coklat (kaca).</li><li>Tapak pelupusan sanitari, insinerator.</li></ul>
+<p><b>Pengurusan tidak terancang</b> menyebabkan pencemaran air & udara, bau busuk, longkang tersumbat → banjir kilat, dan pembiakan vektor penyakit (lalat, tikus, nyamuk).</p>`},
+{n:10,t:'Gerhana',b:`
+<p>Gerhana berlaku kerana <b>cahaya bergerak lurus</b> dan <b>tidak dapat menembusi objek legap</b> (Bumi dan Bulan), lalu terbentuk bayang-bayang.</p>`,
+sim:['gerhana'],
+b2:`<div class="tbl"><table><tr><th></th><th>Gerhana Bulan</th><th>Gerhana Matahari</th></tr>
+<tr><td>Kedudukan</td><td>Matahari – <b>Bumi</b> – Bulan</td><td>Matahari – <b>Bulan</b> – Bumi</td></tr>
+<tr><td>Bayang</td><td>Bayang Bumi pada Bulan</td><td>Bayang Bulan pada Bumi</td></tr>
+<tr><td>Bila</td><td>Malam, bulan purnama</td><td>Siang, anak bulan</td></tr></table></div>
+<p><b>Keadaan di Bumi semasa gerhana matahari penuh:</b> langit gelap seperti senja, suhu turun sedikit, burung pulang ke sarang, bintang boleh kelihatan. Umat Islam menunaikan solat sunat gerhana.</p>`},
+{n:11,t:'Galaksi',b:`
+<p><b>Galaksi</b> ialah kumpulan berbilion bintang, gas dan debu yang terikat oleh graviti.</p>
+<ul><li>Jenis bentuk: <b>lingkaran</b>, <b>elips</b>, <b>tak sekata</b>.</li><li>Kita tinggal dalam galaksi <b>Bima Sakti</b> (lingkaran). Matahari ialah salah satu bintangnya.</li><li><b>Sistem Suria</b> sangat kecil berbanding Bima Sakti — ibarat sebutir pasir di pantai.</li><li>Galaksi besar terdekat dengan Bima Sakti: <b>Andromeda</b>.</li></ul>
+<div class="tip"><b>Susunan saiz (kecil → besar):</b> Bumi → Sistem Suria → Galaksi Bima Sakti → Alam semesta.</div>`},
+{n:12,t:'Kestabilan dan Kekuatan',b:`
+<p><b>Kestabilan</b>: keupayaan objek untuk kekal tegak dan tidak mudah tumbang.</p>
+<ul><li><b>Luas tapak</b>: tapak lebih luas → lebih stabil.</li><li><b>Ketinggian</b>: objek lebih rendah → lebih stabil.</li><li><b>Kedudukan berat (pusat graviti)</b>: berat di bahagian bawah → lebih stabil.</li></ul>
+<p><b>Kekuatan</b>: keupayaan menampung beban tanpa patah atau runtuh.</p>
+<ul><li><b>Jenis bahan</b>: keluli lebih kuat daripada kayu dan plastik.</li><li><b>Bentuk binaan</b>: bentuk <b>segi tiga</b> paling kukuh (digunakan pada kren, jambatan, menara).</li><li><b>Saiz / ketebalan</b> bahan.</li></ul>
+<p>Kepentingan: binaan kuat dan stabil selamat digunakan dan tahan lama (bangku, jambatan, rumah).</p>`},
+{n:13,t:'Teknologi',b:`
+<p><b>Teknologi</b> ialah aplikasi pengetahuan sains untuk mencipta alat dan kaedah yang memudahkan kehidupan dan menyelesaikan masalah.</p>
+<div class="tbl"><table><tr><th>Bidang</th><th>Dahulu → Kini</th></tr><tr><td>Komunikasi</td><td>Surat, telegram → telefon pintar, panggilan video</td></tr><tr><td>Pengangkutan</td><td>Kereta lembu → kereta elektrik, kapal terbang, MRT</td></tr><tr><td>Pertanian</td><td>Cangkul → traktor, dron, fertigasi</td></tr><tr><td>Perubatan</td><td>Ubat herba → sinar-X, imbasan MRI, vaksin</td></tr><tr><td>Pembinaan</td><td>Rumah kayu → bangunan konkrit, menara pencakar langit</td></tr></table></div>
+<p><b>Kebaikan</b>: kerja cepat & mudah, komunikasi pantas, rawatan lebih baik. <b>Keburukan</b>: pencemaran, sisa elektronik, ketagihan gajet, jenayah siber. Guna teknologi secara bijak dan beretika.</p>`}
+],
+obj:[
+{q:'<p>Seorang murid mendapati tumbuhan di tempat gelap menjadi kuning. Dia membuat kesimpulan awal bahawa tumbuhan itu kurang cahaya. Kemahiran ini ialah</p>',o:['Memerhati','Membuat inferens','Meramal','Mengelas'],a:1,h:'Memberi sebab atau penerangan awal.',n:'Inferens = kesimpulan awal untuk menerangkan pemerhatian.'},
+{q:'<p>Dalam penyiasatan "kesan jenis permukaan terhadap jarak kereta mainan bergerak", apakah pemboleh ubah yang <b>dimanipulasi</b>?</p>',o:['Jarak kereta bergerak','Jenis permukaan','Saiz kereta mainan','Ketinggian landasan'],a:1,h:'Apa yang sengaja diubah?',n:'PU dimanipulasi = jenis permukaan. Jarak ialah PU bergerak balas.'},
+{q:'<p>Organ manakah yang menghasilkan ovum?</p>',o:['Uterus','Tiub falopio','Ovari','Faraj'],a:2,h:'Organ pembiakan perempuan yang menghasilkan sel pembiakan.',n:'Ovari menghasilkan ovum; testis menghasilkan sperma.'},
+{q:'<p>Di manakah persenyawaan berlaku?</p>',o:['Uterus','Tiub falopio','Ovari','Uri'],a:1,h:'Ovum bertemu sperma dalam perjalanannya ke uterus.',n:'Persenyawaan berlaku di tiub falopio, kemudian zigot bergerak ke uterus.'},
+{q:'<p>Bagaimanakah fetus mendapat makanan dan oksigen?</p>',o:['Melalui mulut','Melalui uri dan tali pusat','Melalui paru-paru','Melalui kulit'],a:1,h:'Sambungan antara ibu dan fetus.',n:'Uri dan tali pusat menyalurkan nutrien dan oksigen daripada ibu.'},
+{q:'<p>Sistem saraf pusat terdiri daripada</p>',o:['otak dan saraf tunjang','otak dan jantung','saraf tunjang dan otot','mata dan telinga'],a:0,h:'Bahagian "pusat" kawalan badan.',n:'Otak + saraf tunjang = sistem saraf pusat.'},
+{q:'<p>Mengapakah penunggang motosikal perlu memakai topi keledar?</p>',o:['Supaya kelihatan bergaya','Melindungi otak daripada kecederaan','Mengelakkan rambut kotor','Supaya tidak mengantuk'],a:1,h:'Kaitkan dengan menjaga sistem saraf.',n:'Kecederaan otak boleh merosakkan fungsi sistem saraf.'},
+{q:'<p>Yis digunakan untuk membuat roti kerana yis menghasilkan</p>',o:['oksigen','karbon dioksida','air','gula'],a:1,h:'Gas ini membuatkan doh mengembang.',n:'Yis menghasilkan gas karbon dioksida semasa respirasi; gas terperangkap dalam doh.'},
+{q:'<p>Antara berikut, yang manakah ialah <b>vektor</b> penyakit denggi?</p>',o:['Lalat','Tikus','Nyamuk Aedes','Lipas'],a:2,h:'Serangga yang menggigit.',n:'Nyamuk Aedes membawa virus denggi.'},
+{q:'<p>Mikroorganisma membiak dengan cepat dalam keadaan</p>',o:['kering dan sejuk','lembap dan hangat','sangat panas','tiada nutrien'],a:1,h:'Fikirkan roti berkulat di dapur.',n:'Kelembapan, suhu hangat dan nutrien menggalakkan pertumbuhan mikroorganisma.'},
+{q:'<p>Burung tiong memakan kutu pada badan kerbau. Interaksi ini ialah</p>',o:['Parasitisme','Komensalisme','Mutualisme','Persaingan'],a:2,h:'Kedua-dua pihak dapat faedah?',n:'Burung dapat makanan, kerbau bebas kutu → mutualisme.'},
+{q:'<p>Kutu pada anjing ialah contoh</p>',o:['mutualisme','parasitisme','komensalisme','kerjasama'],a:1,h:'Anjing dirugikan.',n:'Kutu mendapat makanan (darah), anjing rugi → parasitisme.'},
+{q:'<p>Anak benih yang ditanam terlalu rapat tumbuh kurus kerana</p>',o:['bersaing untuk cahaya, air dan nutrien','bekerjasama','tiada udara','terlalu banyak baja'],a:0,h:'Sumber terhad dikongsi ramai.',n:'Persaingan menyebabkan setiap pokok mendapat kurang sumber.'},
+{q:'<p>Haiwan manakah yang <b>telah pupus</b>?</p>',o:['Harimau Malaya','Burung dodo','Orang utan','Penyu belimbing'],a:1,h:'Tiada lagi seekor pun di dunia.',n:'Burung dodo pupus sejak abad ke-17. Yang lain diancam kepupusan.'},
+{q:'<p>Membina pusat penetasan penyu ialah usaha</p>',o:['pencemaran','pemuliharaan','pembalakan','pemburuan'],a:1,h:'Usaha memulihkan populasi yang terancam.',n:'Pemuliharaan = memulihkan hidupan yang terancam.'},
+{q:'<p>Unit SI bagi daya ialah</p>',o:['kilogram','newton','meter','joule'],a:1,h:'Sempena nama saintis Isaac …',n:'Daya diukur dalam newton (N) menggunakan neraca spring.'},
+{q:'<p>Seorang pemain menendang bola yang sedang bergolek ke arahnya. Bola itu bergerak ke arah lain. Kesan daya yang ditunjukkan ialah</p>',o:['mengubah bentuk','mengubah arah gerakan','menghentikan objek','tiada kesan'],a:1,h:'Lihat arah bola sebelum dan selepas.',n:'Daya boleh mengubah arah gerakan objek.'},
+{q:'<p>Mengapakah tayar kereta dibuat berbunga?</p>',o:['Mengurangkan geseran','Menambah geseran supaya tidak tergelincir','Supaya cantik','Supaya ringan'],a:1,h:'Cengkaman dengan jalan.',n:'Bunga tayar menambah geseran, terutama di jalan basah.'},
+{q:'<p>Cara yang <b>mengurangkan</b> geseran ialah</p>',o:['Menggunakan galas bebola','Memakai kasut berbunga','Menabur pasir di lantai licin','Menambah beban'],a:0,h:'Bebola bergolek dan bukan bergesel.',n:'Galas bebola, minyak pelincir dan roda mengurangkan geseran.'},
+{q:'<p>Apakah yang berlaku kepada tekanan udara apabila kita mendaki gunung yang tinggi?</p>',o:['Bertambah','Berkurang','Tidak berubah','Bertambah kemudian sama'],a:1,h:'Udara semakin nipis di atas.',n:'Semakin tinggi altitud, semakin rendah tekanan udara.'},
+{q:'<p>Sebuah kereta bergerak 150 km dalam 3 jam. Kelajuannya ialah</p>',o:['45 km/j','50 km/j','450 km/j','153 km/j'],a:1,h:'Kelajuan = jarak ÷ masa.',n:'150 ÷ 3 = 50 km/j.'},
+{q:'<p>Empat budak berlari 100 m. Siapakah yang paling laju?</p>',o:['Ali: 16 s','Bala: 14 s','Chong: 18 s','Dani: 15 s'],a:1,h:'Jarak sama — siapa paling singkat masanya?',n:'Masa paling singkat = kelajuan paling tinggi.'},
+{q:'<p>Ikan masin diawet melalui kaedah</p>',o:['pengasinan dan pengeringan','pempasteuran','pengetinan','pembekuan'],a:0,h:'Lihat namanya.',n:'Garam menyerap air; pengeringan membuang air → mikroorganisma tidak dapat hidup.'},
+{q:'<p>Susu dipanaskan pada suhu tertentu kemudian disejukkan dengan cepat. Kaedah ini ialah</p>',o:['Penjerukan','Pempasteuran','Pengasapan','Pemanisan'],a:1,h:'Sempena saintis Louis Pasteur.',n:'Pempasteuran membunuh mikroorganisma tanpa merosakkan rasa susu.'},
+{q:'<p>Antara berikut, yang manakah bahan buangan <b>terbiodegradasi</b>?</p>',o:['Botol kaca','Tin aluminium','Kulit pisang','Beg plastik'],a:2,h:'Boleh diuraikan oleh mikroorganisma.',n:'Kulit pisang boleh dijadikan kompos.'},
+{q:'<p>Kesan pembuangan sampah ke dalam longkang ialah</p>',o:['Udara lebih segar','Banjir kilat','Tanah lebih subur','Air lebih jernih'],a:1,h:'Air tidak dapat mengalir.',n:'Longkang tersumbat menyebabkan banjir kilat dan pembiakan nyamuk.'},
+{q:'<p>Gerhana bulan berlaku apabila</p>',o:['Bulan berada di antara Matahari dan Bumi','Bumi berada di antara Matahari dan Bulan','Matahari berada di antara Bumi dan Bulan','Bulan berada paling jauh'],a:1,h:'Bayang siapa jatuh pada Bulan?',n:'Bayang Bumi menutupi Bulan → gerhana bulan.'},
+{q:'<p>Gerhana berlaku kerana cahaya</p>',o:['boleh dipantulkan','bergerak lurus dan tidak menembusi objek legap','boleh dibiaskan','bergerak perlahan'],a:1,h:'Kaitkan dengan pembentukan bayang-bayang.',n:'Objek legap menghalang cahaya, maka bayang terbentuk.'},
+{q:'<p>Galaksi Bima Sakti berbentuk</p>',o:['elips','lingkaran','tak sekata','segi empat'],a:1,h:'Ada lengan yang berpusing.',n:'Bima Sakti ialah galaksi berbentuk lingkaran.'},
+{q:'<p>Bentuk binaan yang paling kukuh dan sering digunakan pada kren dan jambatan ialah</p>',o:['Bulatan','Segi empat','Segi tiga','Bujur'],a:2,h:'Bentuk ini tidak mudah berubah bentuk apabila ditekan.',n:'Segi tiga paling kukuh dan stabil.'}
+],
+subj:[
+{q:'<p>Ahmad menjalankan penyiasatan dengan menolak sebuah kotak di atas tiga permukaan berbeza: kaca, kayu dan kertas pasir, menggunakan neraca spring. Bacaan neraca spring: kaca 2 N, kayu 4 N, kertas pasir 7 N.<br>(a) Nyatakan pemboleh ubah dimanipulasi.<br>(b) Nyatakan pemboleh ubah bergerak balas.<br>(c) Nyatakan satu hipotesis.</p>',h:'PU dimanipulasi = yang diubah. PU bergerak balas = bacaan yang diukur.',a:'(a) Jenis permukaan.<br>(b) Bacaan neraca spring / daya geseran.<br>(c) Semakin kasar permukaan, semakin tinggi daya geseran (bacaan neraca spring).',n:'Hipotesis mesti menghubungkan PU dimanipulasi dengan PU bergerak balas.'},
+{q:'<p>Berdasarkan penyiasatan Soalan 1, ramalkan bacaan neraca spring jika kotak ditolak di atas permukaan karpet yang kasarnya di antara kayu dan kertas pasir. Terangkan.</p>',h:'Bacaan mesti berada antara dua nilai.',a:'Antara 4 N dan 7 N (contoh 5 N atau 6 N), kerana karpet lebih kasar daripada kayu tetapi kurang kasar daripada kertas pasir.',n:'Ramalan dibuat berdasarkan pola data.'},
+{q:'<p>Nyatakan <b>dua</b> cara mengurangkan geseran dan berikan satu contoh bagi setiap cara.</p>',h:'Fikirkan basikal dan mesin.',a:'Contoh: (1) Minyak pelincir: pada rantai basikal. (2) Galas bebola: pada roda kipas/basikal. (3) Roda: pada beg bagasi. (4) Bentuk larus: kapal terbang.',n:'Mana-mana dua cara yang betul.'},
+{q:'<p>Seorang pendaki membawa sebungkus kerepek dari kaki gunung ke puncak. Bungkusan itu kelihatan mengembang di puncak.<br>(a) Nyatakan pemerhatian ini.<br>(b) Berikan satu inferens.</p>',h:'Bandingkan tekanan udara di luar bungkusan pada dua ketinggian.',a:'(a) Bungkusan kerepek mengembang apabila dibawa ke tempat tinggi.<br>(b) Tekanan udara di luar bungkusan lebih rendah di puncak gunung, maka udara di dalam bungkusan menolak keluar.',n:'Semakin tinggi altitud, semakin rendah tekanan udara.'},
+{q:'<p>Sebuah kereta api bergerak dengan kelajuan 80 km/j selama 2 jam 30 minit. Hitung jarak yang dilalui.</p>',h:'Tukar 2 jam 30 minit kepada jam (2.5 j).',a:['2 jam 30 minit = 2.5 jam','Jarak = kelajuan × masa = 80 × 2.5','= 200 km'],n:'Masa mesti dalam unit yang sepadan dengan kelajuan.'},
+{q:'<p>Aminah meletakkan sekeping roti di tempat lembap dan sekeping lagi di dalam peti sejuk. Selepas 4 hari, roti di tempat lembap berkulat.<br>(a) Apakah faktor yang dikaji?<br>(b) Terangkan mengapa roti dalam peti sejuk tidak berkulat.</p>',h:'Bezakan dua keadaan itu.',a:'(a) Suhu/kelembapan terhadap pertumbuhan kulat.<br>(b) Suhu rendah dalam peti sejuk melambatkan pertumbuhan mikroorganisma (kulat).',n:'Mikroorganisma perlukan suhu sesuai dan kelembapan.'},
+{q:'<p>Nyatakan kaedah pengawetan yang sesuai bagi: (a) susu (b) mangga muda (c) sardin (d) ikan bilis.</p>',h:'Padankan makanan dengan kaedah biasa.',a:'(a) Pempasteuran (b) Penjerukan (c) Pengetinan (d) Pengeringan / pengasinan',n:'Prinsip semua kaedah: menghalang atau membunuh mikroorganisma.'},
+{q:'<p>(a) Lukis atau terangkan susunan Matahari, Bumi dan Bulan semasa gerhana matahari.<br>(b) Nyatakan dua keadaan di Bumi semasa gerhana matahari penuh.</p>',h:'Bulan berada di tengah.',a:'(a) Matahari – Bulan – Bumi dalam satu garis lurus; bayang Bulan jatuh di Bumi.<br>(b) Langit menjadi gelap; suhu menurun; burung pulang ke sarang; bintang kelihatan (mana-mana dua).',n:'Berlaku pada waktu siang.'},
+{q:'<p>Ali membina dua menara daripada straw. Menara P bertapak luas dan rendah. Menara Q bertapak sempit dan tinggi.<br>(a) Menara manakah lebih stabil?<br>(b) Nyatakan dua faktor yang mempengaruhi kestabilan.</p>',h:'Tapak dan ketinggian.',a:'(a) Menara P.<br>(b) Luas tapak; ketinggian objek (juga kedudukan berat/pusat graviti).',n:'Tapak luas + rendah = stabil.'},
+{q:'<p>Berikan <b>dua</b> kebaikan dan <b>dua</b> keburukan teknologi telefon pintar.</p>',h:'Fikir komunikasi dan kesihatan.',a:'Kebaikan: komunikasi pantas; mencari maklumat dengan mudah; belajar dalam talian.<br>Keburukan: ketagihan gajet; masalah mata dan postur; jenayah siber / buli siber; sisa elektronik.',n:'Gunakan teknologi secara bijak dan berhemah.'}
+]
+});
+
+window.SUBJECTS.push({
+id:'sj',name:'Sejarah',sub:'10 unit · Kenali Malaysia',
+fmt:`<ul><li>Ujian bertulis, 50 markah, 1 jam 15 minit.</li><li><b>Bahagian A:</b> 20 soalan Objektif Aneka Pilihan (20 markah) · <b>Bahagian B:</b> 4 soalan Objektif Pelbagai Bentuk (20 markah) · <b>Bahagian C:</b> 2 soalan Subjektif Respons Terhad (10 markah).</li><li>Hafal tarikh penting, tokoh dan fakta; untuk subjektif, tulis jawapan dalam ayat lengkap.</li></ul>`,
+units:[
+{n:1,t:'Pembentukan Malaysia',b:`
+<div class="tbl"><table><tr><th>Tarikh</th><th>Peristiwa</th></tr>
+<tr><td>27 Mei 1961</td><td>Tunku Abdul Rahman mengemukakan gagasan Malaysia di Singapura</td></tr>
+<tr><td>1962</td><td>Suruhanjaya Cobbold meninjau pendapat rakyat Sabah dan Sarawak</td></tr>
+<tr><td>9 Julai 1963</td><td>Perjanjian Malaysia ditandatangani di London</td></tr>
+<tr><td>1963</td><td>Suruhanjaya Setiausaha Agung PBB (Misi Michelmore) mengesahkan sokongan rakyat Sabah & Sarawak</td></tr>
+<tr><td><b>16 September 1963</b></td><td><b>Malaysia dibentuk</b>: Persekutuan Tanah Melayu, Singapura, Sabah, Sarawak</td></tr>
+<tr><td>9 Ogos 1965</td><td>Singapura keluar daripada Malaysia</td></tr></table></div>
+<h4>Tujuan pembentukan</h4><ul><li>Menyekat ancaman komunis dan menjamin keselamatan.</li><li>Mempercepat kemerdekaan Sabah dan Sarawak.</li><li>Kerjasama dan pembangunan ekonomi.</li><li>Mengimbangi komposisi penduduk.</li></ul>
+<p><b>Brunei</b> tidak menyertai Malaysia. Pembentukan Malaysia ditentang oleh Indonesia (konfrontasi) dan Filipina (tuntutan ke atas Sabah).</p>
+<div class="tip"><b>Ingat:</b> 31 Ogos = Hari Kebangsaan (merdeka 1957). 16 September = Hari Malaysia.</div>`},
+{n:2,t:'Negeri-Negeri di Malaysia',b:`
+<p>Malaysia mempunyai <b>13 negeri</b> dan <b>3 Wilayah Persekutuan</b> (Kuala Lumpur, Labuan, Putrajaya).</p>
+<div class="tbl"><table><tr><th>Negeri</th><th>Ibu negeri</th><th>Ketua negeri</th></tr>
+<tr><td>Perlis</td><td>Kangar</td><td>Raja</td></tr><tr><td>Kedah</td><td>Alor Setar</td><td>Sultan</td></tr><tr><td>Pulau Pinang</td><td>George Town</td><td>Yang di-Pertua Negeri</td></tr><tr><td>Perak</td><td>Ipoh</td><td>Sultan</td></tr><tr><td>Selangor</td><td>Shah Alam</td><td>Sultan</td></tr><tr><td>Negeri Sembilan</td><td>Seremban</td><td>Yang di-Pertuan Besar</td></tr><tr><td>Melaka</td><td>Bandaraya Melaka</td><td>Yang di-Pertua Negeri</td></tr><tr><td>Johor</td><td>Johor Bahru (pusat pentadbiran: Kota Iskandar)</td><td>Sultan</td></tr><tr><td>Pahang</td><td>Kuantan</td><td>Sultan</td></tr><tr><td>Terengganu</td><td>Kuala Terengganu</td><td>Sultan</td></tr><tr><td>Kelantan</td><td>Kota Bharu</td><td>Sultan</td></tr><tr><td>Sabah</td><td>Kota Kinabalu</td><td>Yang di-Pertua Negeri</td></tr><tr><td>Sarawak</td><td>Kuching</td><td>Yang di-Pertua Negeri</td></tr></table></div>
+<ul><li><b>9 negeri beraja</b>; <b>4 negeri</b> diketuai Yang di-Pertua Negeri (Melaka, Pulau Pinang, Sabah, Sarawak).</li><li><b>Yang di-Pertuan Agong</b> ialah Ketua Negara, dipilih oleh <b>Majlis Raja-Raja</b> secara bergilir untuk tempoh 5 tahun.</li><li>Negeri terbesar: Sarawak. Negeri terkecil: Perlis.</li></ul>`},
+{n:3,t:'Rukun Negara',b:`
+<p>Rukun Negara diisytiharkan pada <b>31 Ogos 1970</b> oleh Yang di-Pertuan Agong, selepas peristiwa 13 Mei 1969, untuk memupuk perpaduan. Ia dirangka oleh <b>Majlis Perundingan Negara (MAPEN)</b>.</p>
+<h4>5 Prinsip Rukun Negara</h4><ol><li>Kepercayaan kepada Tuhan</li><li>Kesetiaan kepada Raja dan Negara</li><li>Keluhuran Perlembagaan</li><li>Kedaulatan Undang-undang</li><li>Kesopanan dan Kesusilaan</li></ol>
+<h4>5 Cita-cita (matlamat)</h4><ul><li>Mencapai perpaduan yang lebih erat</li><li>Memelihara cara hidup demokratik</li><li>Mencipta masyarakat yang adil</li><li>Menjamin cara liberal terhadap tradisi kebudayaan yang pelbagai</li><li>Membina masyarakat progresif berorientasikan sains dan teknologi</li></ul>
+<div class="tip"><b>Contoh amalan:</b> beribadat (Prinsip 1), menghormati lagu Negaraku dan bendera (Prinsip 2), mematuhi undang-undang jalan raya (Prinsip 4), bercakap sopan dengan guru (Prinsip 5).</div>`},
+{n:4,t:'Kaum di Malaysia',b:`
+<ul><li><b>Semenanjung</b>: Melayu, Cina, India, Orang Asli (Negrito, Senoi, Melayu Proto), Siam, Baba Nyonya, Chetti, Portugis (Kristang).</li><li><b>Sabah</b>: Kadazandusun (terbesar), Bajau, Murut, Rungus dan lain-lain.</li><li><b>Sarawak</b>: Iban (terbesar), Bidayuh, Melanau, Orang Ulu (Kayan, Kenyah, Penan).</li></ul>
+<p>Setiap kaum ada bahasa, pakaian, makanan dan adat tersendiri. <b>Baba Nyonya</b> dan <b>Chetti</b> di Melaka mengamalkan budaya campuran Melayu-Cina dan Melayu-India.</p>
+<p>Kepelbagaian kaum ialah keunikan Malaysia. Kita hidup harmoni melalui sikap hormat-menghormati dan bertoleransi.</p>`},
+{n:5,t:'Agama dan Kepercayaan',b:`
+<ul><li><b>Islam</b> ialah agama bagi Persekutuan (Perlembagaan Persekutuan, Perkara 3), namun agama lain bebas diamalkan dengan aman.</li><li>Agama lain: Buddha, Hindu, Kristian, Sikh, Taoisme, Konfusianisme dan kepercayaan masyarakat peribumi.</li></ul>
+<div class="tbl"><table><tr><th>Agama</th><th>Tempat ibadat</th></tr><tr><td>Islam</td><td>Masjid, surau</td></tr><tr><td>Buddha</td><td>Tokong / kuil Buddha</td></tr><tr><td>Hindu</td><td>Kuil</td></tr><tr><td>Kristian</td><td>Gereja</td></tr><tr><td>Sikh</td><td>Gurdwara</td></tr></table></div>
+<p>Amalan yang baik: menghormati tempat ibadat dan kepercayaan orang lain, tidak mempersendakan agama lain.</p>`},
+{n:6,t:'Perayaan Masyarakat di Malaysia',b:`
+<div class="tbl"><table><tr><th>Perayaan</th><th>Masyarakat</th><th>Amalan</th></tr>
+<tr><td>Hari Raya Aidilfitri / Aidiladha</td><td>Islam</td><td>Solat sunat, ziarah, korban (Aidiladha)</td></tr>
+<tr><td>Tahun Baru Cina</td><td>Cina</td><td>Angpau, makan malam bersama keluarga, tarian singa</td></tr>
+<tr><td>Deepavali</td><td>Hindu</td><td>Pesta cahaya, pelita, kolam</td></tr>
+<tr><td>Thaipusam</td><td>Hindu</td><td>Membawa kavadi, contoh di Batu Caves</td></tr>
+<tr><td>Hari Wesak</td><td>Buddha</td><td>Memperingati kelahiran, pencerahan dan kematian Buddha</td></tr>
+<tr><td>Krismas</td><td>Kristian</td><td>Memperingati kelahiran Jesus Christ</td></tr>
+<tr><td>Pesta Kaamatan</td><td>Kadazandusun (Sabah)</td><td>Pesta menuai, 30–31 Mei</td></tr>
+<tr><td>Hari Gawai</td><td>Dayak (Sarawak)</td><td>Pesta menuai, 1 Jun</td></tr>
+<tr><td>Vaisakhi</td><td>Sikh</td><td>Tahun baharu Sikh</td></tr></table></div>
+<p><b>Rumah terbuka</b> mengeratkan hubungan antara kaum dan memupuk perpaduan.</p>`},
+{n:7,t:'Pemimpin Negara Malaysia',b:`
+<p><b>Yang di-Pertuan Agong pertama</b>: Tuanku Abdul Rahman ibni Almarhum Tuanku Muhammad (Negeri Sembilan).</p>
+<div class="tbl"><table><tr><th>Perdana Menteri</th><th>Gelaran / sumbangan utama</th></tr>
+<tr><td>1. Tunku Abdul Rahman Putra Al-Haj</td><td>Bapa Kemerdekaan, Bapa Malaysia; menubuhkan FELDA (1956)</td></tr>
+<tr><td>2. Tun Abdul Razak Hussein</td><td>Bapa Pembangunan; Dasar Ekonomi Baru (1971), Rukun Negara</td></tr>
+<tr><td>3. Tun Hussein Onn</td><td>Bapa Perpaduan; Rukun Tetangga</td></tr>
+<tr><td>4. Tun Dr. Mahathir Mohamad</td><td>Bapa Pemodenan; Wawasan 2020, kereta nasional Proton, Dasar Pandang ke Timur</td></tr>
+<tr><td>5. Tun Abdullah Ahmad Badawi</td><td>Bapa Pembangunan Modal Insan; Islam Hadhari</td></tr>
+<tr><td>6. Dato' Sri Mohd Najib Tun Abdul Razak</td><td>Gagasan 1Malaysia; Program Transformasi Kerajaan</td></tr></table></div>
+<div class="tip"><b>Petua hafal:</b> "<b>K</b>emerdekaan – <b>P</b>embangunan – <b>P</b>erpaduan – <b>P</b>emodenan – <b>M</b>odal insan" untuk PM 1 hingga 5.</div>`},
+{n:8,t:'Kemajuan Ekonomi Malaysia',b:`
+<ul><li><b>Pertanian</b>: getah dan kelapa sawit (Malaysia antara pengeluar minyak sawit terbesar dunia), padi, koko. FELDA membuka tanah rancangan untuk rakyat luar bandar.</li><li><b>Perlombongan</b>: dahulu bijih timah; kini petroleum dan gas asli. <b>PETRONAS</b> ditubuhkan pada 1974.</li><li><b>Perindustrian</b>: kereta nasional Proton, elektrik & elektronik, kawasan perindustrian.</li><li><b>Perkhidmatan</b>: pelancongan, perbankan, pengangkutan, ICT.</li></ul>
+<p><b>Dasar Ekonomi Baru (DEB) 1971–1990</b>: membasmi kemiskinan dan menyusun semula masyarakat. Rancangan Malaysia lima tahun merancang pembangunan negara.</p>
+<p><b>Mercu tanda kemajuan</b>: Lebuhraya Utara–Selatan, Menara Berkembar PETRONAS, KLIA, Putrajaya.</p>`},
+{n:9,t:'Sukan Kebanggaan Malaysia',b:`
+<div class="tbl"><table><tr><th>Atlet / pasukan</th><th>Sukan</th><th>Pencapaian</th></tr>
+<tr><td>Pasukan badminton Malaya</td><td>Badminton</td><td>Juara Piala Thomas pertama (1949)</td></tr>
+<tr><td>Datuk Lee Chong Wei</td><td>Badminton</td><td>3 pingat perak Sukan Olimpik</td></tr>
+<tr><td>Datuk Nicol David</td><td>Skuasy</td><td>8 kali juara dunia, lama di ranking nombor 1 dunia</td></tr>
+<tr><td>Datuk Pandelela Rinong</td><td>Terjun</td><td>Atlet wanita Malaysia pertama memenangi pingat Olimpik (gangsa 2012)</td></tr>
+<tr><td>Datuk Azizulhasni Awang</td><td>Berbasikal trek</td><td>"The Pocket Rocketman", pingat Olimpik dan juara dunia keirin</td></tr>
+<tr><td>Datuk Mokhtar Dahari</td><td>Bola sepak</td><td>Legenda bola sepak negara</td></tr></table></div>
+<p>Malaysia menjadi tuan rumah <b>Sukan Komanwel 1998</b> di Kuala Lumpur. Sukan mengeratkan perpaduan dan mengharumkan nama negara. Nilai atlet: disiplin, gigih, sportif.</p>`},
+{n:10,t:'Malaysia dan Dunia',b:`
+<ul><li><b>ASEAN</b> ditubuhkan pada <b>8 Ogos 1967</b> di Bangkok melalui Deklarasi Bangkok oleh 5 negara: Malaysia, Indonesia, Filipina, Singapura dan Thailand.</li><li><b>Pertubuhan Bangsa-Bangsa Bersatu (PBB)</b>: Persekutuan Tanah Melayu menjadi anggota sejak 1957. Malaysia menghantar pasukan pengaman ke negara bergolak seperti Congo, Bosnia-Herzegovina dan Somalia.</li><li><b>Komanwel</b>: pertubuhan negara bekas tanah jajahan British.</li><li><b>OIC</b> (Pertubuhan Kerjasama Islam) dan <b>NAM</b> (Pergerakan Negara-Negara Berkecuali).</li></ul>
+<p>Peranan Malaysia: menjaga keamanan, membantu mangsa bencana (bantuan kemanusiaan), kerjasama ekonomi, pendidikan dan kebudayaan.</p>`}
+],
+obj:[
+{q:'<p>Bilakah Malaysia dibentuk?</p>',o:['31 Ogos 1957','16 September 1963','9 Julai 1963','9 Ogos 1965'],a:1,h:'Tarikh ini dirayakan sebagai Hari Malaysia.',n:'16 September 1963. 31 Ogos 1957 ialah tarikh kemerdekaan Persekutuan Tanah Melayu.'},
+{q:'<p>Siapakah yang mengemukakan gagasan pembentukan Malaysia?</p>',o:['Tun Abdul Razak','Tunku Abdul Rahman','Tun Hussein Onn','Lord Cobbold'],a:1,h:'Perdana Menteri pertama.',n:'Tunku Abdul Rahman mengemukakannya pada 27 Mei 1961 di Singapura.'},
+{q:'<p>Suruhanjaya Cobbold ditubuhkan untuk</p>',o:['menggubal Rukun Negara','meninjau pendapat rakyat Sabah dan Sarawak','memilih Yang di-Pertuan Agong','menubuhkan ASEAN'],a:1,h:'Berkaitan rakyat Borneo.',n:'Suruhanjaya Cobbold (1962) mendapati majoriti rakyat Sabah dan Sarawak menyokong Malaysia.'},
+{q:'<p>Negeri manakah yang <b>tidak</b> menyertai Malaysia pada tahun 1963?</p>',o:['Sabah','Sarawak','Brunei','Singapura'],a:2,h:'Negara kecil di Borneo.',n:'Brunei menarik diri. Singapura menyertai tetapi keluar pada 1965.'},
+{q:'<p>Singapura keluar daripada Malaysia pada</p>',o:['9 Ogos 1965','16 September 1963','31 Ogos 1970','8 Ogos 1967'],a:0,h:'Dua tahun selepas Malaysia dibentuk.',n:'9 Ogos 1965 — kini Hari Kebangsaan Singapura.'},
+{q:'<p>Apakah ibu negeri Kedah?</p>',o:['Kangar','Alor Setar','Sungai Petani','Ipoh'],a:1,h:'Negeri Jelapang Padi.',n:'Alor Setar ialah ibu negeri Kedah; Kangar ialah ibu negeri Perlis.'},
+{q:'<p>Negeri manakah diketuai oleh Yang di-Pertua Negeri?</p>',o:['Johor','Pahang','Melaka','Kelantan'],a:2,h:'Empat negeri tanpa raja.',n:'Melaka, Pulau Pinang, Sabah dan Sarawak.'},
+{q:'<p>Yang di-Pertuan Agong dipilih oleh</p>',o:['Perdana Menteri','Rakyat melalui pilihan raya','Majlis Raja-Raja','Parlimen'],a:2,h:'Mesyuarat raja-raja Melayu.',n:'Majlis Raja-Raja memilih Yang di-Pertuan Agong secara bergilir setiap 5 tahun.'},
+{q:'<p>Ketua negeri Negeri Sembilan bergelar</p>',o:['Sultan','Raja','Yang di-Pertuan Besar','Yang di-Pertua Negeri'],a:2,h:'Gelaran unik berasaskan adat perpatih.',n:'Negeri Sembilan: Yang di-Pertuan Besar; Perlis: Raja.'},
+{q:'<p>Rukun Negara diisytiharkan pada</p>',o:['31 Ogos 1957','31 Ogos 1970','16 September 1963','13 Mei 1969'],a:1,h:'Setahun selepas peristiwa 13 Mei.',n:'31 Ogos 1970, bertujuan memupuk perpaduan rakyat.'},
+{q:'<p>Prinsip pertama Rukun Negara ialah</p>',o:['Kesetiaan kepada Raja dan Negara','Kepercayaan kepada Tuhan','Kedaulatan Undang-undang','Kesopanan dan Kesusilaan'],a:1,h:'Berkaitan agama.',n:'Kepercayaan kepada Tuhan.'},
+{q:'<p>Ahmad mematuhi lampu isyarat ketika menunggang basikal. Amalan ini menepati prinsip Rukun Negara</p>',o:['Keluhuran Perlembagaan','Kedaulatan Undang-undang','Kepercayaan kepada Tuhan','Kesetiaan kepada Raja dan Negara'],a:1,h:'Peraturan jalan raya ialah undang-undang.',n:'Mematuhi undang-undang = Kedaulatan Undang-undang.'},
+{q:'<p>Kaum terbesar di Sarawak ialah</p>',o:['Kadazandusun','Bajau','Iban','Melanau'],a:2,h:'Terkenal dengan rumah panjang.',n:'Iban di Sarawak; Kadazandusun di Sabah.'},
+{q:'<p>Masyarakat Baba Nyonya kebanyakannya tinggal di</p>',o:['Melaka','Kelantan','Sabah','Perlis'],a:0,h:'Negeri bersejarah.',n:'Baba Nyonya dan Chetti terkenal di Melaka.'},
+{q:'<p>Kumpulan Orang Asli di Semenanjung ialah</p>',o:['Iban, Bidayuh, Melanau','Negrito, Senoi, Melayu Proto','Bajau, Murut, Rungus','Kayan, Kenyah, Penan'],a:1,h:'Tiga kumpulan utama Orang Asli.',n:'Negrito, Senoi dan Melayu Proto.'},
+{q:'<p>Agama Islam ialah agama bagi Persekutuan, tetapi</p>',o:['agama lain dilarang','agama lain boleh diamalkan dengan aman','hanya Islam boleh ada rumah ibadat','agama lain hanya di Sabah'],a:1,h:'Kebebasan beragama.',n:'Perlembagaan menjamin kebebasan beragama.'},
+{q:'<p>Gurdwara ialah tempat ibadat penganut agama</p>',o:['Hindu','Buddha','Sikh','Kristian'],a:2,h:'Agama yang menyambut Vaisakhi.',n:'Penganut Sikh beribadat di gurdwara.'},
+{q:'<p>Pesta Kaamatan disambut oleh masyarakat</p>',o:['Iban','Kadazandusun','Cina','India'],a:1,h:'Perayaan menuai di Sabah.',n:'Pesta Kaamatan (Sabah) pada 30–31 Mei; Hari Gawai (Sarawak) pada 1 Jun.'},
+{q:'<p>Perayaan yang dikenali sebagai Pesta Cahaya ialah</p>',o:['Deepavali','Krismas','Hari Wesak','Thaipusam'],a:0,h:'Pelita dinyalakan.',n:'Deepavali disambut oleh penganut Hindu.'},
+{q:'<p>Amalan rumah terbuka semasa perayaan dapat</p>',o:['meningkatkan perpaduan kaum','menambah kesesakan','mengurangkan pelancong','menjimatkan wang'],a:0,h:'Semua kaum boleh datang.',n:'Rumah terbuka mengeratkan hubungan antara kaum.'},
+{q:'<p>Siapakah Yang di-Pertuan Agong yang pertama?</p>',o:['Sultan Ismail Nasiruddin Shah','Tuanku Abdul Rahman ibni Almarhum Tuanku Muhammad','Tunku Abdul Rahman Putra','Sultan Hisamuddin Alam Shah'],a:1,h:'Berasal dari Negeri Sembilan.',n:'Tuanku Abdul Rahman (Negeri Sembilan) ialah YDPA pertama.'},
+{q:'<p>Tun Abdul Razak dikenali sebagai</p>',o:['Bapa Kemerdekaan','Bapa Pembangunan','Bapa Perpaduan','Bapa Pemodenan'],a:1,h:'Perdana Menteri kedua.',n:'Tun Abdul Razak memperkenalkan Dasar Ekonomi Baru.'},
+{q:'<p>Bapa Perpaduan ialah gelaran bagi</p>',o:['Tun Hussein Onn','Tun Dr. Mahathir','Tun Abdullah Ahmad Badawi','Tunku Abdul Rahman'],a:0,h:'Perdana Menteri ketiga.',n:'Tun Hussein Onn — memperkenalkan Rukun Tetangga.'},
+{q:'<p>Wawasan 2020 dan kereta nasional Proton diperkenalkan semasa pentadbiran</p>',o:['Tun Abdul Razak','Tun Dr. Mahathir Mohamad','Tun Hussein Onn','Tun Abdullah Ahmad Badawi'],a:1,h:'Bapa Pemodenan.',n:'Tun Dr. Mahathir Mohamad, Perdana Menteri keempat.'},
+{q:'<p>Matlamat Dasar Ekonomi Baru (DEB) ialah</p>',o:['membasmi kemiskinan dan menyusun semula masyarakat','membina menara tertinggi','menubuhkan ASEAN','menganjurkan sukan'],a:0,h:'Dua matlamat serampang dua mata.',n:'DEB (1971–1990): basmi kemiskinan, susun semula masyarakat.'},
+{q:'<p>Syarikat minyak dan gas nasional Malaysia ialah</p>',o:['FELDA','PETRONAS','Proton','MAS'],a:1,h:'Menara berkembar terkenal.',n:'PETRONAS ditubuhkan pada 1974.'},
+{q:'<p>Agensi yang membuka tanah rancangan untuk peneroka luar bandar ialah</p>',o:['FELDA','PETRONAS','ASEAN','PBB'],a:0,h:'Ditubuhkan pada 1956.',n:'FELDA (Lembaga Kemajuan Tanah Persekutuan).'},
+{q:'<p>Atlet wanita Malaysia pertama memenangi pingat Olimpik ialah</p>',o:['Nicol David','Pandelela Rinong','Farah Ann','Siti Nurhaliza'],a:1,h:'Sukan terjun, London 2012.',n:'Pandelela Rinong — pingat gangsa terjun 10 m, Olimpik 2012.'},
+{q:'<p>Malaysia menjadi tuan rumah Sukan Komanwel pada tahun</p>',o:['1988','1998','2008','1978'],a:1,h:'Di Kuala Lumpur, hujung 1990-an.',n:'Sukan Komanwel 1998 di Kuala Lumpur.'},
+{q:'<p>ASEAN ditubuhkan pada 8 Ogos 1967 di</p>',o:['Kuala Lumpur','Jakarta','Bangkok','Manila'],a:2,h:'Deklarasi yang dinamakan sempena bandar ini.',n:'Deklarasi Bangkok — oleh Malaysia, Indonesia, Filipina, Singapura dan Thailand.'}
+],
+subj:[
+{q:'<p>Nyatakan <b>empat</b> wilayah yang membentuk Malaysia pada 16 September 1963.</p>',h:'Satu di Semenanjung, satu pulau di selatan, dua di Borneo.',a:'Persekutuan Tanah Melayu, Singapura, Sabah, Sarawak.',n:'Singapura keluar pada 9 Ogos 1965.'},
+{q:'<p>Berikan <b>dua</b> tujuan pembentukan Malaysia.</p>',h:'Keselamatan, kemerdekaan, ekonomi.',a:'Menyekat ancaman komunis; mempercepat kemerdekaan Sabah dan Sarawak; kerjasama ekonomi; mengimbangi komposisi penduduk (mana-mana dua).',n:'Tulis dalam ayat lengkap.'},
+{q:'<p>Tuliskan <b>kelima-lima</b> prinsip Rukun Negara mengikut urutan.</p>',h:'Bermula dengan Tuhan, berakhir dengan sopan.',a:'1. Kepercayaan kepada Tuhan 2. Kesetiaan kepada Raja dan Negara 3. Keluhuran Perlembagaan 4. Kedaulatan Undang-undang 5. Kesopanan dan Kesusilaan.',n:'Rukun Negara dibaca dalam perhimpunan sekolah.'},
+{q:'<p>Sebagai murid, nyatakan <b>dua</b> amalan yang menunjukkan prinsip "Kesopanan dan Kesusilaan".</p>',h:'Tingkah laku harian di sekolah dan di rumah.',a:'Memberi salam kepada guru; bercakap dengan sopan; menghormati orang tua; beratur dengan tertib; tidak membuli (mana-mana dua).',n:'Jawapan berasaskan situasi diterima jika munasabah.'},
+{q:'<p>Namakan <b>tiga</b> negeri beraja dan ibu negerinya.</p>',h:'Rujuk jadual Unit 2.',a:'Contoh: Kedah – Alor Setar; Perak – Ipoh; Kelantan – Kota Bharu; Pahang – Kuantan; Selangor – Shah Alam.',n:'Pastikan ejaan nama tempat betul.'},
+{q:'<p>Padankan perayaan dengan masyarakat: (a) Hari Gawai (b) Thaipusam (c) Hari Wesak (d) Pesta Kaamatan.</p>',h:'Dua daripadanya perayaan menuai di Borneo.',a:'(a) Dayak/Iban, Sarawak (b) Hindu (c) Buddha (d) Kadazandusun, Sabah',n:'Perayaan menuai menandakan kesyukuran atas hasil tanaman.'},
+{q:'<p>Bagaimanakah kepelbagaian kaum dan agama di Malaysia boleh mengukuhkan perpaduan? Berikan <b>dua</b> cara.</p>',h:'Fikirkan aktiviti bersama.',a:'Mengadakan rumah terbuka; menghormati kepercayaan orang lain; menyertai aktiviti sekolah bersama kawan pelbagai kaum; mempelajari budaya kaum lain (mana-mana dua).',n:'Soalan KBAT: jawapan munasabah diterima.'},
+{q:'<p>Nyatakan gelaran dan <b>satu</b> sumbangan bagi: (a) Tunku Abdul Rahman (b) Tun Hussein Onn.</p>',h:'PM pertama dan ketiga.',a:'(a) Bapa Kemerdekaan / Bapa Malaysia — memperjuangkan kemerdekaan, mengemukakan gagasan Malaysia, menubuhkan FELDA.<br>(b) Bapa Perpaduan — memperkenalkan Rukun Tetangga.',n:'Gabungkan gelaran dengan dasar utama.'},
+{q:'<p>Senaraikan <b>tiga</b> sektor ekonomi Malaysia dengan satu contoh setiap satu.</p>',h:'Pertanian, perlombongan, perindustrian, perkhidmatan.',a:'Pertanian – kelapa sawit/getah; Perlombongan – petroleum/bijih timah; Perindustrian – kereta Proton/elektronik; Perkhidmatan – pelancongan/perbankan (mana-mana tiga).',n:'Kemajuan ekonomi meningkatkan taraf hidup rakyat.'},
+{q:'<p>(a) Bilakah ASEAN ditubuhkan?<br>(b) Nyatakan <b>dua</b> peranan Malaysia di peringkat antarabangsa.</p>',h:'Deklarasi Bangkok; fikir PBB.',a:'(a) 8 Ogos 1967.<br>(b) Menghantar pasukan pengaman PBB; memberi bantuan kemanusiaan kepada mangsa bencana; kerjasama ekonomi dan pendidikan dalam ASEAN (mana-mana dua).',n:'Malaysia menjadi anggota PBB sejak 1957.'}
+]
+});
+
+const PETIKAN=`<div class="tip" style="background:var(--surface2);color:var(--ink)"><b>Petikan</b><br>Setiap tahun, Sekolah Kebangsaan Bukit Indah menganjurkan Pameran Inovasi Kreatif. Tahun ini, Hafiz dan rakan-rakannya, Mei Ling dan Kumar, mencipta penyiram pokok automatik daripada botol plastik terpakai. Alat itu menitiskan air sedikit demi sedikit ke akar pokok supaya tanah sentiasa lembap. Mereka bekerjasama selama dua minggu selepas waktu persekolahan. Walaupun alat pertama mereka bocor, mereka tidak berputus asa. Akhirnya, ciptaan mereka memenangi tempat pertama. Guru besar memuji usaha mereka kerana menggunakan bahan kitar semula dan menjimatkan air.</div>`;
+window.SUBJECTS.push({
+id:'bm',name:'Bahasa Melayu',sub:'9 tema · tatabahasa, peribahasa, pemahaman & penulisan',
+fmt:`<ul><li>Ujian bertulis: Pemahaman & Penulisan, 50 markah.</li><li><b>Bahagian A</b> (10 markah): Objektif Aneka Pilihan — tatabahasa (3–5 soalan) & pemahaman petikan (5–7 soalan).</li><li><b>Bahagian B</b> (10 markah): Objektif Pelbagai Bentuk & Subjektif Respons Terhad — pemahaman & tatabahasa bersepadu, serta 1 soalan respons kritis dan kreatif.</li><li><b>Bahagian C</b> (10 markah): penulisan perenggan · <b>Bahagian D</b> (20 markah): penulisan karangan.</li></ul>`,
+units:[
+{n:'T',t:'Tema Buku Teks & Peribahasa Pilihan',b:`
+<p>Buku teks Tahun 6 ada 9 tema. Hafal peribahasa yang sesuai dengan setiap tema; ia sangat berguna dalam karangan.</p>
+<div class="tbl"><table><tr><th>Tema</th><th>Peribahasa / simpulan bahasa</th><th>Maksud</th></tr>
+<tr><td>1 Kekeluargaan</td><td>Bagai menatang minyak yang penuh</td><td>Menjaga dengan penuh kasih sayang</td></tr>
+<tr><td>2 Kesihatan & Kebersihan</td><td>Mencegah lebih baik daripada mengubati</td><td>Berjaga-jaga lebih baik sebelum sakit</td></tr>
+<tr><td>3 Keselamatan</td><td>Sediakan payung sebelum hujan</td><td>Bersiap sedia sebelum sesuatu berlaku</td></tr>
+<tr><td>4 Perpaduan</td><td>Bulat air kerana pembetung, bulat manusia kerana muafakat</td><td>Kesepakatan dicapai melalui perundingan</td></tr>
+<tr><td>5 Kebudayaan & Kesenian</td><td>Di mana bumi dipijak, di situ langit dijunjung</td><td>Hormati adat tempat kita berada</td></tr>
+<tr><td>6 Sains, Teknologi & Inovasi</td><td>Hendak seribu daya, tak hendak seribu dalih</td><td>Jika mahu, pasti ada jalannya</td></tr>
+<tr><td>7 Pertanian & Penternakan</td><td>Rajin berusaha tangga kejayaan / ringan tulang</td><td>Usaha membawa kejayaan / rajin bekerja</td></tr>
+<tr><td>8 Ekonomi & Kewangan</td><td>Sedikit-sedikit, lama-lama jadi bukit</td><td>Simpanan kecil lama-kelamaan menjadi banyak</td></tr>
+<tr><td>9 Integriti</td><td>Kerana nila setitik, rosak susu sebelanga</td><td>Kesalahan kecil merosakkan nama baik</td></tr></table></div>
+<h4>Simpulan bahasa popular</h4>
+<p><b>ringan tulang</b> (rajin) · <b>panjang tangan</b> (suka mencuri) · <b>besar kepala</b> (degil) · <b>buah hati</b> (orang tersayang) · <b>cakar ayam</b> (tulisan tidak kemas) · <b>kaki bangku</b> (tidak pandai bermain bola) · <b>murah hati</b> (pemurah) · <b>naik angin</b> (marah) · <b>bermuka-muka</b> (tidak ikhlas) · <b>berat mulut</b> (pendiam)</p>`},
+{n:1,t:'Golongan Kata',b:`
+<div class="tbl"><table><tr><th>Golongan</th><th>Contoh</th></tr>
+<tr><td>Kata nama am / khas</td><td>buku, sekolah / Farhan, Kedah (huruf besar)</td></tr>
+<tr><td>Kata ganti nama diri</td><td>Pertama: saya, kami, kita · Kedua: awak, kamu, anda · Ketiga: dia, beliau, mereka</td></tr>
+<tr><td>Kata ganti nama tunjuk</td><td>ini (dekat), itu (jauh), sini, situ, sana</td></tr>
+<tr><td>Kata kerja</td><td>Transitif (ada objek): <i>membaca buku</i> · Tak transitif: <i>tidur, berlari</i></td></tr>
+<tr><td>Kata adjektif</td><td>cantik, tinggi, rajin, manis, terlalu besar</td></tr>
+<tr><td>Kata hubung</td><td>dan, atau, tetapi, kerana, supaya, walaupun, apabila, sambil</td></tr>
+<tr><td>Kata tanya</td><td>apa, siapa, bila, mengapa, bagaimana, berapa, di mana</td></tr>
+<tr><td>Kata perintah</td><td>sila, jemput, tolong, jangan, usah, minta</td></tr>
+<tr><td>Kata bilangan</td><td>satu, beberapa, semua, setiap, para</td></tr>
+<tr><td>Penjodoh bilangan</td><td>seekor kucing, sebuah rumah, sebatang pen, sehelai kertas, sebiji bola, sekuntum bunga, seutas jam</td></tr></table></div>
+<h4>Kata sendi nama yang selalu keliru</h4>
+<div class="tbl"><table><tr><th>Kata sendi</th><th>Guna untuk</th><th>Contoh</th></tr>
+<tr><td>di</td><td>tempat</td><td>di sekolah</td></tr><tr><td>pada</td><td>masa, orang, haiwan</td><td>pada hari Isnin, pada ibu</td></tr>
+<tr><td>ke</td><td>arah tempat</td><td>ke pasar</td></tr><tr><td>kepada</td><td>orang/haiwan (penerima)</td><td>kepada guru</td></tr>
+<tr><td>dari</td><td>tempat, masa, arah</td><td>dari Kedah, dari pagi</td></tr><tr><td>daripada</td><td>orang, punca, bahan, perbandingan</td><td>daripada kakak, diperbuat daripada kayu, lebih tinggi daripada adik</td></tr></table></div>
+<div class="tip"><b>Ingat:</b> <i>di</i> sebagai kata sendi dieja <b>terpisah</b> (di rumah). <i>di-</i> sebagai imbuhan dieja <b>rapat</b> (dibaca, ditulis).</div>`},
+{n:2,t:'Imbuhan, Kata Ganda & Ayat',b:`
+<h4>Imbuhan</h4><ul><li><b>Awalan</b>: meN- (membaca, menulis, menyapu), beR- (berlari), di- (dimakan), ter- (terjatuh), peN- (pemandu).</li><li><b>Akhiran</b>: -an (makanan), -kan (hantarkan), -i (dekati).</li><li><b>Apitan</b>: ke-…-an (kebersihan), peN-…-an (pendidikan), beR-…-an (bersalaman), meN-…-kan (membersihkan).</li></ul>
+<h4>Kata ganda</h4><p><b>Penuh</b>: rumah-rumah · <b>Separa</b>: lelaki, pepohon · <b>Berentak</b>: kuih-muih, sayur-mayur, lauk-pauk, gunung-ganang.</p>
+<h4>Ayat aktif & pasif</h4>
+<p>Aktif: <i>Ali <b>menendang</b> bola.</i> → Pasif: <i>Bola <b>ditendang</b> oleh Ali.</i><br>Pasif dengan kata ganti nama diri pertama/kedua: <i>Bola itu <b>saya tendang</b>.</i> (bukan <i>ditendang oleh saya</i>)</p>
+<h4>Ayat tunggal & majmuk</h4><p>Tunggal: satu subjek, satu predikat. Majmuk: dua atau lebih ayat dicantum dengan kata hubung. <i>Adik menangis <b>kerana</b> lututnya luka.</i></p>
+<h4>Tanda baca</h4><p>Huruf besar pada awal ayat & kata nama khas · noktah (.) · koma (,) · tanda soal (?) · tanda seru (!) · tanda petik (" ").</p>`},
+{n:3,t:'Pemahaman & Penulisan',b:`
+<h4>Strategi menjawab pemahaman</h4><ol><li>Baca soalan dulu, kemudian petikan.</li><li>Gariskan kata kunci (siapa, mengapa, bagaimana).</li><li>Jawab dalam <b>ayat lengkap</b>, guna perkataan sendiri bila diminta.</li><li>Soalan nilai: nyatakan nilai + bukti dari petikan.</li></ol>
+<h4>Penulisan perenggan (Bahagian C)</h4><p>Satu perenggan lengkap: <b>ayat topik</b> (isi utama) → <b>huraian</b> → <b>contoh</b> → <b>ayat penutup</b>. Guna penanda wacana: <i>Selain itu, Di samping itu, Oleh itu, Kesimpulannya</i>.</p>
+<h4>Karangan (Bahagian D)</h4>
+<div class="tbl"><table><tr><th>Bahagian</th><th>Isi</th></tr><tr><td>Pendahuluan</td><td>Pengenalan tajuk, 3–4 ayat menarik (boleh mula dengan peribahasa)</td></tr><tr><td>Isi (3–4 perenggan)</td><td>Satu isi satu perenggan + huraian + contoh</td></tr><tr><td>Penutup</td><td>Rumusan, harapan atau pengajaran</td></tr></table></div>
+<p><b>Jenis karangan</b>: keperihalan/fakta, cerita (ada watak, latar, plot, pengajaran), surat kiriman rasmi dan tidak rasmi, laporan, catatan dialog.</p>
+<div class="tip"><b>Format surat kiriman rasmi:</b> alamat pengirim → alamat penerima → tarikh → "Tuan/Puan," → tajuk (huruf tebal/bergaris) → isi bernombor (1., 2., 3.) → penutup "Sekian, terima kasih." → "Yang benar," → tandatangan & nama penuh.</div>`}
+],
+obj:[
+{q:'<p>Pilih kata sendi nama yang betul: Hadiah itu diberikan ____ murid yang cemerlang.</p>',o:['ke','kepada','pada','dari'],a:1,h:'Penerima ialah manusia.',n:'"Kepada" digunakan di hadapan orang sebagai penerima.'},
+{q:'<p>Kerusi itu diperbuat ____ kayu jati.</p>',o:['dari','daripada','di','pada'],a:1,h:'Bahan.',n:'"Daripada" untuk bahan; "dari" untuk tempat/masa/arah.'},
+{q:'<p>Kami bertolak ____ Sungai Petani pada pukul 7:00 pagi.</p>',o:['daripada','dari','kepada','pada'],a:1,h:'Tempat asal.',n:'"Dari" menunjukkan tempat asal.'},
+{q:'<p>Ayat manakah yang menggunakan penjodoh bilangan dengan betul?</p>',o:['Ibu membeli sebiji kereta.','Ayah memancing seekor ikan.','Adik memakai seekor jam.','Kakak memetik sebuah bunga.'],a:1,h:'Haiwan menggunakan "ekor".',n:'Seekor ikan. (Sebuah kereta, seutas jam, sekuntum bunga.)'},
+{q:'<p>Tukar ayat aktif kepada ayat pasif: "Saya membaca buku itu."</p>',o:['Buku itu dibaca oleh saya.','Buku itu saya baca.','Buku itu dibaca saya.','Saya dibaca buku itu.'],a:1,h:'Kata ganti nama diri pertama tidak boleh menggunakan "di-…oleh".',n:'Pasif ganti nama diri pertama: Buku itu saya baca.'},
+{q:'<p>Antara berikut, yang manakah kata ganda berentak?</p>',o:['rumah-rumah','sayur-mayur','lelaki','berlari-lari'],a:1,h:'Bunyi berirama dengan perubahan bunyi.',n:'Sayur-mayur, lauk-pauk, kuih-muih ialah kata ganda berentak.'},
+{q:'<p>Imbuhan apitan yang betul bagi kata dasar "bersih" untuk membentuk kata nama ialah</p>',o:['membersih','kebersihan','bersihkan','pembersih-an'],a:1,h:'ke-…-an',n:'Kebersihan (kata nama terbitan).'},
+{q:'<p>Pilih kata hubung yang sesuai: Dia tetap ke sekolah ____ hujan turun dengan lebat.</p>',o:['kerana','walaupun','supaya','dan'],a:1,h:'Dua keadaan yang bertentangan.',n:'"Walaupun" menunjukkan pertentangan.'},
+{q:'<p>Ejaan manakah yang betul?</p>',o:['Buku itu di letakkan di atas meja.','Buku itu diletakkan di atas meja.','Buku itu diletakkan diatas meja.','Buku itu di letakkan diatas meja.'],a:1,h:'Imbuhan dirapatkan; kata sendi dijarakkan.',n:'"diletakkan" (imbuhan) dan "di atas" (kata sendi).'},
+{q:'<p>____ masuk, tetamu yang dihormati.</p>',o:['Jangan','Jemput','Usah','Tolong'],a:1,h:'Kata perintah untuk mempelawa dengan hormat.',n:'"Jemput" ialah kata perintah silaan.'},
+{q:'<p>Maksud simpulan bahasa "ringan tulang" ialah</p>',o:['malas','rajin bekerja','kurus','suka bergaduh'],a:1,h:'Suka membantu tanpa disuruh.',n:'Ringan tulang = rajin. Lawannya: berat tulang (malas).'},
+{q:'<p>Pencuri itu ditangkap kerana ____. Simpulan bahasa yang sesuai ialah</p>',o:['panjang tangan','buah hati','murah hati','kaki bangku'],a:0,h:'Tangan yang mengambil barang orang.',n:'Panjang tangan = suka mencuri.'},
+{q:'<p>Peribahasa yang sesuai untuk menggalakkan menabung ialah</p>',o:['Sedikit-sedikit, lama-lama jadi bukit','Seperti kacang lupakan kulit','Bagai aur dengan tebing','Kerana nila setitik, rosak susu sebelanga'],a:0,h:'Simpanan kecil menjadi banyak.',n:'Sesuai untuk Tema 8 Ekonomi dan Kewangan.'},
+{q:'<p>"Mencegah lebih baik daripada mengubati" sesuai digunakan dalam karangan bertajuk</p>',o:['Hari Sukan','Menjaga Kesihatan Diri','Lawatan ke Zoo','Hari Raya'],a:1,h:'Berkaitan penyakit.',n:'Tema 2 Kesihatan dan Kebersihan.'},
+{q:'<p>Penduduk kampung bergotong-royong membina dewan. Peribahasa yang sesuai ialah</p>',o:['Berat sama dipikul, ringan sama dijinjing','Seperti katak di bawah tempurung','Bagai melepaskan anjing tersepit','Harapkan pagar, pagar makan padi'],a:0,h:'Bekerjasama dalam susah dan senang.',n:'Berat sama dipikul, ringan sama dijinjing = bekerjasama.'},
+{q:'<p>Ayat manakah ialah ayat majmuk?</p>',o:['Adik tidur.','Kucing itu comel.','Ali membaca buku dan Abu menulis surat.','Ibu ke pasar.'],a:2,h:'Ada kata hubung yang mencantumkan dua ayat.',n:'Dua ayat tunggal dicantum dengan "dan".'},
+{q:'<p>Kata ganti nama diri ketiga yang digunakan untuk orang yang dihormati ialah</p>',o:['dia','beliau','kamu','mereka'],a:1,h:'Sering digunakan untuk tokoh.',n:'"Beliau" untuk orang yang dihormati.'},
+{q:'<p>Pilih ayat yang menggunakan tanda baca dengan betul.</p>',o:['wah, cantiknya pemandangan itu!','Wah, cantiknya pemandangan itu!','Wah cantiknya pemandangan itu.','Wah, cantiknya pemandangan itu?'],a:1,h:'Huruf besar di awal ayat dan tanda seru untuk perasaan.',n:'Kata seru diikuti koma, ayat berakhir dengan tanda seru.'},
+{q:'<p>Harga sayur di pasar raya itu lebih murah ____ di kedai runcit.</p>',o:['dari','daripada','pada','kepada'],a:1,h:'Perbandingan.',n:'"Daripada" digunakan untuk perbandingan.'},
+{q:'<p>Pilih maksud "berat mulut".</p>',o:['Pendiam','Banyak bercakap','Suka makan','Suka mengumpat'],a:0,h:'Lawan kepada "ringan mulut".',n:'Berat mulut = pendiam, tidak banyak bercakap.'},
+{q:`${PETIKAN}<p>Siapakah rakan-rakan Hafiz dalam pertandingan itu?</p>`,o:['Mei Ling dan guru besar','Mei Ling dan Kumar','Kumar dan guru besar','Hanya Kumar'],a:1,h:'Lihat ayat kedua petikan.',n:'Hafiz bekerjasama dengan Mei Ling dan Kumar.'},
+{q:'<p>(Rujuk petikan soalan 21) Apakah fungsi penyiram pokok automatik itu?</p>',o:['Menyiram air dengan banyak sekali gus','Menitiskan air sedikit demi sedikit supaya tanah lembap','Membaja pokok','Menghalau serangga'],a:1,h:'Ayat ketiga petikan.',n:'Air dititiskan perlahan ke akar pokok.'},
+{q:'<p>(Rujuk petikan soalan 21) Frasa "tidak berputus asa" bermaksud</p>',o:['mudah mengalah','terus berusaha walaupun gagal','berasa marah','berhenti mencuba'],a:1,h:'Apa yang mereka lakukan selepas alat bocor?',n:'Tidak berputus asa = terus mencuba.'},
+{q:'<p>(Rujuk petikan soalan 21) Mengapakah guru besar memuji usaha mereka?</p>',o:['Kerana alat itu mahal','Kerana menggunakan bahan kitar semula dan menjimatkan air','Kerana mereka pelajar tahun 6','Kerana mereka menang hadiah wang'],a:1,h:'Ayat terakhir petikan.',n:'Jawapan terdapat dalam ayat terakhir.'},
+{q:'<p>(Rujuk petikan soalan 21) Nilai murni yang paling ketara dalam petikan ialah</p>',o:['kerjasama dan ketekunan','kebersihan','hormat-menghormati','bersyukur'],a:0,h:'Mereka bekerja bersama-sama dan tidak menyerah.',n:'Bekerjasama selama dua minggu dan tidak berputus asa.'},
+{q:'<p>(Rujuk petikan soalan 21) Peribahasa yang paling sesuai dengan petikan ialah</p>',o:['Bulat air kerana pembetung, bulat manusia kerana muafakat','Seperti katak di bawah tempurung','Bagai kaca terhempas ke batu','Harapkan pagar, pagar makan padi'],a:0,h:'Mereka berjaya kerana sepakat.',n:'Kesepakatan membawa kejayaan.'},
+{q:'<p>Dalam surat kiriman rasmi, salam pembuka yang betul ialah</p>',o:['Assalamualaikum sahabatku,','Tuan,','Hai kawan,','Ayah yang dikasihi,'],a:1,h:'Surat kepada pegawai atau guru besar.',n:'Surat rasmi menggunakan "Tuan," atau "Puan,".'},
+{q:'<p>Penanda wacana yang sesuai untuk memulakan perenggan penutup ialah</p>',o:['Pertama sekali','Kesimpulannya','Selain itu','Contohnya'],a:1,h:'Merumuskan karangan.',n:'"Kesimpulannya" atau "Akhir sekali" untuk penutup.'},
+{q:'<p>Ayat manakah yang <b>tidak gramatis</b>?</p>',o:['Para-para guru sedang bermesyuarat.','Para guru sedang bermesyuarat.','Semua guru sedang bermesyuarat.','Guru-guru sedang bermesyuarat.'],a:0,h:'"Para" sudah menunjukkan jamak.',n:'Kata bilangan jamak tidak diikuti kata ganda: "para guru", bukan "para-para guru".'},
+{q:'<p>Pilih kata adjektif dalam ayat: "Kampung datuk sangat damai."</p>',o:['Kampung','datuk','sangat','damai'],a:3,h:'Perkataan yang menerangkan sifat.',n:'"Damai" ialah kata adjektif; "sangat" ialah kata penguat.'}
+],
+subj:[
+{q:`${PETIKAN}<p>Nyatakan <b>dua</b> sebab ciptaan Hafiz dan rakan-rakannya berjaya.</p>`,h:'Cari usaha dan sikap mereka.',a:'Mereka bekerjasama selama dua minggu; mereka tidak berputus asa walaupun alat pertama bocor; mereka menggunakan bahan kitar semula yang menjimatkan air.',n:'Jawab dalam ayat lengkap.'},
+{q:'<p>(Rujuk petikan soalan 1) Pada pendapat anda, apakah <b>dua</b> kebaikan menggunakan botol plastik terpakai untuk membuat ciptaan? (Respons kritis dan kreatif)</p>',h:'Fikirkan alam sekitar dan kos.',a:'Contoh: Mengurangkan sampah plastik yang mencemarkan alam sekitar; menjimatkan kos kerana bahan mudah didapati; memupuk sikap kreatif menggunakan semula barang.',n:'Soalan pendapat: jawapan munasabah dengan huraian diterima.'},
+{q:'<p>Tukarkan ayat aktif berikut kepada ayat pasif:<br>(a) Pak Abu menanam pokok rambutan.<br>(b) Kami membersihkan kelas setiap pagi.</p>',h:'(b) menggunakan kata ganti nama diri pertama.',a:'(a) Pokok rambutan ditanam oleh Pak Abu.<br>(b) Kelas kami bersihkan setiap pagi.',n:'Bagi kata ganti nama diri pertama dan kedua, tidak guna "di-…oleh".'},
+{q:'<p>Betulkan kesalahan dalam ayat berikut:<br>(a) Surat itu di hantar ke pada pengetua.<br>(b) Para-para peserta beratur di dewan.</p>',h:'Ejaan imbuhan, kata sendi dan kata bilangan.',a:'(a) Surat itu dihantar kepada pengetua.<br>(b) Para peserta beratur di dewan.',n:'"di-" imbuhan dirapatkan; "kepada" ialah satu perkataan.'},
+{q:'<p>Bina ayat yang sesuai dengan simpulan bahasa:<br>(a) murah hati<br>(b) naik angin</p>',h:'Ayat mesti menunjukkan maksud.',a:'Contoh: (a) Pak Ali yang murah hati selalu menderma kepada anak yatim.<br>(b) Ayah naik angin apabila adik memecahkan pasu kesayangannya.',n:'Ayat yang menunjukkan maksud dengan jelas mendapat markah penuh.'},
+{q:'<p>Nyatakan maksud peribahasa "Di mana bumi dipijak, di situ langit dijunjung" dan bina satu ayat.</p>',h:'Berkaitan menghormati adat tempat lain.',a:'Maksud: Kita hendaklah menghormati adat dan peraturan tempat yang kita duduki.<br>Contoh ayat: Semasa melawat Jepun, kami menanggalkan kasut sebelum masuk ke rumah kerana di mana bumi dipijak, di situ langit dijunjung.',n:'Sesuai untuk Tema 5 Kebudayaan.'},
+{q:'<p>Isi tempat kosong dengan kata sendi nama yang betul:<br>Ayah pulang (a)___ pejabat (b)___ pukul 6:00 petang. Dia membawa buah tangan (c)___ kami. Buah tangan itu dibeli (d)___ rakannya.</p>',h:'Tempat asal, masa, penerima, orang.',a:'(a) dari (b) pada (c) untuk / kepada (d) daripada',n:'Rujuk jadual kata sendi dalam nota Golongan Kata.'},
+{q:'<p><b>Penulisan perenggan (Bahagian C):</b> Tulis satu perenggan tentang cara menjaga kebersihan diri (50–80 patah perkataan).</p>',h:'Ayat topik → huraian → contoh → penutup.',a:'Contoh: Kebersihan diri amat penting untuk kesihatan kita. Kita hendaklah mandi sekurang-kurangnya dua kali sehari dan memberus gigi selepas makan. Selain itu, kuku perlu dipotong pendek supaya kuman tidak terkumpul. Kita juga mesti mencuci tangan dengan sabun sebelum makan dan selepas ke tandas. Pakaian pula hendaklah ditukar setiap hari. Ingatlah, mencegah lebih baik daripada mengubati.',n:'Guna penanda wacana dan sisipkan peribahasa untuk markah lebih tinggi.'},
+{q:'<p><b>Karangan (Bahagian D):</b> Tulis rangka karangan bertajuk <b>"Cara-cara Berjimat Cermat"</b> (pendahuluan, empat isi, penutup).</p>',h:'Fikirkan wang, elektrik, air, makanan.',a:['<b>Pendahuluan:</b> Berjimat cermat ialah amalan berbelanja mengikut keperluan. "Ingat sebelum kena, jimat sebelum habis."','<b>Isi 1:</b> Menabung sebahagian wang saku setiap hari dalam tabung atau bank.','<b>Isi 2:</b> Membeli barang mengikut keperluan, bukan kehendak; buat senarai sebelum membeli.','<b>Isi 3:</b> Menjimatkan elektrik dan air: tutup suis dan paip selepas digunakan.','<b>Isi 4:</b> Mengguna semula barang (buku latihan, botol air) dan menjaga harta benda supaya tahan lama.','<b>Penutup:</b> Amalan berjimat cermat menjamin masa depan; sedikit-sedikit, lama-lama jadi bukit.'],n:'Setiap isi dikembangkan menjadi satu perenggan dengan huraian dan contoh.'},
+{q:'<p>Anda ialah Setiausaha Kelab Sains. Tulis <b>bahagian awal</b> surat kiriman rasmi kepada Guru Besar untuk memohon kebenaran mengadakan Pameran Inovasi (alamat, tarikh, salam, tajuk dan isi pertama).</p>',h:'Ikut format surat kiriman rasmi dalam nota.',a:'Contoh:<br>Setiausaha Kelab Sains,<br>Sekolah Kebangsaan Bukit Indah,<br>08000 Sungai Petani, Kedah.<br><br>Guru Besar,<br>Sekolah Kebangsaan Bukit Indah,<br>08000 Sungai Petani, Kedah.<br><br>31 Oktober 2026<br><br>Tuan,<br><br><b>PERMOHONAN KEBENARAN MENGADAKAN PAMERAN INOVASI</b><br><br>Dengan segala hormatnya, perkara di atas adalah dirujuk.<br>2. Kelab Sains bercadang mengadakan Pameran Inovasi pada 20 November 2026 di dewan sekolah …',n:'Isi surat rasmi dinomborkan bermula daripada perenggan kedua (2., 3., …).'}
+]
+});
+
+window.SUBJECTS.push({
+id:'rbt',name:'RBT',sub:'Reka Bentuk dan Teknologi · 3 unit',
+fmt:`<ul><li>RBT <b>tidak tersenarai</b> dalam Format Instrumen UASA Sekolah Rendah KPM; penilaiannya banyak dibuat melalui pentaksiran bilik darjah (projek, lakaran, pembentangan).</li><li>Set latihan di sini menggunakan gaya umum peperiksaan sekolah: 30 objektif aneka pilihan + 10 subjektif (lakaran, carta alir, analisis produk).</li></ul>`,
+units:[
+{n:1,t:'Aplikasi Reka Bentuk Teknologi Kejuruteraan',b:`
+<p>Tahun 6 memberi fokus kepada <b>produk elektromekanikal</b>: produk yang menggabungkan komponen <b>elektrik</b> dan <b>mekanikal</b>. Contoh: kereta mainan bermotor, kren, pintu pagar elektrik, kipas, bot mainan.</p>
+<h4>Komponen elektrik</h4>
+<div class="tbl"><table><tr><th>Komponen</th><th>Fungsi</th></tr><tr><td>Bateri & pemegang bateri</td><td>Sumber tenaga elektrik</td></tr><tr><td>Suis</td><td>Menghidupkan / memutuskan litar</td></tr><tr><td>Wayar</td><td>Mengalirkan arus elektrik</td></tr><tr><td>Motor</td><td>Menukar tenaga elektrik kepada tenaga kinetik (putaran)</td></tr><tr><td>LED / mentol</td><td>Menghasilkan cahaya; LED ada kekutuban (+ kaki panjang)</td></tr></table></div>
+<p><b>Litar lengkap</b> diperlukan supaya arus mengalir: bateri → suis → komponen → kembali ke bateri. Litar <b>bersiri</b>: satu laluan (jika satu mentol rosak, semua padam). Litar <b>selari</b>: banyak laluan (mentol lain masih menyala).</p>
+<h4>Komponen mekanikal</h4>
+<div class="tbl"><table><tr><th>Komponen</th><th>Fungsi / ciri</th></tr><tr><td>Aci</td><td>Rod yang berputar, memegang roda atau gear</td></tr><tr><td>Roda</td><td>Mengurangkan geseran, memudahkan pergerakan</td></tr><tr><td>Gear</td><td>Roda bergigi memindahkan putaran. Dua gear bersentuhan berputar <b>bertentangan arah</b>.</td></tr><tr><td>Takal & tali sawat</td><td>Memindahkan putaran pada jarak jauh. Tali lurus → <b>arah sama</b>; tali bersilang → <b>arah bertentangan</b>.</td></tr><tr><td>Sproket & rantai</td><td>Seperti pada basikal; arah putaran sama</td></tr></table></div>
+<div class="tip"><b>Gear pemacu & gear dipacu:</b> Gear <b>besar</b> memacu gear <b>kecil</b> → gear kecil berputar <b>lebih laju</b>. Gear kecil memacu gear besar → lebih perlahan tetapi lebih kuat.</div>
+<h4>Keselamatan bengkel</h4><ul><li>Guna alatan (pemutar skru, playar, gunting, pistol gam) mengikut fungsi dan arahan guru.</li><li>Jangan main dengan bateri atau sambung terus kutub + dan − (litar pintas).</li><li>Simpan alatan selepas digunakan dan bersihkan tempat kerja.</li></ul>`},
+{n:2,t:'Reka Bentuk Pengaturcaraan',b:`
+<p>Unit ini memperkenalkan <b>asas sistem robotik</b> dan cara memberi arahan kepada mesin.</p>
+<h4>Komponen robot</h4>
+<div class="tbl"><table><tr><th>Bahagian</th><th>Tugas</th><th>Contoh</th></tr>
+<tr><td>Pengawal (otak)</td><td>Memproses arahan / atur cara</td><td>Mikropengawal</td></tr>
+<tr><td>Penderia (input)</td><td>Mengesan keadaan sekeliling</td><td>Penderia cahaya, ultrasonik (jarak), sentuh, bunyi</td></tr>
+<tr><td>Penggerak (output)</td><td>Melakukan tindakan</td><td>Motor, LED, pembaz (buzzer)</td></tr>
+<tr><td>Sumber kuasa</td><td>Membekalkan tenaga</td><td>Bateri</td></tr></table></div>
+<h4>Algoritma, pseudokod & carta alir</h4><ul><li><b>Algoritma</b>: langkah-langkah tersusun untuk menyelesaikan masalah.</li><li><b>Pseudokod</b>: algoritma ditulis dalam ayat ringkas bernombor.</li><li><b>Carta alir</b>: algoritma dalam bentuk simbol.</li></ul>
+<div class="tbl"><table><tr><th>Simbol carta alir</th><th>Maksud</th></tr><tr><td>Bujur (oval)</td><td>Mula / Tamat</td></tr><tr><td>Segi empat selari</td><td>Input / Output</td></tr><tr><td>Segi empat tepat</td><td>Proses</td></tr><tr><td>Berlian (rombus)</td><td>Keputusan (Ya / Tidak)</td></tr><tr><td>Anak panah</td><td>Arah aliran</td></tr></table></div>
+<h4>Struktur kawalan</h4><ul><li><b>Jujukan</b>: arahan dilaksana satu demi satu mengikut urutan.</li><li><b>Pilihan</b>: <i>JIKA … MAKA … JIKA TIDAK …</i> (cth. JIKA ada halangan, robot berhenti).</li><li><b>Ulangan</b>: arahan diulang (gelung), cth. ulang 4 kali: gerak ke depan, belok kanan → robot bergerak dalam segi empat sama.</li></ul>
+<p><b>Nyahpepijat (debug)</b>: mencari dan membetulkan ralat dalam atur cara.</p>`,
+b2:`<div class="ex" style="border-style:solid"><div class="exq"><span>Contoh</span>Pseudokod robot pengesan halangan</div><ol style="margin:8px 0 0"><li>Mula</li><li>Hidupkan motor, robot bergerak ke hadapan</li><li>Baca jarak daripada penderia ultrasonik</li><li>JIKA jarak kurang daripada 10 cm, MAKA hentikan motor dan nyalakan LED merah</li><li>JIKA TIDAK, teruskan bergerak (ulang langkah 3)</li><li>Tamat</li></ol></div>`},
+{n:3,t:'Pembangunan Produk',b:`
+<h4>Proses reka bentuk produk</h4>
+<ol><li><b>Kenal pasti masalah / keperluan</b> pengguna.</li><li><b>Kumpul maklumat</b> (temu bual, kaji produk sedia ada).</li><li><b>Jana idea</b> (peta minda, sumbang saran) dan buat beberapa lakaran.</li><li><b>Pilih idea terbaik</b> berdasarkan kriteria: fungsi, keselamatan, kos, estetika, ergonomik.</li><li><b>Lakaran bermaklumat</b>: lukisan dengan label, ukuran, bahan dan cara pemasangan.</li><li><b>Senarai bahan & alatan</b> dan <b>anggaran kos</b>.</li><li><b>Bina prototaip / model</b>.</li><li><b>Uji & nilai</b>: adakah produk berfungsi? Apa yang perlu ditambah baik?</li><li><b>Pembentangan & pemasaran</b>: nama produk, logo, slogan, harga.</li></ol>
+<div class="tip"><b>Kos produk:</b> Jumlah kos = kos semua bahan (+ kos lain). Harga jual = kos + untung yang dikehendaki.</div>
+<h4>Ciri produk yang baik</h4><p>Berfungsi dengan baik · selamat · tahan lama · menarik (estetika) · selesa digunakan (ergonomik) · harga berpatutan · mesra alam (guna bahan kitar semula).</p>`}
+],
+obj:[
+{q:'<p>Produk elektromekanikal ialah produk yang menggabungkan komponen</p>',o:['elektrik dan mekanikal','kayu dan kain','air dan udara','kertas dan plastik'],a:0,h:'Lihat perkataan "elektro" dan "mekanikal".',n:'Contoh: kereta mainan bermotor.'},
+{q:'<p>Komponen yang menukar tenaga elektrik kepada tenaga kinetik ialah</p>',o:['Suis','Motor','Bateri','Wayar'],a:1,h:'Ia berputar.',n:'Motor menghasilkan putaran.'},
+{q:'<p>Fungsi suis dalam litar ialah</p>',o:['membekalkan tenaga','menghidupkan atau memutuskan litar','menghasilkan cahaya','menyimpan elektrik'],a:1,h:'On / Off.',n:'Suis mengawal aliran arus.'},
+{q:'<p>Sumber tenaga dalam kereta mainan elektrik ialah</p>',o:['Gear','Bateri','Aci','Roda'],a:1,h:'Ia dipasang dalam pemegang.',n:'Bateri membekalkan tenaga elektrik.'},
+{q:'<p>Kaki LED yang lebih panjang ialah kutub</p>',o:['negatif','positif','neutral','bumi'],a:1,h:'LED ada kekutuban.',n:'Kaki panjang = positif (+).'},
+{q:'<p>Dalam litar bersiri, jika satu mentol rosak,</p>',o:['mentol lain lebih terang','semua mentol padam','mentol lain tidak terjejas','bateri meletup'],a:1,h:'Hanya ada satu laluan arus.',n:'Litar bersiri terputus apabila satu komponen rosak.'},
+{q:'<p>Dua gear yang bersentuhan akan berputar</p>',o:['pada arah yang sama','pada arah bertentangan','tidak berputar','secara rawak'],a:1,h:'Gigi gear menolak gigi gear lain.',n:'Gear bersentuhan berputar bertentangan arah.'},
+{q:'<p>Gear besar memacu gear kecil. Gear kecil akan berputar</p>',o:['lebih perlahan','lebih laju','sama laju','berhenti'],a:1,h:'Gear kecil perlu berpusing lebih banyak kali.',n:'Gear besar → gear kecil = laju bertambah.'},
+{q:'<p>Takal dengan tali sawat bersilang akan menyebabkan takal dipacu berputar</p>',o:['arah sama','arah bertentangan','lebih laju sahaja','berhenti'],a:1,h:'Bentuk "X" pada tali.',n:'Tali lurus = arah sama; tali bersilang = arah bertentangan.'},
+{q:'<p>Komponen mekanikal yang memegang roda dan berputar bersamanya ialah</p>',o:['Aci','Suis','LED','Wayar'],a:0,h:'Rod logam atau kayu.',n:'Aci memindahkan putaran ke roda.'},
+{q:'<p>Basikal menggunakan sistem</p>',o:['takal dan tali sawat','sproket dan rantai','gear cacing','suis dan LED'],a:1,h:'Lihat pedal basikal.',n:'Sproket dan rantai memindahkan putaran dari pedal ke roda belakang.'},
+{q:'<p>Amalan keselamatan yang betul di bengkel ialah</p>',o:['bermain dengan pistol gam','menyambung terus kutub + dan − bateri','menggunakan alatan mengikut arahan guru','berlari di dalam bengkel'],a:2,h:'Pilih amalan selamat.',n:'Sambungan terus kutub bateri menyebabkan litar pintas.'},
+{q:'<p>Contoh produk elektromekanikal ialah</p>',o:['Pensel','Pintu pagar elektrik','Buku','Kerusi kayu'],a:1,h:'Ada motor dan bahagian bergerak.',n:'Pintu pagar elektrik guna motor dan gear.'},
+{q:'<p>Bahagian robot yang bertindak sebagai "otak" ialah</p>',o:['Penderia','Pengawal / mikropengawal','Motor','Roda'],a:1,h:'Ia memproses arahan.',n:'Mikropengawal menjalankan atur cara.'},
+{q:'<p>Penderia ultrasonik digunakan untuk mengesan</p>',o:['warna','jarak objek / halangan','suhu','bau'],a:1,h:'Seperti kelawar menggunakan gema.',n:'Ultrasonik mengukur jarak menggunakan gelombang bunyi.'},
+{q:'<p>Antara berikut, yang manakah komponen <b>output</b> robot?</p>',o:['Penderia cahaya','Penderia sentuh','LED','Penderia bunyi'],a:2,h:'Output melakukan tindakan.',n:'LED, motor dan pembaz ialah output (penggerak).'},
+{q:'<p>Langkah-langkah tersusun untuk menyelesaikan masalah dipanggil</p>',o:['Algoritma','Prototaip','Logo','Litar'],a:0,h:'Asas pengaturcaraan.',n:'Algoritma boleh ditulis sebagai pseudokod atau carta alir.'},
+{q:'<p>Simbol carta alir berbentuk berlian mewakili</p>',o:['Mula/Tamat','Proses','Keputusan','Input/Output'],a:2,h:'Ada dua jalan keluar: Ya atau Tidak.',n:'Berlian = keputusan.'},
+{q:'<p>Simbol bujur (oval) dalam carta alir mewakili</p>',o:['Mula / Tamat','Keputusan','Proses','Aliran'],a:0,h:'Permulaan dan pengakhiran.',n:'Terminal: Mula / Tamat.'},
+{q:'<p>Arahan "Ulang 4 kali: gerak 10 langkah, pusing kanan 90°" menggunakan struktur kawalan</p>',o:['jujukan sahaja','pilihan','ulangan','tiada struktur'],a:2,h:'Perkataan "ulang".',n:'Ulangan (gelung). Hasilnya laluan segi empat sama.'},
+{q:'<p>"JIKA lampu merah, MAKA berhenti." Ini ialah struktur kawalan</p>',o:['jujukan','pilihan','ulangan','gelung'],a:1,h:'Ada syarat.',n:'Pilihan bergantung pada syarat.'},
+{q:'<p>Proses mencari dan membetulkan ralat dalam atur cara dipanggil</p>',o:['menyalin','nyahpepijat (debug)','melakar','memasang'],a:1,h:'"Bug" bermaksud ralat.',n:'Nyahpepijat = debug.'},
+{q:'<p>Langkah <b>pertama</b> dalam proses reka bentuk produk ialah</p>',o:['Membina prototaip','Mengenal pasti masalah / keperluan','Menentukan harga','Membuat logo'],a:1,h:'Kenapa produk itu diperlukan?',n:'Reka bentuk bermula dengan masalah atau keperluan pengguna.'},
+{q:'<p>Lakaran yang mengandungi label, ukuran dan bahan dipanggil</p>',o:['lakaran kasar','lakaran bermaklumat','lukisan bebas','carta pai'],a:1,h:'Penuh dengan maklumat.',n:'Lakaran bermaklumat membantu proses pembinaan.'},
+{q:'<p>Kaedah menjana idea dengan menulis semua idea di sekeliling tajuk utama ialah</p>',o:['peta minda','carta alir','jadual kos','pseudokod'],a:0,h:'Seperti cabang pokok.',n:'Peta minda membantu menjana banyak idea.'},
+{q:'<p>Model awal produk yang dibina untuk diuji dipanggil</p>',o:['prototaip','logo','slogan','invois'],a:0,h:'Versi percubaan.',n:'Prototaip diuji dan ditambah baik.'},
+{q:'<p>Kos bahan sebuah kereta mainan ialah RM12. Jika untung yang dikehendaki RM3, harga jual ialah</p>',o:['RM9','RM15','RM36','RM12'],a:1,h:'Harga jual = kos + untung.',n:'RM12 + RM3 = RM15.'},
+{q:'<p>Ciri ergonomik bermaksud produk</p>',o:['murah','selesa dan sesuai digunakan oleh manusia','berwarna-warni','berat'],a:1,h:'Kaitan dengan tubuh pengguna.',n:'Ergonomik = selesa dan mudah digunakan.'},
+{q:'<p>Menggunakan botol plastik terpakai untuk badan kereta mainan menunjukkan produk itu</p>',o:['mesra alam','berbahaya','mahal','rapuh'],a:0,h:'Kitar semula.',n:'Bahan kitar semula mengurangkan sampah.'},
+{q:'<p>Logo, nama produk dan slogan berkaitan dengan aspek</p>',o:['pembinaan','penjenamaan dan pemasaran','pengujian','pengaturcaraan'],a:1,h:'Untuk menarik pembeli.',n:'Penjenamaan menjadikan produk mudah dikenali.'}
+],
+subj:[
+{q:'<p>Senaraikan <b>tiga</b> komponen elektrik dan <b>dua</b> komponen mekanikal dalam sebuah kereta mainan bermotor.</p>',h:'Elektrik: tenaga & arus. Mekanikal: bergerak.',a:'Elektrik: bateri, pemegang bateri, suis, wayar, motor.<br>Mekanikal: roda, aci, gear, takal & tali sawat.',n:'Motor kadang-kadang dianggap komponen elektromekanikal.'},
+{q:'<p>Terangkan maksud litar lengkap dan mengapa ia diperlukan.</p>',h:'Arus perlu laluan pergi dan balik.',a:'Litar lengkap ialah litar yang tidak terputus dari kutub positif bateri, melalui komponen, kembali ke kutub negatif. Ia diperlukan supaya arus elektrik dapat mengalir dan komponen (motor/LED) berfungsi.',n:'Suis yang terbuka memutuskan litar.'},
+{q:'<p>Gear A (40 gigi) memacu Gear B (20 gigi).<br>(a) Gear manakah berputar lebih laju?<br>(b) Jika Gear A berputar ikut arah jam, ke manakah arah Gear B?<br>(c) Berapa kali Gear B berputar apabila Gear A berputar sekali?</p>',h:'Bandingkan bilangan gigi.',a:['(a) Gear B (lebih kecil)','(b) Lawan arah jam','(c) 40 ÷ 20 = 2 kali'],n:'Gear bersentuhan berputar bertentangan arah.'},
+{q:'<p>Bandingkan takal dengan tali sawat lurus dan takal dengan tali sawat bersilang dari segi arah putaran.</p>',h:'Lurus vs bentuk X.',a:'Tali sawat lurus: kedua-dua takal berputar pada arah yang sama.<br>Tali sawat bersilang: takal dipacu berputar pada arah bertentangan.',n:'Prinsip ini digunakan dalam mesin dan mainan.'},
+{q:'<p>Nyatakan <b>empat</b> bahagian utama robot dan satu contoh bagi setiap satu.</p>',h:'Otak, input, output, tenaga.',a:'Pengawal – mikropengawal; Penderia (input) – penderia ultrasonik/cahaya; Penggerak (output) – motor/LED/pembaz; Sumber kuasa – bateri.',n:'Penderia mengesan, pengawal memproses, penggerak bertindak.'},
+{q:'<p>Lukis atau tuliskan carta alir ringkas bagi lampu jalan pintar yang menyala apabila gelap.</p>',h:'Gunakan simbol keputusan "Gelap?".',a:['Mula (bujur)','Baca penderia cahaya (input – segi empat selari)','Gelap? (berlian)','Ya → Nyalakan lampu (proses) ; Tidak → Padamkan lampu','Kembali ke "Baca penderia cahaya" (ulangan)'],n:'Gabungan struktur pilihan dan ulangan.'},
+{q:'<p>Tulis pseudokod untuk robot bergerak mengikut laluan segi empat sama menggunakan struktur ulangan.</p>',h:'Segi empat sama ada 4 sisi dan 4 sudut tepat.',a:['Mula','Ulang 4 kali:','&nbsp;&nbsp;Gerak ke hadapan 20 cm','&nbsp;&nbsp;Belok kanan 90°','Tamat ulangan','Tamat'],n:'Ulangan memendekkan atur cara berbanding menulis arahan 8 kali.'},
+{q:'<p>Senaraikan langkah-langkah proses reka bentuk produk mengikut urutan (sekurang-kurangnya 6 langkah).</p>',h:'Masalah → idea → lakar → bina → uji → bentang.',a:['Kenal pasti masalah / keperluan','Kumpul maklumat','Jana idea dan buat lakaran','Pilih idea terbaik & hasilkan lakaran bermaklumat','Senarai bahan, alatan & kos','Bina prototaip','Uji, nilai & tambah baik','Bentang & pasarkan produk'],n:'Urutan penting; markah diberi untuk susunan logik.'},
+{q:'<p>Senarai bahan sebuah kipas mini: motor RM4.50, pemegang bateri RM2.00, suis RM1.50, bilah kipas RM2.00, bekas kitar semula RM0.00. Hitung jumlah kos dan cadangkan harga jual jika mahu untung RM5.</p>',h:'Tambah semua kos.',a:['Jumlah kos = 4.50 + 2.00 + 1.50 + 2.00 + 0.00 = RM10.00','Harga jual = RM10.00 + RM5.00 = RM15.00'],n:'Bahan kitar semula mengurangkan kos.'},
+{q:'<p>Ali membina kereta mainan tetapi roda tidak berputar apabila suis dihidupkan. Cadangkan <b>dua</b> kemungkinan punca dan cara membaikinya.</p>',h:'Periksa bahagian elektrik dan mekanikal.',a:'Contoh: (1) Bateri lemah/habis – tukar bateri baharu. (2) Wayar tertanggal / litar tidak lengkap – sambung semula wayar dengan kemas. (3) Gear tidak bersentuhan atau aci tersekat – laraskan kedudukan gear/aci. (4) Bateri dipasang terbalik – pasang mengikut kutub.',n:'Proses uji dan nilai membantu mengenal pasti masalah.'}
+]
+});
+
+/* Tambahan: ilustrasi, petua ingat (mn) dan contoh langkah demi langkah terperinci.
+   Langkah: "teks utama||kenapa (penerangan kecil)" */
+(function(){
+const get=id=>window.SUBJECTS.find(s=>s.id===id);
+const X={
+mt:[
+{ill:'mt1',mn:[['KDBTT','<b>K</b>urungan → <b>D</b>arab & <b>B</b>ahagi → <b>T</b>ambah & <b>T</b>olak. Sebut: "<i>Kakak Datang Bawa Telur Tujuh</i>"'],['6 SIFAR','1 juta = 1 000 000. Tukar juta ↔ nombor bulat: gerak titik perpuluhan <b>6 langkah</b>.'],['2·3·5·7','Nombor perdana pertama. <b>2</b> ialah satu-satunya nombor perdana genap. <b>1</b> bukan perdana.'],['JUMLAH DIGIT','Jika jumlah digit boleh dibahagi 3, nombor itu boleh dibahagi 3 → bukan perdana (cth. 51: 5+1=6).']],
+ex:[
+{q:`Tukar ${F(3,4)} juta kepada nombor bulat.`,s:['Faham soalan: "juta" bermaksud darab 1 000 000||Pecahan juta ialah sebahagian daripada sejuta',`Tulis ayat matematik: ${F(3,4)} × 1 000 000`,'Bahagi dengan penyebut dulu: 1 000 000 ÷ 4 = 250 000||Ini nilai ¼ juta',`Darab dengan pengangka: 250 000 × 3 = 750 000||Kita mahu 3 bahagian`,'Semak: 750 000 < 1 000 000 ✓||¾ kurang daripada 1, jadi jawapan mesti kurang daripada sejuta'],a:'750 000'},
+{q:'Tukar 4.25 juta kepada nombor bulat.',s:['Tulis: 4.25 × 1 000 000','1 000 000 ada 6 sifar → gerakkan titik perpuluhan 6 tempat ke kanan','4.25 → 42.5 → 425 → 4 250 → 42 500 → 425 000 → 4 250 000||Isi tempat kosong dengan sifar','Baca: empat juta dua ratus lima puluh ribu'],a:'4 250 000'},
+{q:'Tukar 2 600 000 kepada perpuluhan juta.',s:['Nombor bulat → juta: bahagi 1 000 000','Gerakkan titik perpuluhan 6 tempat ke kiri: 2 600 000. → 2.600000','Buang sifar di hujung selepas titik: 2.6||Sifar di hujung perpuluhan tidak mengubah nilai'],a:'2.6 juta'},
+{q:'Adakah 51 nombor perdana?',s:['Cuba bahagi dengan 2: 51 nombor ganjil → tidak boleh','Cuba bahagi dengan 3: jumlah digit 5 + 1 = 6||6 boleh dibahagi 3, jadi 51 juga boleh','51 ÷ 3 = 17','51 ada faktor 1, 3, 17, 51 (lebih daripada dua)||Nombor perdana hanya ada dua faktor'],a:'Bukan nombor perdana (nombor gubahan)'},
+{q:'Hitung 45 000 + 125 × 8 − 6 000 ÷ 4',s:['Bulatkan operasi: +, ×, −, ÷','Tiada kurungan. Ikut KDBTT: buat × dan ÷ dahulu','125 × 8 = 1 000||Pecahkan: 100 × 8 = 800, 25 × 8 = 200, jumlah 1 000','6 000 ÷ 4 = 1 500','Tulis semula: 45 000 + 1 000 − 1 500','Dari kiri ke kanan: 45 000 + 1 000 = 46 000','46 000 − 1 500 = 44 500'],a:'44 500'},
+{q:'Hitung (18 000 − 3 600) ÷ 12',s:['Kurungan dahulu: 18 000 − 3 600 = 14 400','Bahagi tanpa sifar dahulu: 144 ÷ 12 = 12||Lebih mudah dengan nombor kecil','Kembalikan dua sifar: 1 200'],a:'1 200'},
+{q:'Cari nilai anu: <i>x</i> + 2 450 = 9 000',s:['Kita mahu <i>x</i> bersendirian','Operasi songsang bagi "tambah" ialah "tolak"||Pindahkan 2 450 ke sebelah kanan','<i>x</i> = 9 000 − 2 450 = 6 550','Semak: 6 550 + 2 450 = 9 000 ✓'],a:'<i>x</i> = 6 550'},
+{q:'Cari nilai anu: 6 × <i>y</i> = 4 800',s:['Operasi songsang bagi "darab" ialah "bahagi"','<i>y</i> = 4 800 ÷ 6','48 ÷ 6 = 8, tambah dua sifar → 800','Semak: 6 × 800 = 4 800 ✓'],a:'<i>y</i> = 800'},
+{q:'Sebuah stadium ada 45 000 tempat duduk. Perlawanan pertama penuh dan perlawanan kedua ada 38 750 penonton. Berapakah jumlah penonton?',s:['Kenal pasti maklumat: 45 000 dan 38 750','Kata kunci "jumlah" → operasi tambah','45 000 + 38 750 = 83 750'],a:'83 750 orang'}
+]},
+{ill:'mt2',mn:[['KTT','Bahagi pecahan: <b>K</b>ekal – <b>T</b>ukar – <b>T</b>erbalik. Kekal pecahan pertama, tukar ÷ jadi ×, terbalikkan pecahan kedua.'],['× 100 = %','Perpuluhan → peratus: titik <b>lompat 2 langkah ke kanan</b>. 0.375 → 37.5%'],['PERATUS = PER 100','45% bermaksud 45 daripada setiap 100. Peratus → pecahan: letak atas 100.'],['ATAS × BAWAH','Darab pecahan: atas × atas, bawah × bawah. Permudahkan di akhir.']],
+ex:[
+{q:`${F(3,4)} ÷ 3`,s:[`Tulis 3 sebagai pecahan: ${F(3,1)}||Semua nombor bulat boleh ditulis atas 1`,`<b>K</b>ekal: ${F(3,4)}`,'<b>T</b>ukar: ÷ menjadi ×',`<b>T</b>erbalik: ${F(3,1)} menjadi ${F(1,3)}`,`${F(3,4)} × ${F(1,3)} = ${F('3 × 1','4 × 3')} = ${F(3,12)}`,`Permudah (bahagi atas dan bawah dengan 3): ${F(1,4)}`],a:F(1,4)},
+{q:`2${F(1,2)} ÷ 5`,s:[`Tukar nombor bercampur: 2 × 2 + 1 = 5 → ${F(5,2)}||Darab nombor bulat dengan penyebut, tambah pengangka`,`KTT: ${F(5,2)} × ${F(1,5)}`,`= ${F(5,10)}`,`Permudah (÷ 5): ${F(1,2)}`],a:F(1,2)},
+{q:`${F(2,3)} ÷ ${F(4,9)}`,s:[`KTT: ${F(2,3)} × ${F(9,4)}`,`Darab: ${F('2 × 9','3 × 4')} = ${F(18,12)}`,`Permudah (÷ 6): ${F(3,2)}`,`Tukar pecahan tak wajar: 3 ÷ 2 = 1 baki 1 → 1${F(1,2)}`],a:`1${F(1,2)}`},
+{q:`1${F(1,5)} ÷ ${F(3,10)}`,s:[`Tukar: 1${F(1,5)} = ${F(6,5)}`,`KTT: ${F(6,5)} × ${F(10,3)}`,'Potong silang: 6 dan 3 → 2 dan 1; 10 dan 5 → 2 dan 1||Memudahkan sebelum darab mengelakkan nombor besar',`${F('2 × 2','1 × 1')} = 4`],a:'4'},
+{q:'2.4 × 0.3',s:['Abaikan titik perpuluhan: 24 × 3 = 72','Kira tempat perpuluhan: 2.4 ada 1, 0.3 ada 1 → jumlah 2','Letak titik 2 tempat dari kanan: 72 → 0.72','Anggaran: 2 × 0.3 = 0.6, jadi 0.72 munasabah ✓'],a:'0.72'},
+{q:'4.5 ÷ 0.9',s:['Pembahagi (0.9) mesti nombor bulat','Darab kedua-dua nombor dengan 10: 45 ÷ 9||Nilai jawapan tidak berubah jika kedua-dua didarab sama','45 ÷ 9 = 5'],a:'5'},
+{q:'0.8 ÷ 4',s:['Pembahagi sudah nombor bulat, bahagi seperti biasa','8 ÷ 4 = 2','Titik perpuluhan kekal di tempat yang sama: 0.2'],a:'0.2'},
+{q:'Tukar 0.375 kepada peratus.',s:['Darab dengan 100%','Gerak titik 2 tempat ke kanan: 0.375 → 37.5'],a:'37.5%'},
+{q:'Cari 35% daripada 240.',s:[`Tulis: ${F(35,100)} × 240`,'Cari 1% dahulu: 240 ÷ 100 = 2.4','35% = 35 × 2.4 = 84||Atau: 10% = 24, 30% = 72, 5% = 12, jumlah 84'],a:'84'},
+{q:'18 daripada 120 orang murid memakai cermin mata. Berapa peratus?',s:[`Bahagian ÷ jumlah: ${F(18,120)}`,`Permudah (÷ 6): ${F(3,20)}`,`Jadikan penyebut 100 (× 5): ${F(15,100)}`,'= 15%'],a:'15%'},
+{q:'45% + 30% − 20% = ?',s:['Tambah dan tolak peratus sama seperti nombor biasa','45 + 30 = 75','75 − 20 = 55'],a:'55%'},
+{q:`${F(3,4)} + ${F(1,2)} × ${F(2,5)}`,s:['KDBTT: darab dahulu',`${F(1,2)} × ${F(2,5)} = ${F(2,10)} = ${F(1,5)}`,'Samakan penyebut 4 dan 5 → 20',`${F(15,20)} + ${F(4,20)} = ${F(19,20)}`],a:F(19,20)}
+]},
+{ill:'mt3',mn:[['HJ > HK = UNTUNG','Harga Jual lebih besar → <b>untung</b>. Harga Kos lebih besar → <b>rugi</b>.'],['P × K × T','Faedah = <b>P</b>okok × <b>K</b>adar × <b>T</b>ahun. Ingat "<i>Pak Kassim Tidur</i>".'],['I → B → R','<b>I</b>nvois (belum bayar) → <b>B</b>il (perlu bayar) → <b>R</b>esit (sudah bayar, bukti).'],['A punya, L hutang','<b>A</b>set = harta kita punya. <b>L</b>iabiliti = hutang yang perlu dibayar.']],
+ex:[
+{q:'Harga kos sebuah beg RM40. Beg itu dijual dengan harga RM50. Hitung untung dan peratus untung.',s:['Bandingkan: HJ RM50 > HK RM40 → untung','Untung = RM50 − RM40 = RM10',`Peratus untung = ${F('untung','harga kos')} × 100%||Peratus untung sentiasa dibanding dengan harga KOS`,`${F(10,40)} = ${F(1,4)} → ${F(1,4)} × 100% = 25%`],a:'Untung RM10 (25%)'},
+{q:'Harga kos sebuah basikal RM250. Basikal itu dijual RM200. Hitung rugi dan peratus rugi.',s:['HK RM250 > HJ RM200 → rugi','Rugi = RM250 − RM200 = RM50',`Peratus rugi = ${F(50,250)} × 100%`,`${F(50,250)} = ${F(1,5)} = 20%`],a:'Rugi RM50 (20%)'},
+{q:'Harga asal kasut RM150. Diskaun 20%. Berapakah harga yang perlu dibayar?',s:['Cari 10% dulu: RM150 ÷ 10 = RM15','20% = 2 × RM15 = RM30 (nilai diskaun)','Harga bayar = RM150 − RM30 = RM120','Cara pantas: bayar 80% → 0.8 × 150 = RM120 ✓'],a:'RM120'},
+{q:'Amir membeli barang bernilai RM300 dan mendapat rebat 5%. Berapakah wang yang dipulangkan dan kos sebenar?',s:['Rebat = wang dipulangkan selepas membeli','5% × RM300 = RM15','Kos sebenar = RM300 − RM15 = RM285'],a:'Rebat RM15, kos sebenar RM285'},
+{q:'Harga sebuah buku cerita RM80. Siti menggunakan baucar RM15. Berapa dia perlu bayar?',s:['Baucar ialah potongan nilai tetap (dalam RM)','RM80 − RM15 = RM65'],a:'RM65'},
+{q:'Bil makan RM80 dikenakan cukai perkhidmatan 6%. Berapakah jumlah bayaran?',s:['1% daripada RM80 = RM0.80','6% = 6 × RM0.80 = RM4.80','Jumlah = RM80 + RM4.80 = RM84.80||Cukai ditambah kepada harga, bukan ditolak'],a:'RM84.80'},
+{q:'Aminah menyimpan RM2 000 dengan kadar faedah 4% setahun. Berapakah jumlah wangnya selepas 3 tahun?',s:['Kenal pasti: P = RM2 000, K = 4%, T = 3 tahun','Faedah setahun = 4% × RM2 000 = RM80','Faedah 3 tahun = RM80 × 3 = RM240','Jumlah = pokok + faedah = RM2 000 + RM240 = RM2 240'],a:'RM2 240'},
+{q:'Encik Lim melabur RM5 000. Kadar dividen 5%. Berapakah dividen yang diterima?',s:['Dividen = pelaburan × kadar dividen','1% daripada RM5 000 = RM50','5% = 5 × RM50 = RM250'],a:'RM250'},
+{q:'Kelaskan sebagai aset atau liabiliti: rumah, pinjaman kereta, simpanan bank, hutang kad kredit.',s:['Tanya: "Adakah ini milik saya?" → aset','Tanya: "Adakah saya perlu membayar balik?" → liabiliti','Rumah & simpanan bank → aset','Pinjaman kereta & hutang kad kredit → liabiliti'],a:'Aset: rumah, simpanan · Liabiliti: pinjaman kereta, hutang kad kredit'}
+]},
+{ill:'mt4',mn:[['TIMUR TAMBAH','Negara di <b>timur</b> (GMT lebih besar) → <b>tambah</b> jam. Negara di <b>barat</b> (GMT lebih kecil) → <b>tolak</b> jam.'],['GMT+8','Malaysia = GMT+8. Beza zon = beza nombor GMT.'],['JAM 12 = HARI BARU','Bila melepasi 12:00 tengah malam, <b>tukar hari</b>!']],
+ex:[
+{q:'Di Kuala Lumpur (GMT+8) jam 10:00 a.m. Pukul berapakah di London (GMT+0)?',s:['Cari beza: 8 − 0 = 8 jam','London GMT lebih kecil (di barat) → tolak','10:00 a.m. − 8 jam = 2:00 a.m.','Tidak melepasi tengah malam ke belakang → hari sama'],a:'2:00 a.m. pada hari yang sama'},
+{q:'Di KL (GMT+8) pukul 8:30 p.m. Pukul berapakah di Tokyo (GMT+9)?',s:['Beza: 9 − 8 = 1 jam','Tokyo GMT lebih besar (di timur) → tambah','8:30 p.m. + 1 jam = 9:30 p.m.'],a:'9:30 p.m.'},
+{q:'Di London (GMT+0) pukul 3:00 p.m. Pukul berapakah di KL?',s:['Beza 8 jam, KL di timur → tambah','3:00 p.m. + 8 jam = 11:00 p.m.'],a:'11:00 p.m. pada hari yang sama'},
+{q:'Di KL pukul 11:00 p.m. hari Isnin. Pukul berapakah di Sydney (GMT+10)?',s:['Beza: 10 − 8 = 2 jam, tambah','11:00 p.m. + 1 jam = 12:00 tengah malam → sudah hari Selasa','Tambah 1 jam lagi = 1:00 a.m.'],a:'1:00 a.m. hari Selasa'},
+{q:'Pesawat bertolak dari KL (GMT+8) pukul 9:00 p.m. hari Isnin. Penerbangan ke London (GMT+0) mengambil 13 jam. Pukul berapakah waktu tempatan London ketika tiba?',s:['Langkah A: kira waktu tiba ikut jam KL dahulu','9:00 p.m. + 3 jam = 12:00 tengah malam (Selasa)||Pecahkan 13 jam kepada 3 + 10','12:00 tengah malam + 10 jam = 10:00 a.m. Selasa (waktu KL)','Langkah B: tukar ke waktu London (tolak 8 jam)','10:00 a.m. − 8 jam = 2:00 a.m. Selasa'],a:'2:00 a.m. hari Selasa (waktu London)'}
+]},
+{ill:'mt5',mn:[['B→K DARAB','Unit <b>B</b>esar → unit <b>K</b>ecil: <b>darab</b>. Kecil → besar: <b>bahagi</b>.'],['KILO = 1 000','<b>kilo</b>meter, <b>kilo</b>gram: 1 000. <b>mili</b>liter: 1/1 000 liter.'],['SAMA UNIT DULU','Tukar semua ke unit yang sama sebelum tambah atau tolak.']],
+ex:[
+{q:'3.25 km + 750 m = ____ km',s:['Unit berbeza! Tukar semua ke meter','3.25 km × 1 000 = 3 250 m||km → m: besar ke kecil, darab','3 250 m + 750 m = 4 000 m','Soalan minta km: 4 000 ÷ 1 000 = 4 km'],a:'4 km'},
+{q:'5 m 40 cm × 3 = ____ m',s:['Tukar ke cm: 5 m 40 cm = 540 cm','540 × 3 = 1 620 cm','Tukar ke m: 1 620 ÷ 100 = 16.2 m'],a:'16.2 m'},
+{q:'2.4 kg gula dibahagi sama rata kepada 6 bungkus. Berapakah jisim setiap bungkus dalam gram?',s:['Tukar ke gram: 2.4 × 1 000 = 2 400 g','2 400 ÷ 6: 24 ÷ 6 = 4, tambah dua sifar','= 400 g'],a:'400 g'},
+{q:'1.75 kg + 650 g = ____ kg',s:['1.75 kg = 1 750 g','1 750 + 650 = 2 400 g','2 400 ÷ 1 000 = 2.4 kg'],a:'2.4 kg'},
+{q:'Ibu membeli 4 botol jus, setiap satu 1.5 ℓ. Dia menuang 2 750 mℓ ke dalam gelas. Berapakah baki jus dalam mℓ?',s:['Jumlah jus: 4 × 1.5 ℓ = 6 ℓ','Tukar ke mℓ: 6 × 1 000 = 6 000 mℓ','Baki = 6 000 − 2 750 = 3 250 mℓ'],a:'3 250 mℓ'}
+]},
+{ill:'mt6',mn:[['(n−2)×180÷n','Sudut pedalaman: <b>tolak 2</b>, <b>darab 180</b>, <b>bahagi n</b>.'],['60-90-108-120-135','Segi tiga → segi empat → pentagon → heksagon → oktagon. Lebih banyak sisi, lebih besar sudut.'],['D = 2J','<b>D</b>iameter = <b>2</b> × <b>J</b>ejari. "Diameter dua jari."']],
+ex:[
+{q:'Hitung saiz setiap sudut pedalaman pentagon sekata.',s:['Pentagon ada 5 sisi → n = 5','n − 2 = 3||Pentagon boleh dibahagi kepada 3 segi tiga','Jumlah sudut = 3 × 180° = 540°','Setiap sudut = 540° ÷ 5 = 108°'],a:'108°'},
+{q:'Hitung saiz setiap sudut pedalaman heptagon sekata (bundarkan kepada 1 tempat perpuluhan).',s:['Heptagon ada 7 sisi → n = 7','Jumlah sudut = (7 − 2) × 180° = 900°','900° ÷ 7 = 128.57…°','Bundarkan: 128.6°'],a:'≈ 128.6°'},
+{q:'Diameter sebuah bulatan ialah 14 cm. Berapakah jejarinya?',s:['Jejari = diameter ÷ 2','14 ÷ 2 = 7'],a:'7 cm'},
+{q:'Jejari sebuah bulatan ialah 6.5 cm. Berapakah diameternya?',s:['Diameter = 2 × jejari','2 × 6.5 = 13'],a:'13 cm'}
+]},
+{ill:'mt7',mn:[['Y SAMA → TOLAK X','Dua titik dengan nilai y sama: jarak = beza x. Nilai x sama: jarak = beza y.'],['SATU DULU','Kadaran: cari nilai <b>satu unit</b> dahulu, baru darab.'],['IKUT SUSUNAN','Nisbah lelaki : perempuan ≠ perempuan : lelaki. Susunan mesti ikut soalan!']],
+ex:[
+{q:'Titik A(2, 3) dan B(7, 3). Jika 1 unit mewakili 2 km, cari jarak sebenar AB.',s:['Lihat koordinat: y sama (3)','Jarak = beza x = 7 − 2 = 5 unit','Tukar ke km: 5 × 2 km = 10 km'],a:'10 km'},
+{q:'Ali bergerak dari P(1, 2) ke Q(1, 6), kemudian ke R(5, 6). Berapakah jumlah jarak dalam unit?',s:['P ke Q: x sama → 6 − 2 = 4 unit','Q ke R: y sama → 5 − 1 = 4 unit','Jumlah = 4 + 4 = 8 unit'],a:'8 unit'},
+{q:'Dalam kelas ada 12 murid lelaki dan 18 murid perempuan. Nyatakan nisbah lelaki kepada perempuan dalam bentuk termudah.',s:['Tulis ikut susunan soalan: 12 : 18','Cari faktor sepunya terbesar: 6||Faktor 12: 1,2,3,4,6,12. Faktor 18: 1,2,3,6,9,18','12 ÷ 6 : 18 ÷ 6 = 2 : 3'],a:'2 : 3'},
+{q:'3 batang pen berharga RM4.50. Berapakah harga 8 batang pen?',s:['Satu dulu: RM4.50 ÷ 3 = RM1.50','8 pen: 8 × RM1.50 = RM12'],a:'RM12'},
+{q:'Nisbah murid lelaki kepada perempuan ialah 2 : 3. Jumlah murid 40. Berapakah murid lelaki?',s:['Jumlah bahagian = 2 + 3 = 5','Nilai 1 bahagian = 40 ÷ 5 = 8 murid','Lelaki = 2 bahagian = 2 × 8 = 16','Semak: perempuan 3 × 8 = 24; 16 + 24 = 40 ✓'],a:'16 orang'}
+]},
+{ill:'mt8',mn:[['PAI = 360°','Satu bulatan penuh = 360° = 100% = semua data.'],['90° = ¼','90° suku, 180° separuh, 120° satu pertiga, 72° = 20%.'],['M · K · S · B · P','Tangga kebolehjadian: <b>M</b>ustahil → <b>K</b>ecil kemungkinan → <b>S</b>ama → <b>B</b>esar kemungkinan → <b>P</b>asti.']],
+ex:[
+{q:'Carta pai menunjukkan sukan kegemaran 120 murid. Sektor badminton bersudut 90°. Berapakah murid yang memilih badminton?',s:[`Pecahan sektor = ${F('90°','360°')}`,`Permudah: ${F(1,4)}`,`${F(1,4)} × 120 = 30`],a:'30 murid'},
+{q:'30 daripada 120 murid suka renang. Berapakah sudut sektor renang?',s:[`Pecahan = ${F(30,120)} = ${F(1,4)}`,`Sudut = ${F(1,4)} × 360° = 90°`],a:'90°'},
+{q:'Sektor bola jaring bersudut 72°. Berapakah peratusnya?',s:[`${F(72,360)} × 100%`,`${F(72,360)} = ${F(1,5)}||72 × 5 = 360`,`${F(1,5)} = 20%`],a:'20%'},
+{q:'Sebuah kotak berisi 3 biji bola merah dan 7 biji bola biru. Sebiji bola diambil secara rawak. Nyatakan kebolehjadian mendapat bola biru.',s:['Kira setiap warna: biru 7, merah 3','Adakah mustahil? Tidak, ada bola biru','Adakah pasti? Tidak, ada bola merah','7 > 3 → bola biru lebih banyak'],a:'Besar kemungkinan'}
+]}
+],
+sn:[
+{ill:'sn1',mn:[['INFERENS = SEBAB','<b>Inferens</b> menjawab "<i>kenapa</i>" (sebab). <b>Meramal</b> menjawab "<i>apa akan berlaku</i>".'],['DI-UBAH, DI-UKUR','PU <b>dimanipulasi</b> = yang kita <b>ubah</b>. PU <b>bergerak balas</b> = yang kita <b>ukur/perhati</b>. PU <b>dimalarkan</b> = yang dikekalkan.'],['SEMAKIN… SEMAKIN…','Templat hipotesis: "Semakin [diubah] …, semakin [diukur] …"']],
+ex:[
+{q:'Kenal pasti pemboleh ubah bagi tajuk: "Kesan isi padu air terhadap pertumbuhan pokok kacang".',s:['Baca tajuk: "Kesan <b>A</b> terhadap <b>B</b>"||Pola tajuk penyiasatan','A (yang diubah) = isi padu air → <b>PU dimanipulasi</b>','B (yang diukur) = pertumbuhan / tinggi pokok → <b>PU bergerak balas</b>','Yang dikekalkan sama: jenis pokok, jenis tanah, cahaya → <b>PU dimalarkan</b>||Supaya ujian adil'],a:'Dimanipulasi: isi padu air · Bergerak balas: tinggi pokok · Dimalarkan: jenis pokok/tanah'},
+{q:'Bina hipotesis bagi penyiasatan di atas.',s:['Ambil PU dimanipulasi: isi padu air','Ambil PU bergerak balas: tinggi pokok','Gabung dengan templat "Semakin…, semakin…"','"Semakin banyak isi padu air, semakin tinggi pokok kacang."'],a:'Semakin banyak isi padu air, semakin tinggi pokok kacang.'}
+]},
+{ill:'sn2',mn:[['O-T-U-F','Laluan ovum: <b>O</b>vari → <b>T</b>iub falopio → <b>U</b>terus → <b>F</b>araj. "<i>Oh Tolong Udin Fikir</i>"'],['Z-E-F','Selepas persenyawaan: <b>Z</b>igot → <b>E</b>mbrio → <b>F</b>etus (ikut abjad!).'],['PUSAT = OT','Sistem saraf pusat = <b>O</b>tak + saraf <b>T</b>unjang.']],
+ex:[
+{q:'Terangkan proses persenyawaan hingga bayi dilahirkan.',s:['Ovari membebaskan ovum ke tiub falopio','Sperma masuk melalui faraj dan berenang ke tiub falopio','Sperma bercantum dengan ovum → <b>persenyawaan</b> → zigot','Zigot bergerak ke uterus dan melekat pada dinding uterus','Zigot membesar menjadi embrio, kemudian fetus','Fetus mendapat makanan & oksigen melalui uri dan tali pusat','Selepas ≈ 9 bulan, bayi dilahirkan melalui faraj'],a:'Ovum + sperma → zigot → embrio → fetus → bayi'},
+{q:'Tangan Ali tersentuh periuk panas dan dia menarik tangannya. Terangkan laluan impuls saraf.',s:['Rangsangan: haba daripada periuk panas','Organ deria (kulit) mengesan rangsangan','Saraf membawa maklumat ke saraf tunjang / otak','Otak / saraf tunjang mentafsir dan menghantar arahan','Saraf membawa arahan ke otot tangan','Gerak balas: otot menarik tangan'],a:'Rangsangan → kulit → saraf → saraf tunjang/otak → saraf → otot'}
+]},
+{ill:'sn3',mn:[['B-K-P-V-A','Kumpulan mikroorganisma: <b>B</b>akteria, <b>K</b>ulat, <b>P</b>rotozoa, <b>V</b>irus, <b>A</b>lga. "<i>Budak Kecil Pakai Visor Ais</i>"'],['N-A-S-U-pH','Faktor pertumbuhan: <b>N</b>utrien, <b>A</b>ir, <b>S</b>uhu, <b>U</b>dara, <b>pH</b>.'],['BBBB','Proses hidup: <b>B</b>ernafas, <b>B</b>iak, <b>B</b>ergerak, <b>B</b>esar.']],
+ex:[
+{q:'Eksperimen: yis + gula + air suam dimasukkan dalam botol, belon dipasang di mulut botol. Apa yang berlaku dan mengapa?',s:['Campurkan yis, gula dan air suam dalam botol','Pasang belon pada mulut botol dan biarkan 30 minit','Pemerhatian: belon mengembang','Inferens: yis bernafas dan menghasilkan gas karbon dioksida||Gula ialah makanan (nutrien) untuk yis','Kesimpulan: yis ialah mikroorganisma hidup yang bernafas'],a:'Belon mengembang kerana yis menghasilkan karbon dioksida'}
+]},
+{ill:'sn4',mn:[['+ + / + 0 / + −','<b>Mu</b>tualisme: dua-dua untung (+ +). <b>Ko</b>mensalisme: satu untung, satu kosong (+ 0). <b>Pa</b>rasitisme: satu untung, satu rugi (+ −).'],['MUTUAL = BERSAMA','"Mutual" bermaksud saling. Komensalisme = "<i>KOsong</i>" rugi. Parasit = "<i>PAyah</i>" untuk perumah.'],['CANS','Tumbuhan bersaing untuk <b>C</b>ahaya, <b>A</b>ir, <b>N</b>utrien, ruang (<b>S</b>pace).']],
+ex:[
+{q:'Ikan remora melekat pada jerung dan memakan sisa makanan jerung. Tentukan jenis interaksi.',s:['Soalan 1: Adakah remora dapat faedah? Ya, dapat makanan dan perlindungan → (+)','Soalan 2: Adakah jerung untung, rugi atau tidak terjejas? Tidak terjejas → (0)','Padankan (+ 0) dengan jadual','= Komensalisme'],a:'Komensalisme'}
+]},
+{ill:'sn5',mn:[['4P ANCAMAN','<b>P</b>embalakan, <b>P</b>emburuan, <b>P</b>encemaran, <b>P</b>embangunan tidak terancang.'],['PELIHARA vs PULIH','<b>Pelihara</b> = jaga sebelum rosak (cegah). <b>Pulih</b>ara = baiki selepas rosak.']],
+ex:[
+{q:'Bagaimanakah pusat penetasan menyelamatkan penyu?',s:['Telur penyu dikutip dari pantai sebelum dicuri atau dimakan pemangsa','Telur ditanam semula di kawasan pagar yang selamat','Telur menetas selepas ≈ 50–60 hari','Anak penyu dilepaskan ke laut pada waktu malam','Bilangan penyu yang hidup bertambah → pemuliharaan'],a:'Melindungi telur hingga menetas, kemudian melepaskan anak penyu'}
+]},
+{ill:'sn6',mn:[['T atau T','Daya = <b>T</b>olakan atau <b>T</b>arikan. Unit: newton (N).'],['G-H-L-B-A','Kesan daya: <b>G</b>erakkan, <b>H</b>entikan, ubah <b>L</b>aju, ubah <b>B</b>entuk, ubah <b>A</b>rah.'],['KASAR = KUAT','Permukaan <b>kasar</b> → geseran <b>kuat</b>. Objek <b>berat</b> → geseran <b>tinggi</b>.'],['3T','<b>T</b>inggi gunung, <b>T</b>ekanan udara <b>T</b>urun.']],
+ex:[
+{q:'Ali menolak kotak dengan daya 30 N. Daya geseran ialah 10 N. Adakah kotak bergerak?',s:['Kenal pasti dua daya: tolakan 30 N (ke depan), geseran 10 N (menentang)','Bandingkan: 30 N > 10 N','Daya bersih = 30 − 10 = 20 N ke hadapan||Daya yang tinggal selepas geseran','Daya tolakan menang → kotak bergerak'],a:'Ya, kotak bergerak (daya bersih 20 N)'},
+{q:'Cara menyiasat kesan jenis permukaan terhadap daya geseran.',s:['Ikat kotak pada neraca spring','Tarik kotak perlahan-lahan di atas kaca, catat bacaan','Ulang di atas kayu dan kertas pasir dengan kotak yang sama||Jisim kotak dimalarkan','Bandingkan bacaan: semakin besar bacaan, semakin besar geseran','Kesimpulan: permukaan kasar menghasilkan geseran lebih besar'],a:'Bacaan neraca spring paling tinggi pada kertas pasir'}
+]},
+{ill:'sn7',mn:[['J / L × M','Segi tiga ajaib: <b>J</b> di atas, <b>L</b> dan <b>M</b> di bawah. Tutup yang dicari!'],['MINIT → JAM','30 minit = 0.5 j · 15 minit = 0.25 j · 45 minit = 0.75 j'],['CEPAT = SINGKAT','Jarak sama: masa paling singkat = paling laju.']],
+ex:[
+{q:'Sebuah kereta bergerak sejauh 120 km dalam masa 2 jam. Hitung kelajuannya.',s:['Cari kelajuan → tutup L dalam segi tiga → J ÷ M','120 km ÷ 2 j','= 60 km/j'],a:'60 km/j'},
+{q:'Ali berbasikal dengan kelajuan 5 m/s selama 40 saat. Berapakah jarak yang dilalui?',s:['Cari jarak → J = L × M','5 m/s × 40 s','= 200 m'],a:'200 m'},
+{q:'Sebuah bas bergerak 180 km dengan kelajuan 90 km/j. Berapakah masa yang diambil?',s:['Cari masa → M = J ÷ L','180 ÷ 90 = 2'],a:'2 jam'},
+{q:'Siti berlari 3 km dalam 30 minit. Berapakah kelajuannya dalam km/j?',s:['Unit soalan km/j → masa mesti dalam jam','30 minit = 0.5 jam||60 minit = 1 jam','Kelajuan = 3 ÷ 0.5 = 6 km/j'],a:'6 km/j'}
+]},
+{ill:'sn8',mn:[['ANSU','Mikroorganisma perlukan <b>A</b>ir, <b>N</b>utrien, <b>S</b>uhu sesuai, <b>U</b>dara. Pengawetan = <b>buang salah satu</b>!'],['K-G-J-M','<b>K</b>eringkan (buang air), <b>G</b>aram, <b>J</b>eruk (cuka), <b>M</b>anis (gula).']],
+ex:[
+{q:'Bagaimanakah telur masin dihasilkan dan mengapa ia tahan lama?',s:['Bersihkan telur itik','Salutkan telur dengan campuran tanah liat/abu dan garam, atau rendam dalam air garam pekat','Simpan selama ≈ 2–3 minggu','Garam menyerap air daripada telur||Mikroorganisma tidak dapat hidup tanpa air','Telur tahan lama kerana mikroorganisma tidak dapat membiak'],a:'Kaedah pengasinan: garam menyerap air'}
+]},
+{ill:'sn9',mn:[['KGK','<b>K</b>urangkan, <b>G</b>una semula, <b>K</b>itar semula.'],['BIRU-OREN-COKLAT','Tong <b>biru</b> = kertas (buku biru!), <b>oren</b> = plastik & tin, <b>coklat</b> = kaca (botol kicap coklat).'],['BIO = HIDUP','Terbiodegradasi = boleh diurai oleh hidupan kecil (mikroorganisma).']],
+ex:[
+{q:'Langkah membuat baja kompos di rumah.',s:['Sediakan bekas berlubang','Masukkan lapisan tanah, kemudian sisa dapur (kulit buah, sayur)||Bahan terbiodegradasi sahaja','Tambah daun kering dan sedikit air supaya lembap','Kacau seminggu sekali untuk masukkan udara','Selepas 1–2 bulan, mikroorganisma mengurai sisa menjadi kompos'],a:'Sisa terbiodegradasi diuraikan mikroorganisma menjadi kompos'}
+]},
+{ill:'sn10',mn:[['BULAN GELAP → BUMI TENGAH','Gerhana <b>Bulan</b>: <b>Bumi</b> di tengah. Gerhana <b>Matahari</b>: <b>Bulan</b> di tengah.'],['PURNAMA vs ANAK BULAN','Gerhana bulan: malam bulan purnama. Gerhana matahari: siang, anak bulan.'],['LURUS + LEGAP','Cahaya bergerak <b>lurus</b>, objek <b>legap</b> menghalang → bayang.']],
+ex:[
+{q:'Terangkan bagaimana gerhana bulan berlaku.',s:['Bulan beredar mengelilingi Bumi','Pada malam bulan purnama, Matahari, Bumi dan Bulan berada dalam satu garis lurus','Bumi berada di tengah','Bumi yang legap menghalang cahaya Matahari','Bayang-bayang Bumi jatuh pada Bulan → Bulan kelihatan gelap kemerahan'],a:'Bayang Bumi menutupi Bulan'}
+]},
+{ill:'sn11',mn:[['L-E-T','Bentuk galaksi: <b>L</b>ingkaran, <b>E</b>lips, <b>T</b>ak sekata.'],['B < S < G < A','<b>B</b>umi < <b>S</b>istem Suria < <b>G</b>alaksi Bima Sakti < <b>A</b>lam semesta.']],
+ex:[
+{q:'Susun dari paling kecil ke paling besar: Galaksi Bima Sakti, Bumi, Alam semesta, Sistem Suria.',s:['Bumi ialah satu planet → paling kecil','Bumi berada dalam Sistem Suria (Matahari + 8 planet)','Sistem Suria berada dalam Galaksi Bima Sakti','Bima Sakti hanya satu daripada berbilion galaksi dalam alam semesta'],a:'Bumi → Sistem Suria → Bima Sakti → Alam semesta'}
+]},
+{ill:'sn12',mn:[['L-R-B','Stabil: tapak <b>L</b>uas, <b>R</b>endah, <b>B</b>erat di bawah.'],['SEGI TIGA = TIGA KALI KUKUH','Bentuk segi tiga tidak mudah berubah bentuk — digunakan pada kren & jambatan.']],
+ex:[
+{q:'Bina dan uji model bangku botol.',s:['Kumpul botol plastik yang sama saiz, isi pasir/air supaya lebih berat di bawah||Pusat graviti rendah = stabil','Susun botol rapat dalam bentuk segi empat dan ikat kemas dengan pita','Letak kadbod tebal di atas sebagai tempat duduk','Uji kekuatan: letak buku sedikit demi sedikit','Uji kestabilan: tolak perlahan dari tepi','Rekod dan tambah baik (cth. tambah botol untuk tapak lebih luas)'],a:'Bangku kuat dan stabil jika tapak luas dan berat di bawah'}
+]},
+{ill:'sn13',mn:[['K-P-P-P-B','5 bidang teknologi: <b>K</b>omunikasi, <b>P</b>engangkutan, <b>P</b>ertanian, <b>P</b>erubatan, <b>B</b>inaan.'],['BIJAK GUNA','Teknologi baik jika digunakan dengan bijak dan beretika.']],
+ex:[
+{q:'Nilaikan teknologi dron dalam pertanian.',s:['Kenal pasti fungsi: menyembur baja dan racun dari udara','Kebaikan: menjimatkan masa dan tenaga petani','Kebaikan: liputan kawasan luas dengan cepat','Keburukan: kos tinggi, perlu kemahiran mengendalikan','Kesimpulan: sangat berguna jika digunakan dengan betul'],a:'Lebih banyak kebaikan jika digunakan dengan bijak'}
+]}
+],
+sj:[
+{ill:'sj1',mn:[['Pe-Si-Sa-Sa','4 wilayah Malaysia 1963: <b>Pe</b>rsekutuan Tanah Melayu, <b>Si</b>ngapura, <b>Sa</b>bah, <b>Sa</b>rawak.'],['16·9·63','Hari Malaysia. Singapura keluar <b>9·8·65</b>.'],['C-M-P','Urutan: <b>C</b>obbold (1962) → Perjanjian di London (Julai 1963) → <b>M</b>ichelmore/PBB → <b>P</b>embentukan (Sept 1963).']]},
+{ill:'sj2',mn:[['MePiSaSa','4 negeri tanpa raja: <b>Me</b>laka, <b>P</b>ulau P<b>i</b>nang, <b>Sa</b>bah, <b>Sa</b>rawak.'],['KL-La-Pu','3 Wilayah Persekutuan: <b>K</b>uala <b>L</b>umpur, <b>La</b>buan, <b>Pu</b>trajaya.'],['RAJA & YDP BESAR','Perlis = <b>Raja</b>. Negeri Sembilan = <b>Yang di-Pertuan Besar</b>. Lain-lain = Sultan.']]},
+{ill:'sj3',mn:[['T + 4K','<b>T</b>uhan, <b>K</b>esetiaan, <b>K</b>eluhuran, <b>K</b>edaulatan, <b>K</b>esopanan.'],['31·8·1970','Rukun Negara diisytihar tepat pada Hari Kebangsaan, 13 tahun selepas merdeka.']]},
+{ill:'sj4',mn:[['N-S-P','Orang Asli Semenanjung: <b>N</b>egrito, <b>S</b>enoi, <b>P</b>roto (Melayu Proto).'],['KaDa & IBan','Kaum terbesar Sabah: <b>Ka</b>za<b>d</b>andusun. Sarawak: <b>Iban</b>.']]},
+{ill:'sj5',mn:[['Ma-To-Ku-Ge-Gu','<b>Ma</b>sjid (Islam), <b>To</b>kong (Buddha), <b>Ku</b>il (Hindu), <b>Ge</b>reja (Kristian), <b>Gu</b>rdwara (Sikh).'],['ISLAM + BEBAS','Islam agama Persekutuan; agama lain bebas diamalkan dengan aman.']]},
+{ill:'sj6',mn:[['KaGa 30·1','<b>Ka</b>amatan 30–31 Mei (Sabah) · <b>Ga</b>wai 1 Jun (Sarawak) — dua-dua pesta menuai.'],['DEEPA = CAHAYA','<b>Deepa</b>vali = pesta cahaya (pelita). Thaipusam = kavadi.']]},
+{ill:'sj7',mn:[['T-R-H-M-A-N','PM 1–6: <b>T</b>unku, <b>R</b>azak, <b>H</b>ussein, <b>M</b>ahathir, <b>A</b>bdullah, <b>N</b>ajib.'],['K-P-P-P-M','Gelaran PM 1–5: <b>K</b>emerdekaan, <b>P</b>embangunan, <b>P</b>erpaduan, <b>P</b>emodenan, <b>M</b>odal insan.']]},
+{ill:'sj8',mn:[['4P EKONOMI','<b>P</b>ertanian, <b>P</b>erlombongan, <b>P</b>erindustrian, <b>P</b>erkhidmatan.'],['DEB = 2 MATA','Basmi kemiskinan + susun semula masyarakat (1971–1990).'],['FELDA 56 · PETRONAS 74','Tarikh penubuhan untuk dihafal.']]},
+{ill:'sj9',mn:[['THOMAS 49','Piala Thomas pertama dimenangi pada <b>1949</b>.'],['KOMANWEL 98','Malaysia tuan rumah Sukan Komanwel <b>1998</b> di Kuala Lumpur.']]},
+{ill:'sj10',mn:[['MIS-FT','Pengasas ASEAN: <b>M</b>alaysia, <b>I</b>ndonesia, <b>S</b>ingapura, <b>F</b>ilipina, <b>T</b>hailand.'],['8·8·67','ASEAN: <b>8</b> Ogos (bulan <b>8</b>) 19<b>67</b> di Bangkok. "Lapan-lapan".']]}
+],
+bm:[
+{ill:'bm0',mn:[['1 KARANGAN 1 PERIBAHASA','Selitkan sekurang-kurangnya satu peribahasa dalam pendahuluan atau penutup karangan.'],['PERIBAHASA ≠ SIMPULAN','Simpulan bahasa = 2 perkataan (ringan tulang). Peribahasa = ayat lebih panjang.']]},
+{ill:'bm1',mn:[['DI · PADA','<b>di</b> + tempat · <b>pada</b> + masa / orang / haiwan.'],['DARIPADA = O·B·B·P','<b>daripada</b> untuk <b>O</b>rang, <b>B</b>ahan, <b>B</b>andingan, <b>P</b>unca. <b>dari</b> untuk tempat/masa/arah.'],['KE · KEPADA','<b>ke</b> + tempat · <b>kepada</b> + orang/haiwan.']]},
+{ill:'bm2',mn:[['IMBUHAN RAPAT, SENDI JARAK','<b>di</b>tulis (rapat, imbuhan) · <b>di</b> rumah (jarak, kata sendi).'],['SAYA-KAMU TANPA OLEH','Pasif diri pertama & kedua: "Buku itu <b>saya</b> baca" — bukan "dibaca oleh saya".'],['PARA TANPA GANDA','para guru ✓ · para-para guru ✗ · semua murid ✓ · semua murid-murid ✗']]},
+{ill:'bm3',mn:[['P-I-P','Karangan: <b>P</b>endahuluan → <b>I</b>si (3–4) → <b>P</b>enutup.'],['T-H-C-P','Perenggan: <b>T</b>opik → <b>H</b>uraian → <b>C</b>ontoh → <b>P</b>enutup. "<i>Tolong Hantar Coklat Petang</i>"'],['5W 1H','Pemahaman: Apa, Siapa, Bila, Di mana, Mengapa, Bagaimana — gariskan dalam soalan.']]}
+],
+rbt:[
+{ill:'rbt1',mn:[['BERSENTUH = BERTENTANG','Dua gear bersentuhan berputar arah <b>bertentangan</b>.'],['BESAR PUTAR KECIL = LAJU','Gear besar memacu gear kecil → gear kecil lebih laju.'],['LURUS SAMA, SILANG SONGSANG','Takal tali lurus: arah sama. Tali bersilang: arah songsang.']]},
+{ill:'rbt2',mn:[['P-P-P-S','Robot: <b>P</b>engawal, <b>P</b>enderia, <b>P</b>enggerak, <b>S</b>umber kuasa.'],['Bu-Se-Te-Be','Carta alir: <b>Bu</b>jur (mula/tamat), <b>Se</b>lari (input/output), <b>Te</b>pat (proses), <b>Be</b>rlian (keputusan).'],['J-P-U','Struktur kawalan: <b>J</b>ujukan, <b>P</b>ilihan, <b>U</b>langan.']]},
+{ill:'rbt3',mn:[['MASALAH DULU','Reka bentuk sentiasa bermula dengan <b>masalah / keperluan</b> pengguna.'],['F-K-K-E-E','Ciri produk baik: <b>F</b>ungsi, <b>K</b>eselamatan, <b>K</b>os, <b>E</b>stetika, <b>E</b>rgonomik.']]}
+]};
+Object.entries(X).forEach(([id,arr])=>{const s=get(id);arr.forEach((x,i)=>{const u=s.units[i];u.ill=x.ill;u.mn=x.mn;if(x.ex)u.ex=x.ex})});
+})();
+
+</script>
+<script>
+(function(){
+const SUBS=window.SUBJECTS;
+SUBS.forEach(s=>s.obj.forEach((q,i)=>{let seed=(s.id.charCodeAt(0)*131+i*7919+17)%2147483647;
+  const r=()=>(seed=seed*16807%2147483647)/2147483647;const idx=[0,1,2,3];
+  for(let k=3;k>0;k--){const j=Math.floor(r()*(k+1));[idx[k],idx[j]]=[idx[j],idx[k]]}
+  q.o=idx.map(k=>q.o[k]);q.a=idx.indexOf(q.a)}));
+const KEY='bm6-progress-v1';
+let P={};try{P=JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){P={}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(P))}catch(e){}}
+function sp(id){P[id]=P[id]||{o:{},s:{},t:{}};return P[id]}
+let cur=SUBS[0].id,view='nota';
+const h=location.hash.replace('#','');
+if(h){const [s,v]=h.split('-');if(SUBS.find(x=>x.id===s))cur=s;if(v==='latihan')view='latihan'}
+const tabs=document.getElementById('tabs'),box=document.getElementById('subj');
+tabs.innerHTML=SUBS.map(s=>`<button class="tab" role="tab" data-s="${s.id}" style="--c:var(--${s.id})">${s.name}</button>`).join('');
+tabs.addEventListener('click',e=>{const b=e.target.closest('.tab');if(!b)return;cur=b.dataset.s;view='nota';go(true)});
+function go(scroll){
+  const s=SUBS.find(x=>x.id===cur);
+  tabs.querySelectorAll('.tab').forEach(b=>b.setAttribute('aria-selected',b.dataset.s===cur));
+  box.style.setProperty('--c',`var(--${s.id})`);
+  try{history.replaceState(null,'','#'+cur+(view==='latihan'?'-latihan':''))}catch(e){}
+  box.innerHTML=`<div class="shead"><div><h2>${s.name}</h2><p>${s.sub}</p></div>
+   <div class="seg"><button data-v="nota" aria-pressed="${view==='nota'}">Nota</button><button data-v="latihan" aria-pressed="${view==='latihan'}">Latihan (40 soalan)</button></div></div>
+   <div class="fmt"><h4>Format peperiksaan akhir (UASA)</h4>${s.fmt}</div>
+   <div id="body"></div>`;
+  box.querySelectorAll('.seg button').forEach(b=>b.onclick=()=>{view=b.dataset.v;go(false)});
+  const body=box.querySelector('#body');
+  if(view==='nota')notes(s,body);else quiz(s,body);
+  if(scroll){const t=box.getBoundingClientRect().top+scrollY-70;if(scrollY>t)scrollTo({top:t})}
+}
+function exHTML(e,i){
+  return `<div class="ex" data-n="0"><div class="exq"><span>Contoh ${i+1}</span>${e.q}</div>
+  <ol class="steps">${e.s.map(x=>{const [m,w]=x.split('||');return `<li hidden><div>${m}${w?`<span class="why">${w}</span>`:''}</div></li>`}).join('')}</ol>
+  <div class="exans" hidden>Jawapan: ${e.a}</div>
+  <div class="btns"><button class="btn solid" data-a="next">Langkah seterusnya ▸</button><button class="btn" data-a="all">Tunjuk semua</button><button class="btn" data-a="reset">Ulang</button></div></div>`;
+}
+function notes(s,body){
+  const BULB='<svg viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2z" fill="#ffd43b" stroke="#e8a200" stroke-width="1.5"/><rect x="9" y="18" width="6" height="3" rx="1" fill="#adb5bd"/></svg>';
+  body.innerHTML=`<div class="units">${s.units.map((u,i)=>{const k=i%6+1;return `<details class="unit" ${i===0?'open':''} style="--u:var(--r${k});--uq:var(--q${k})">
+  <summary><span class="unum">${u.n}</span><span class="utitle">${u.t}</span><span class="chev">▸</span></summary>
+  <div class="ubody">${u.ill&&window.ILL&&ILL[u.ill]?`<div class="ill">${ILL[u.ill]}</div>`:''}${u.b}
+  ${u.mn?`<div class="mnhead">${BULB}Petua Ingat</div><div class="mnem">${u.mn.map(([k2,t])=>`<div class="mn"><span class="mn-k">${k2}</span><div>${t}</div></div>`).join('')}</div>`:''}
+  ${(u.ex||[]).length?`<div class="mnhead" style="color:var(--u)">Contoh langkah demi langkah</div>`:''}${(u.ex||[]).map(exHTML).join('')}${(u.sim||[]).map(k=>`<div class="sim" data-sim="${k}"></div>`).join('')}${u.b2||''}</div></details>`}).join('')}</div>
+  <div class="btns" style="margin-top:20px"><button class="btn solid" id="toQuiz">Dah faham? Cuba latihan ▸</button></div>`;
+  body.querySelector('#toQuiz').onclick=()=>{view='latihan';go(true)};
+  body.addEventListener('click',e=>{
+    const b=e.target.closest('[data-a]');if(!b)return;const ex=b.closest('.ex');
+    const lis=[...ex.querySelectorAll('.steps li')],ans=ex.querySelector('.exans');
+    if(b.dataset.a==='next'){const n=lis.findIndex(l=>l.hidden);if(n>=0)lis[n].hidden=false;if(n===-1||n===lis.length-1)ans.hidden=false}
+    if(b.dataset.a==='all'){lis.forEach(l=>l.hidden=false);ans.hidden=false}
+    if(b.dataset.a==='reset'){lis.forEach(l=>l.hidden=true);ans.hidden=true}
+  });
+  body.querySelectorAll('.sim').forEach(el=>SIMS[el.dataset.sim]&&SIMS[el.dataset.sim](el));
+}
+const L='ABCD';
+function quiz(s,body){
+  const st=sp(s.id);
+  body.innerHTML=`<div class="qhead"><h3>Bahagian A · Objektif</h3><span class="score" id="sc"></span></div><div class="bar"><i id="br"></i></div>
+  <div id="qa">${s.obj.map((q,i)=>`<div class="q" data-i="${i}"><div class="qtop"><span class="qn">${i+1}</span><div class="qtext">${q.q}</div></div>
+   <div class="opts">${q.o.map((o,j)=>`<button class="opt" data-j="${j}"><span class="l">${L[j]}</span><span>${o}</span></button>`).join('')}</div>
+   <div class="qtools"><button class="small" data-h>Petunjuk</button></div><div class="hint" hidden><b>Petunjuk:</b> ${q.h}</div><div class="fb" hidden></div></div>`).join('')}</div>
+  <div class="qhead"><h3>Bahagian B · Subjektif</h3><span class="score">10 soalan</span></div>
+  <p style="color:var(--muted);margin-top:0">Tulis jawapan dulu, kemudian semak dengan skema. Jujur dengan diri sendiri!</p>
+  <div id="qb">${s.subj.map((q,i)=>`<div class="q" data-i="${i}"><div class="qtop"><span class="qn">${i+1}</span><div class="qtext">${q.q}</div></div>
+   <div class="answrap"><textarea id="t-${s.id}-${i}" placeholder="Tulis jawapan / jalan kerja di sini…">${(st.t[i]||'').replace(/</g,'&lt;')}</textarea></div>
+   <div class="qtools"><button class="small" data-h>Petunjuk</button><button class="small" data-k>Lihat skema jawapan</button></div>
+   <div class="hint" hidden><b>Petunjuk:</b> ${q.h}</div>
+   <div class="skema" ${st.s[i]?'':'hidden'}><b>Skema jawapan:</b><div>${Array.isArray(q.a)?`<ol class="steps">${q.a.map(x=>`<li>${x}</li>`).join('')}</ol>`:q.a}</div>${q.n?`<div style="margin-top:6px"><b>Nota:</b> ${q.n}</div>`:''}</div></div>`).join('')}</div>
+  <div class="btns reset"><button class="btn" id="rs">Padam semua jawapan subjek ini</button></div>`;
+  const qa=body.querySelector('#qa');
+  function mark(div,q,j,quiet){
+    div.querySelectorAll('.opt').forEach((b,k)=>{b.disabled=true;if(k===q.a)b.classList.add('right');if(k===j&&j!==q.a)b.classList.add('wrong')});
+    const fb=div.querySelector('.fb');fb.hidden=false;const ok=j===q.a;fb.className='fb '+(ok?'ok':'no');
+    fb.innerHTML=`<b class="v">${ok?'Betul! Hebat, Farhan!':'Belum tepat. Jawapan: '+L[q.a]}</b><div><b>Nota:</b> ${q.n}</div>`;
+    if(ok&&!quiet&&!matchMedia('(prefers-reduced-motion: reduce)').matches){const b=document.createElement('span');b.className='burst';
+      b.innerHTML=Array.from({length:14},(_,k)=>`<i style="background:var(--r${k%6+1});--x:${Math.round(Math.cos(k/14*6.283)*(50+k*4))}px;--y:${Math.round(Math.sin(k/14*6.283)*(40+k*3))}px"></i>`).join('');fb.appendChild(b);setTimeout(()=>b.remove(),1000)}
+  }
+  function score(){const k=Object.keys(st.o);const c=k.filter(i=>st.o[i]===s.obj[i].a).length;
+    body.querySelector('#sc').innerHTML=`Betul ${c} / ${s.obj.length} · dijawab ${k.length}${k.length===s.obj.length?(c>=25?'<span class="badge">★ Bintang Emas</span>':c>=18?'<span class="badge" style="background:var(--r4)">★ Bagus!</span>':'<span class="badge" style="background:var(--r5)">Cuba lagi!</span>'):''}`;body.querySelector('#br').style.width=(k.length/s.obj.length*100)+'%'}
+  qa.querySelectorAll('.q').forEach(div=>{const i=div.dataset.i;if(st.o[i]!==undefined)mark(div,s.obj[i],st.o[i],true)});
+  score();
+  qa.addEventListener('click',e=>{const div=e.target.closest('.q');if(!div)return;const i=div.dataset.i;
+    if(e.target.closest('[data-h]')){const hh=div.querySelector('.hint');hh.hidden=!hh.hidden;return}
+    const b=e.target.closest('.opt');if(!b||b.disabled)return;const j=+b.dataset.j;st.o[i]=j;save();mark(div,s.obj[i],j);score()});
+  const qb=body.querySelector('#qb');
+  qb.addEventListener('click',e=>{const div=e.target.closest('.q');if(!div)return;const i=div.dataset.i;
+    if(e.target.closest('[data-h]')){const hh=div.querySelector('.hint');hh.hidden=!hh.hidden}
+    if(e.target.closest('[data-k]')){const k=div.querySelector('.skema');k.hidden=!k.hidden;st.s[i]=!k.hidden;save()}});
+  qb.addEventListener('input',e=>{if(e.target.tagName!=='TEXTAREA')return;const i=e.target.closest('.q').dataset.i;st.t[i]=e.target.value;save()});
+  const rs=body.querySelector('#rs');let armed=false;
+  rs.onclick=()=>{if(!armed){armed=true;rs.textContent='Tekan sekali lagi untuk sahkan';setTimeout(()=>{armed=false;rs.textContent='Padam semua jawapan subjek ini'},3000);return}
+    P[s.id]={o:{},s:{},t:{}};save();go(false)};
+}
+
+/* ---------- simulations ---------- */
+const SIMS={
+daya(el){
+  el.innerHTML=`<h4>Simulasi: Daya Tolakan & Daya Geseran</h4>
+  <p style="margin:0 0 6px;font-size:.92rem">Tolak kotak di atas permukaan berbeza. Kotak hanya bergerak bila daya tolakan <b>lebih besar</b> daripada daya geseran. Cuba tukar permukaan, jisim dan tambah roda atau minyak pelincir.</p>
+  <div class="track"><div class="ground"></div><div class="arrow fric"></div><div class="arrow push"></div><div class="box">KOTAK</div></div>
+  <div class="ctrl">
+   <label>Daya tolakan: <b class="vF">20 N</b><input type="range" id="sF" min="0" max="80" value="20"></label>
+   <label>Jisim kotak: <b class="vM">4 kg</b><input type="range" id="sM" min="1" max="12" value="4"></label>
+   <label>Permukaan<select id="sS"><option value="0.05">Ais (sangat licin)</option><option value="0.2" selected>Lantai jubin</option><option value="0.45">Karpet</option><option value="0.7">Pasir kasar</option></select></label>
+   <label>Bantuan<select id="sA"><option value="1">Tiada</option><option value="0.5">Minyak pelincir (geseran ÷2)</option><option value="0.15">Pasang roda</option></select></label>
+  </div>
+  <div class="read"><span>Daya geseran: <b class="rf"></b></span><span>Daya bersih: <b class="rn"></b></span><span>Laju: <b class="rv"></b></span><span class="status"></span></div>
+  <div class="btns"><button class="btn solid" data-x="go">Mula tolak</button><button class="btn" data-x="stop">Lepaskan tangan</button><button class="btn" data-x="reset">Semula</button></div>`;
+  const tr=el.querySelector('.track'),bx=el.querySelector('.box'),ap=el.querySelector('.arrow.push'),af=el.querySelector('.arrow.fric'),gd=el.querySelector('.ground');
+  const sF=el.querySelector('#sF'),sM=el.querySelector('#sM'),sS=el.querySelector('#sS'),sA=el.querySelector('#sA');
+  const cols={0.05:'#bfe3f2',0.2:'#d9c9b8',0.45:'#b05f6d',0.7:'#d8b46a'};
+  let x=10,v=0,pushing=false,run=false,last=0;
+  function mu(){return +sS.value*+sA.value}
+  function draw(F,f){
+    const W=tr.clientWidth;bx.style.left=x+'px';gd.style.background=cols[sS.value];
+    gd.style.backgroundImage=sA.value==='0.15'?'none':'repeating-linear-gradient(90deg,rgba(0,0,0,.12) 0 2px,transparent 2px 14px)';
+    const pw=pushing?Math.max(0,F*2):0;ap.style.width=pw+'px';ap.style.left=(x-pw-8)+'px';ap.hidden=!pw;
+    const fw=Math.min(f,120)*2;af.style.width=fw+'px';af.style.left=(x+64)+'px';af.style.bottom='20px';af.hidden=!fw;
+  }
+  function step(t){
+    if(!run)return;const dt=Math.min(.05,(t-last)/1000||0);last=t;
+    const m=+sM.value,F=pushing?+sF.value:0,fmax=mu()*m*10;let f,net;
+    if(v<=0.001&&F<=fmax){v=0;f=F;net=0}else{f=fmax;net=F-f;v=Math.max(0,v+net/m*dt)}
+    x+=v*40*dt;const W=tr.clientWidth;if(x>W-60){x=W-60;v=0}
+    el.querySelector('.rf').textContent=f.toFixed(1)+' N';el.querySelector('.rn').textContent=Math.max(0,net).toFixed(1)+' N';el.querySelector('.rv').textContent=v.toFixed(2)+' m/s';
+    const stt=el.querySelector('.status');
+    stt.textContent=v>0.001?(net>0?'Bergerak semakin laju':'Semakin perlahan (geseran)'):(F>0?'Pegun: tolakan ≤ geseran':'Pegun');stt.style.color=v>0.001?'var(--ok)':'var(--bad)';
+    draw(F,v>0.001||F>0?f:0);
+    if(v<=0.001&&!pushing){run=false;return}
+    requestAnimationFrame(step);
+  }
+  function start(){if(!run){run=true;last=performance.now();requestAnimationFrame(step)}}
+  el.addEventListener('click',e=>{const b=e.target.closest('[data-x]');if(!b)return;const a=b.dataset.x;
+    if(a==='go'){pushing=true;start()}if(a==='stop'){pushing=false;start()}if(a==='reset'){pushing=false;run=false;x=10;v=0;upd()}});
+  function upd(){el.querySelector('.vF').textContent=sF.value+' N';el.querySelector('.vM').textContent=sM.value+' kg';
+    const fm=mu()*sM.value*10;el.querySelector('.rf').textContent=fm.toFixed(1)+' N (maks)';el.querySelector('.rn').textContent='-';el.querySelector('.rv').textContent=v.toFixed(2)+' m/s';
+    el.querySelector('.status').textContent='Perlu tolakan lebih '+fm.toFixed(1)+' N untuk bergerak';el.querySelector('.status').style.color='var(--muted)';draw(0,0);if(pushing)start()}
+  [sF,sM,sS,sA].forEach(c=>c.addEventListener('input',upd));upd();
+},
+udara(el){
+  el.innerHTML=`<h4>Simulasi: Tekanan Udara & Ketinggian</h4>
+  <p style="margin:0 0 6px;font-size:.92rem">Gerakkan pendaki ke atas gunung. Semakin tinggi, semakin <b>sedikit</b> zarah udara di atasnya, jadi tekanan udara semakin <b>rendah</b>.</p>
+  <div class="alt"><div class="mount"><svg viewBox="0 0 260 180" width="100%"><polygon points="10,175 130,15 250,175" fill="var(--surface)" stroke="var(--c)" stroke-width="2"/><polygon points="105,48 130,15 155,48 142,42 130,52 118,42" fill="var(--bg)"/><g class="dots"></g><circle class="climber" r="7" fill="var(--accent)"/></svg></div>
+  <div class="gauge"><label>Ketinggian: <b class="vh">0 m</b><input type="range" id="sh" min="0" max="8800" step="100" value="0" style="width:100%;accent-color:var(--c)"></label>
+  <div>Tekanan udara (anggaran): <b class="vp"></b></div><div class="gbar"><i></i></div><div class="where" style="font-size:.88rem;color:var(--muted)"></div></div></div>`;
+  const sh=el.querySelector('#sh'),dots=el.querySelector('.dots'),cl=el.querySelector('.climber');
+  function upd(){const hh=+sh.value,p=101.3*Math.exp(-hh/8400);
+    el.querySelector('.vh').textContent=hh.toLocaleString('ms-MY')+' m';el.querySelector('.vp').textContent=p.toFixed(1)+' kPa';
+    el.querySelector('.gbar i').style.width=(p/101.3*100)+'%';
+    const y=175-hh/8800*160;cl.setAttribute('cx',130+(y-15)*0.75);cl.setAttribute('cy',y-6);
+    const n=Math.round(40*p/101.3);let s='';for(let i=0;i<n;i++){s+=`<circle cx="${20+((i*53)%220)}" cy="${y-20-((i*37)%40)}" r="2.5" fill="var(--c)" opacity=".6"/>`}dots.innerHTML=s;
+    el.querySelector('.where').textContent=hh<300?'Paras laut: tekanan paling tinggi':hh<4200?'Contoh: Gunung Kinabalu (4 095 m) ~ 62 kPa':'Puncak Everest (8 849 m) ~ 1/3 tekanan paras laut';}
+  sh.addEventListener('input',upd);upd();
+},
+gerhana(el){
+  el.innerHTML=`<h4>Simulasi: Susunan Gerhana</h4><div class="btns" style="margin:0 0 8px"><button class="btn solid" data-g="bulan">Gerhana Bulan</button><button class="btn" data-g="mata">Gerhana Matahari</button></div>
+  <div class="ecl"></div><p class="gd" style="font-size:.92rem;margin:6px 0 0"></p>`;
+  const box=el.querySelector('.ecl');
+  function show(k){el.querySelectorAll('[data-g]').forEach(b=>b.classList.toggle('solid',b.dataset.g===k));
+    const sun=`<circle cx="60" cy="90" r="46" fill="#f6b52b"/><text x="60" y="160" text-anchor="middle" font-size="13" fill="var(--ink)">Matahari</text>`;
+    const earth=(x)=>`<circle cx="${x}" cy="90" r="22" fill="#3a8fd8"/><path d="M${x-10} 80 q8 -6 14 2 q-4 8 -12 6z" fill="#3aa65a"/><text x="${x}" y="160" text-anchor="middle" font-size="13" fill="var(--ink)">Bumi</text>`;
+    const moon=(x,dark)=>`<circle cx="${x}" cy="90" r="9" fill="${dark?'#8a3b2b':'#cfcfcf'}"/><text x="${x}" y="125" text-anchor="middle" font-size="13" fill="var(--ink)">Bulan</text>`;
+    if(k==='bulan'){box.innerHTML=`<svg viewBox="0 0 560 170"><polygon points="300,68 520,80 520,100 300,112" fill="var(--muted)" opacity=".35"/>${sun}${earth(300)}${moon(470,true)}<path d="M106 90 H270" stroke="#f6b52b" stroke-width="2" stroke-dasharray="6 5"/></svg>`;
+      el.querySelector('.gd').innerHTML='<b>Bumi berada di tengah</b> antara Matahari dan Bulan. Bayang-bayang Bumi jatuh pada Bulan. Berlaku pada waktu <b>malam</b>, ketika <b>bulan purnama</b>. Bulan kelihatan gelap kemerahan.'}
+    else{box.innerHTML=`<svg viewBox="0 0 560 170"><polygon points="300,84 470,86 470,94 300,96" fill="var(--muted)" opacity=".45"/>${sun}${moon(300,false)}${earth(470)}<path d="M106 90 H288" stroke="#f6b52b" stroke-width="2" stroke-dasharray="6 5"/></svg>`;
+      el.querySelector('.gd').innerHTML='<b>Bulan berada di tengah</b> antara Matahari dan Bumi. Bayang-bayang Bulan jatuh pada Bumi. Berlaku pada waktu <b>siang</b>, ketika <b>anak bulan</b>. Jangan sesekali melihat Matahari dengan mata kasar!'}}
+  el.addEventListener('click',e=>{const b=e.target.closest('[data-g]');if(b)show(b.dataset.g)});show('bulan');
+}
+};
+go(false);
+})();
+</script>
+
+</body>
+</html>
